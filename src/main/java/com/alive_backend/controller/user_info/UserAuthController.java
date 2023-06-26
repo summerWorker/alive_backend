@@ -38,7 +38,7 @@ public class UserAuthController {
         String name = data.get(UserConstant.USERNAME).toString();
         UserAuth user = userAuthService.getUserAuthByName(name);
         System.out.println(user);
-        if (user == null) {
+        if (user == null || user.getStatus() == UserConstant.STATUS_INACTIVATE) {
             return MsgUtil.makeMsg(MsgUtil.SUCCESS, "用户名合法", null);
         } else {
             return MsgUtil.makeMsg(MsgUtil.ERROR, "用户名已被注册", null);
@@ -67,12 +67,13 @@ public class UserAuthController {
 
         /* 检验邮箱是否被注册 */
         UserAuth user = userAuthService.getUserAuthByEmail(email);
-        if (user != null) {
+        if (user != null && user.getStatus() != UserConstant.STATUS_INACTIVATE) {
             return MsgUtil.makeMsg(MsgUtil.ERROR, "邮箱已被注册", null);
         }
 
         /* 保存用户 */
-        user = new UserAuth();
+        if(user == null)
+            user = new UserAuth();
         user.setUsername(name); user.setPassword(password); user.setEmail(email);
         user.setStatus(UserConstant.STATUS_INACTIVATE); // 未激活
         // TODO: 生成验证码
