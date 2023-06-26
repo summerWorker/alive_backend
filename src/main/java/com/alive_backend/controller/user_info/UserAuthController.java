@@ -1,7 +1,9 @@
 package com.alive_backend.controller.user_info;
 
 import com.alive_backend.entity.user_info.UserAuth;
+import com.alive_backend.entity.user_info.UserInfo;
 import com.alive_backend.service.user_info.UserAuthService;
+import com.alive_backend.service.user_info.UserInfoService;
 import com.alive_backend.utils.constant.UserConstant;
 import com.alive_backend.utils.msg.Msg;
 import com.alive_backend.utils.msg.MsgUtil;
@@ -10,12 +12,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.sql.Timestamp;
 import java.util.Map;
 
 @RestController
 public class UserAuthController {
     @Autowired
     private UserAuthService userAuthService;
+    @Autowired
+    private UserInfoService userInfoService;
 
     /**
      * 检查用户名是否重复
@@ -72,6 +77,8 @@ public class UserAuthController {
         user.setStatus(UserConstant.STATUS_INACTIVATE); // 未激活
         // TODO: 生成验证码
         user.setCheckCode("123456");
+        Timestamp date = new Timestamp(System.currentTimeMillis());
+        user.setCodeUpdateTime(date);
         userAuthService.saveUserAuth(user);
 
         /* 发送邮箱验证码 */
@@ -107,10 +114,25 @@ public class UserAuthController {
             return MsgUtil.makeMsg(MsgUtil.ERROR, "验证码错误", null);
         }
 
+        /* 检验验证码是否过期: 5 min */
+        Timestamp date = new Timestamp(System.currentTimeMillis());
+        if (date.getTime() - user.getCodeUpdateTime().getTime() > 1000 * 60 * 5) {
+            return MsgUtil.makeMsg(MsgUtil.ERROR, "验证码已过期", null);
+        }
+
         /* 激活用户 */
         user.setStatus(UserConstant.STATUS_ACTIVATE);
         user.setCheckCode("");
-        userAuthService.saveUserAuth(user);
+        UserAuth update_user = userAuthService.saveUserAuth(user);
+        UserInfo userInfo = new UserInfo();
+        userInfo.setUserId(update_user.getUserId());
+        userInfo.setNickname(update_user.getUsername());
+        UserInfo update_user_info = userInfoService.saveUserInfo(userInfo);
+        if(update_user_info == null){
+            return MsgUtil.makeMsg(MsgUtil.ERROR, "用户信息保存失败", null);
+        }
+
         return  MsgUtil.makeMsg(MsgUtil.SUCCESS, MsgUtil.RESIGN_SUCCESS_MSG, null);
     }
+
 }

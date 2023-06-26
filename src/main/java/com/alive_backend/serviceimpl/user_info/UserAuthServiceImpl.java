@@ -1,4 +1,4 @@
-package com.alive_backend.serviceimpl;
+package com.alive_backend.serviceimpl.user_info;
 
 import com.alive_backend.dao.user_info.UserAuthDao;
 import com.alive_backend.entity.user_info.UserAuth;
@@ -20,7 +20,7 @@ public class UserAuthServiceImpl implements UserAuthService {
         return userAuthDao.getUserAuthByEmail(email);
     }
     @Override
-    public Boolean saveUserAuth(UserAuth userAuth) {
+    public UserAuth saveUserAuth(UserAuth userAuth) {
         return userAuthDao.saveUserAuth(userAuth);
     }
 }
