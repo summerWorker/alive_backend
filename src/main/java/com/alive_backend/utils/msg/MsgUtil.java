@@ -15,7 +15,6 @@ public class MsgUtil {
     public static final String LOGOUT_SUCCESS_MSG = "登出成功！";
     public static final String LOGOUT_ERR_MSG = "登出异常！";
     public static final String SIGN_FAIL_MSG = "用户名已存在！";
-    public static final String RESIGN_FAIL_MSG = "注册失败！";
     public static final String RESIGN_SUCCESS_MSG = "注册成功！";
     public static final String ERROR_MSG = "错误！";
     public static final String LOGIN_USER_ERROR_MSG = "用户名或密码错误，请重新输入！";
