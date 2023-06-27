@@ -8,14 +8,13 @@ import com.alive_backend.utils.constant.UserConstant;
 import com.alive_backend.utils.msg.Msg;
 import com.alive_backend.utils.msg.MsgUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
 import java.util.Map;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 public class UserAuthController {
     @Autowired
     private UserAuthService userAuthService;
@@ -27,7 +26,7 @@ public class UserAuthController {
      * @param data: {username: 'xxx'}
      * @return Msg
      */
-    @GetMapping("/register/check_name")
+    @PostMapping("/register/check_name")
     public Msg checkName(@RequestBody Map<String,Object> data) {
         /* 参数合法性检验 */
         Object name_obj = data.get(UserConstant.USERNAME);
@@ -50,7 +49,7 @@ public class UserAuthController {
      * @param data: {username:'xxx',password:"xxx",email: 'xxx'}
      * @return Msg
      */
-    @GetMapping("/register/send_email_code")
+    @PostMapping("/register/send_email_code")
     public Msg register_step1(@RequestBody Map<String,Object> data) {
         /* 参数合法性检验 */
         Object name_obj = data.get(UserConstant.USERNAME);
@@ -93,7 +92,7 @@ public class UserAuthController {
      * @param data: {username:'xxx',check_code: 'xxx'}
      * @return Msg
      */
-    @GetMapping("/register")
+    @PostMapping("/register")
     public Msg register_step2(@RequestBody Map<String,Object> data) {
         /* 参数合法性检验 */
         Object name_obj = data.get(UserConstant.USERNAME);
