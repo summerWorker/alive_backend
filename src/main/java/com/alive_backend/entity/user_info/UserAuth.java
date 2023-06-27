@@ -1,9 +1,12 @@
 package com.alive_backend.entity.user_info;
 
+
 import lombok.Data;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.Objects;
+
 @Data
 @Entity
 @Table(name = "user_auth", schema = "health", catalog = "")
@@ -31,10 +34,6 @@ public class UserAuth {
     @Column(name = "code_update_time")
     private Timestamp codeUpdateTime;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "user_id")
-    private UserInfo userInfo;
-
 //    public int getUserId() {
 //        return userId;
 //    }
@@ -42,7 +41,10 @@ public class UserAuth {
 //    public void setUserId(int userId) {
 //        this.userId = userId;
 //    }
-//
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "user_id")
+    private UserInfo userInfo;
+
 //    public String getUsername() {
 //        return username;
 //    }
@@ -90,35 +92,23 @@ public class UserAuth {
 //    public void setCodeUpdateTime(Timestamp codeUpdateTime) {
 //        this.codeUpdateTime = codeUpdateTime;
 //    }
+//    public UserInfo getUserInfo() {
+//        return userInfo;
+//    }
+//    public void setUserInfo(UserInfo userInfo) {
+//        this.userInfo = userInfo;
+//    }
 //
 //    @Override
 //    public boolean equals(Object o) {
 //        if (this == o) return true;
 //        if (o == null || getClass() != o.getClass()) return false;
-//
 //        UserAuth userAuth = (UserAuth) o;
-//
-//        if (userId != userAuth.userId) return false;
-//        if (username != null ? !username.equals(userAuth.username) : userAuth.username != null) return false;
-//        if (password != null ? !password.equals(userAuth.password) : userAuth.password != null) return false;
-//        if (email != null ? !email.equals(userAuth.email) : userAuth.email != null) return false;
-//        if (checkCode != null ? !checkCode.equals(userAuth.checkCode) : userAuth.checkCode != null) return false;
-//        if (status != null ? !status.equals(userAuth.status) : userAuth.status != null) return false;
-//        if (codeUpdateTime != null ? !codeUpdateTime.equals(userAuth.codeUpdateTime) : userAuth.codeUpdateTime != null)
-//            return false;
-//
-//        return true;
+//        return userId == userAuth.userId && Objects.equals(username, userAuth.username) && Objects.equals(password, userAuth.password) && Objects.equals(email, userAuth.email) && Objects.equals(checkCode, userAuth.checkCode) && Objects.equals(status, userAuth.status) && Objects.equals(codeUpdateTime, userAuth.codeUpdateTime);
 //    }
 //
 //    @Override
 //    public int hashCode() {
-//        int result = userId;
-//        result = 31 * result + (username != null ? username.hashCode() : 0);
-//        result = 31 * result + (password != null ? password.hashCode() : 0);
-//        result = 31 * result + (email != null ? email.hashCode() : 0);
-//        result = 31 * result + (checkCode != null ? checkCode.hashCode() : 0);
-//        result = 31 * result + (status != null ? status.hashCode() : 0);
-//        result = 31 * result + (codeUpdateTime != null ? codeUpdateTime.hashCode() : 0);
-//        return result;
+//        return Objects.hash(userId, username, password, email, checkCode, status, codeUpdateTime);
 //    }
 }

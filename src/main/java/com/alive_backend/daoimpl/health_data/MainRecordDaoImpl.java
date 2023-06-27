@@ -14,4 +14,8 @@ public class MainRecordDaoImpl implements MainRecordDao {
     public MainRecord getMainRecordByUserId(int id) {
         return mainRecordRepository.findByUserId(id);
     }
+    @Override
+    public MainRecord updateMainRecord(MainRecord mainRecord) {
+        return mainRecordRepository.save(mainRecord);
+    }
 }

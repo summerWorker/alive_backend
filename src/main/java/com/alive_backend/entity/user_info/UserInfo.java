@@ -1,14 +1,16 @@
 package com.alive_backend.entity.user_info;
 
+import javax.persistence.*;
 import com.alive_backend.entity.health_data.MainRecord;
 import lombok.Data;
 
-import javax.persistence.*;
-@Data
+import java.util.Objects;
+
 @Entity
+@Data
 @Table(name = "user_info", schema = "health", catalog = "")
 public class UserInfo {
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "user_id")
     private int userId;
@@ -21,6 +23,7 @@ public class UserInfo {
     @Basic
     @Column(name = "gender")
     private Integer gender;
+
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "user_id")
     private MainRecord mainRecord;
@@ -56,28 +59,23 @@ public class UserInfo {
 //    public void setGender(Integer gender) {
 //        this.gender = gender;
 //    }
+//    public MainRecord getMainRecord() {
+//        return mainRecord;
+//    }
+//    public void setMainRecord(MainRecord mainRecord) {
+//        this.mainRecord = mainRecord;
+//    }
 //
 //    @Override
 //    public boolean equals(Object o) {
 //        if (this == o) return true;
 //        if (o == null || getClass() != o.getClass()) return false;
-//
 //        UserInfo userInfo = (UserInfo) o;
-//
-//        if (userId != userInfo.userId) return false;
-//        if (nickname != null ? !nickname.equals(userInfo.nickname) : userInfo.nickname != null) return false;
-//        if (phone != null ? !phone.equals(userInfo.phone) : userInfo.phone != null) return false;
-//        if (gender != null ? !gender.equals(userInfo.gender) : userInfo.gender != null) return false;
-//
-//        return true;
+//        return userId == userInfo.userId && Objects.equals(nickname, userInfo.nickname) && Objects.equals(phone, userInfo.phone) && Objects.equals(gender, userInfo.gender);
 //    }
 //
 //    @Override
 //    public int hashCode() {
-//        int result = userId;
-//        result = 31 * result + (nickname != null ? nickname.hashCode() : 0);
-//        result = 31 * result + (phone != null ? phone.hashCode() : 0);
-//        result = 31 * result + (gender != null ? gender.hashCode() : 0);
-//        return result;
+//        return Objects.hash(userId, nickname, phone, gender);
 //    }
 }

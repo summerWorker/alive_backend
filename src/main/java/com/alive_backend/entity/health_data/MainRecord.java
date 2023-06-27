@@ -1,13 +1,16 @@
 package com.alive_backend.entity.health_data;
 
+import lombok.Data;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.Objects;
 
 @Entity
+@Data
 @Table(name = "main_record", schema = "health", catalog = "")
 public class MainRecord {
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Id
+    @Basic
     @Column(name = "user_id")
     private int userId;
     @Basic
@@ -43,141 +46,125 @@ public class MainRecord {
     @Basic
     @Column(name = "update_time")
     private Timestamp updateTime;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @Column(name = "record_id")
+    private int recordId;
 
-    public int getUserId() {
-        return userId;
-    }
-
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
-
-    public Double getHeight() {
-        return height;
-    }
-
-    public void setHeight(Double height) {
-        this.height = height;
-    }
-
-    public Integer getWeight() {
-        return weight;
-    }
-
-    public void setWeight(Integer weight) {
-        this.weight = weight;
-    }
-
-    public Double getExerciseTime() {
-        return exerciseTime;
-    }
-
-    public void setExerciseTime(Double exerciseTime) {
-        this.exerciseTime = exerciseTime;
-    }
-
-    public Double getCalorieIn() {
-        return calorieIn;
-    }
-
-    public void setCalorieIn(Double calorieIn) {
-        this.calorieIn = calorieIn;
-    }
-
-    public Double getCalorieConsume() {
-        return calorieConsume;
-    }
-
-    public void setCalorieConsume(Double calorieConsume) {
-        this.calorieConsume = calorieConsume;
-    }
-
-    public Double getSleepTime() {
-        return sleepTime;
-    }
-
-    public void setSleepTime(Double sleepTime) {
-        this.sleepTime = sleepTime;
-    }
-
-    public Double getPressure() {
-        return pressure;
-    }
-
-    public void setPressure(Double pressure) {
-        this.pressure = pressure;
-    }
-
-    public Double getHeartRate() {
-        return heartRate;
-    }
-
-    public void setHeartRate(Double heartRate) {
-        this.heartRate = heartRate;
-    }
-
-    public Integer getHealthScore() {
-        return healthScore;
-    }
-
-    public void setHealthScore(Integer healthScore) {
-        this.healthScore = healthScore;
-    }
-
-    public String getHealthAdvice() {
-        return healthAdvice;
-    }
-
-    public void setHealthAdvice(String healthAdvice) {
-        this.healthAdvice = healthAdvice;
-    }
-
-    public Timestamp getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(Timestamp updateTime) {
-        this.updateTime = updateTime;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        MainRecord that = (MainRecord) o;
-
-        if (userId != that.userId) return false;
-        if (height != null ? !height.equals(that.height) : that.height != null) return false;
-        if (weight != null ? !weight.equals(that.weight) : that.weight != null) return false;
-        if (exerciseTime != null ? !exerciseTime.equals(that.exerciseTime) : that.exerciseTime != null) return false;
-        if (calorieIn != null ? !calorieIn.equals(that.calorieIn) : that.calorieIn != null) return false;
-        if (calorieConsume != null ? !calorieConsume.equals(that.calorieConsume) : that.calorieConsume != null)
-            return false;
-        if (sleepTime != null ? !sleepTime.equals(that.sleepTime) : that.sleepTime != null) return false;
-        if (pressure != null ? !pressure.equals(that.pressure) : that.pressure != null) return false;
-        if (heartRate != null ? !heartRate.equals(that.heartRate) : that.heartRate != null) return false;
-        if (healthScore != null ? !healthScore.equals(that.healthScore) : that.healthScore != null) return false;
-        if (healthAdvice != null ? !healthAdvice.equals(that.healthAdvice) : that.healthAdvice != null) return false;
-        if (updateTime != null ? !updateTime.equals(that.updateTime) : that.updateTime != null) return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = userId;
-        result = 31 * result + (height != null ? height.hashCode() : 0);
-        result = 31 * result + (weight != null ? weight.hashCode() : 0);
-        result = 31 * result + (exerciseTime != null ? exerciseTime.hashCode() : 0);
-        result = 31 * result + (calorieIn != null ? calorieIn.hashCode() : 0);
-        result = 31 * result + (calorieConsume != null ? calorieConsume.hashCode() : 0);
-        result = 31 * result + (sleepTime != null ? sleepTime.hashCode() : 0);
-        result = 31 * result + (pressure != null ? pressure.hashCode() : 0);
-        result = 31 * result + (heartRate != null ? heartRate.hashCode() : 0);
-        result = 31 * result + (healthScore != null ? healthScore.hashCode() : 0);
-        result = 31 * result + (healthAdvice != null ? healthAdvice.hashCode() : 0);
-        result = 31 * result + (updateTime != null ? updateTime.hashCode() : 0);
-        return result;
-    }
+//    public int getUserId() {
+//        return userId;
+//    }
+//
+//    public void setUserId(int userId) {
+//        this.userId = userId;
+//    }
+//
+//    public Double getHeight() {
+//        return height;
+//    }
+//
+//    public void setHeight(Double height) {
+//        this.height = height;
+//    }
+//
+//    public Integer getWeight() {
+//        return weight;
+//    }
+//
+//    public void setWeight(Integer weight) {
+//        this.weight = weight;
+//    }
+//
+//    public Double getExerciseTime() {
+//        return exerciseTime;
+//    }
+//
+//    public void setExerciseTime(Double exerciseTime) {
+//        this.exerciseTime = exerciseTime;
+//    }
+//
+//    public Double getCalorieIn() {
+//        return calorieIn;
+//    }
+//
+//    public void setCalorieIn(Double calorieIn) {
+//        this.calorieIn = calorieIn;
+//    }
+//
+//    public Double getCalorieConsume() {
+//        return calorieConsume;
+//    }
+//
+//    public void setCalorieConsume(Double calorieConsume) {
+//        this.calorieConsume = calorieConsume;
+//    }
+//
+//    public Double getSleepTime() {
+//        return sleepTime;
+//    }
+//
+//    public void setSleepTime(Double sleepTime) {
+//        this.sleepTime = sleepTime;
+//    }
+//
+//    public Double getPressure() {
+//        return pressure;
+//    }
+//
+//    public void setPressure(Double pressure) {
+//        this.pressure = pressure;
+//    }
+//
+//    public Double getHeartRate() {
+//        return heartRate;
+//    }
+//
+//    public void setHeartRate(Double heartRate) {
+//        this.heartRate = heartRate;
+//    }
+//
+//    public Integer getHealthScore() {
+//        return healthScore;
+//    }
+//
+//    public void setHealthScore(Integer healthScore) {
+//        this.healthScore = healthScore;
+//    }
+//
+//    public String getHealthAdvice() {
+//        return healthAdvice;
+//    }
+//
+//    public void setHealthAdvice(String healthAdvice) {
+//        this.healthAdvice = healthAdvice;
+//    }
+//
+//    public Timestamp getUpdateTime() {
+//        return updateTime;
+//    }
+//
+//    public void setUpdateTime(Timestamp updateTime) {
+//        this.updateTime = updateTime;
+//    }
+//
+//    public int getRecordId() {
+//        return recordId;
+//    }
+//
+//    public void setRecordId(int recordId) {
+//        this.recordId = recordId;
+//    }
+//
+//    @Override
+//    public boolean equals(Object o) {
+//        if (this == o) return true;
+//        if (o == null || getClass() != o.getClass()) return false;
+//        MainRecord that = (MainRecord) o;
+//        return userId == that.userId && recordId == that.recordId && Objects.equals(height, that.height) && Objects.equals(weight, that.weight) && Objects.equals(exerciseTime, that.exerciseTime) && Objects.equals(calorieIn, that.calorieIn) && Objects.equals(calorieConsume, that.calorieConsume) && Objects.equals(sleepTime, that.sleepTime) && Objects.equals(pressure, that.pressure) && Objects.equals(heartRate, that.heartRate) && Objects.equals(healthScore, that.healthScore) && Objects.equals(healthAdvice, that.healthAdvice) && Objects.equals(updateTime, that.updateTime);
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        return Objects.hash(userId, height, weight, exerciseTime, calorieIn, calorieConsume, sleepTime, pressure, heartRate, healthScore, healthAdvice, updateTime, recordId);
+//    }
 }

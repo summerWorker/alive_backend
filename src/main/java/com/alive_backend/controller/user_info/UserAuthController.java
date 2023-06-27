@@ -1,12 +1,15 @@
 package com.alive_backend.controller.user_info;
 
+import com.alive_backend.entity.health_data.MainRecord;
 import com.alive_backend.entity.user_info.UserAuth;
 import com.alive_backend.entity.user_info.UserInfo;
+import com.alive_backend.service.health_data.MainRecordService;
 import com.alive_backend.service.user_info.UserAuthService;
 import com.alive_backend.service.user_info.UserInfoService;
 import com.alive_backend.utils.constant.UserConstant;
 import com.alive_backend.utils.msg.Msg;
 import com.alive_backend.utils.msg.MsgUtil;
+import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,12 +17,14 @@ import java.sql.Timestamp;
 import java.util.Map;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
+//@CrossOrigin(origins = "http://localhost:3000")
 public class UserAuthController {
     @Autowired
     private UserAuthService userAuthService;
     @Autowired
     private UserInfoService userInfoService;
+    @Autowired
+    private MainRecordService mainRecordService;
 
     /**
      * 检查用户名是否重复
@@ -36,7 +41,6 @@ public class UserAuthController {
 
         String name = data.get(UserConstant.USERNAME).toString();
         UserAuth user = userAuthService.getUserAuthByName(name);
-        System.out.println(user);
         if (user == null || user.getStatus() == UserConstant.STATUS_INACTIVATE) {
             return MsgUtil.makeMsg(MsgUtil.SUCCESS, "用户名合法", null);
         } else {
@@ -70,6 +74,18 @@ public class UserAuthController {
             return MsgUtil.makeMsg(MsgUtil.ERROR, "邮箱已被注册", null);
         }
 
+        /* 解决发送过于频繁 */
+        if (user != null && user.getStatus() == UserConstant.STATUS_INACTIVATE) {
+            Timestamp date = new Timestamp(System.currentTimeMillis());
+            Timestamp last_date = user.getCodeUpdateTime();
+            if(last_date != null){
+                long time = date.getTime() - last_date.getTime();
+                if (time < 60000) {
+                    return MsgUtil.makeMsg(MsgUtil.ERROR, "发送过于频繁", null);
+                }
+            }
+        }
+
         /* 保存用户 */
         if(user == null)
             user = new UserAuth();
@@ -79,7 +95,10 @@ public class UserAuthController {
         user.setCheckCode("123456");
         Timestamp date = new Timestamp(System.currentTimeMillis());
         user.setCodeUpdateTime(date);
-        userAuthService.saveUserAuth(user);
+        UserAuth update_user = userAuthService.saveUserAuth(user);
+        if (update_user == null) {
+            return MsgUtil.makeMsg(MsgUtil.ERROR, "用户保存失败", null);
+        }
 
         /* 发送邮箱验证码 */
         //TODO
@@ -123,16 +142,57 @@ public class UserAuthController {
         /* 激活用户 */
         user.setStatus(UserConstant.STATUS_ACTIVATE);
         user.setCheckCode("");
-        UserAuth update_user = userAuthService.saveUserAuth(user);
+        int id = user.getUserId();
+
+        /* 初始化用户信息 */
         UserInfo userInfo = new UserInfo();
-        userInfo.setUserId(update_user.getUserId());
-        userInfo.setNickname(update_user.getUsername());
+        userInfo.setUserId(id);
+        userInfo.setNickname(user.getUsername());
+
+        /* 初始化健康档案 */
+        MainRecord mainRecord = new MainRecord();
+        mainRecord.setUserId(id);
+        mainRecord.setUpdateTime(date);
+
+        UserAuth update_user = userAuthService.saveUserAuth(user);
         UserInfo update_user_info = userInfoService.saveUserInfo(userInfo);
-        if(update_user_info == null){
-            return MsgUtil.makeMsg(MsgUtil.ERROR, "用户信息保存失败", null);
+        MainRecord update_main_record = mainRecordService.updateMainRecord(mainRecord);
+        if(update_user_info == null || update_main_record == null || update_user == null){
+            return MsgUtil.makeMsg(MsgUtil.ERROR, "用户信息初始化失败", null);
         }
 
         return  MsgUtil.makeMsg(MsgUtil.SUCCESS, MsgUtil.RESIGN_SUCCESS_MSG, null);
+    }
+
+    @PostMapping("/login")
+    public Msg Login(@RequestBody Map<String,Object> data) {
+        /* 参数合法性检验 */
+        Object name_obj = data.get(UserConstant.USERNAME);
+        Object password_obj = data.get(UserConstant.PASSWORD);
+        if (name_obj == null || password_obj == null) {
+            return MsgUtil.makeMsg(MsgUtil.ERROR, "传参错误：{\"username\": 'xxx', \"password\": 'xxx'}", null);
+        }
+
+        /* 检验用户名 */
+        String name = data.get(UserConstant.USERNAME).toString();
+        UserAuth user_auth = userAuthService.getUserAuthByName(name);
+        if (user_auth == null) {
+            return MsgUtil.makeMsg(MsgUtil.ERROR, "用户名不存在", null);
+        }
+        if (user_auth.getStatus() == UserConstant.STATUS_INACTIVATE) {
+            return MsgUtil.makeMsg(MsgUtil.ERROR, "用户未激活", null);
+        }
+
+        /* 检验密码 */
+        String password = data.get(UserConstant.PASSWORD).toString();
+        if (!user_auth.getPassword().equals(password)) {
+            return MsgUtil.makeMsg(MsgUtil.ERROR, "密码错误", null);
+        }
+        System.out.println(user_auth.getUserInfo());
+        UserInfo userInfo = user_auth.getUserInfo();
+        JSONObject jsonObject = JSONObject.fromObject(userInfo);
+
+        return MsgUtil.makeMsg(MsgUtil.SUCCESS, "登录成功", JSONObject.fromObject(jsonObject));
     }
 
 }
