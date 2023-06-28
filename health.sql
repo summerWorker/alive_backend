@@ -134,6 +134,32 @@ LOCK TABLES `user_info` WRITE;
 INSERT INTO `user_info` VALUES (1,'test',NULL,NULL);
 /*!40000 ALTER TABLE `user_info` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `weight`
+--
+
+DROP TABLE IF EXISTS `weight`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `weight` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
+  `year_id` int NOT NULL,
+  `detail_value` text COMMENT '"items": [{"date": "2023-06-28", "value": 52,  },{}]',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='体重记录，一年内变化为一条记录';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `weight`
+--
+
+LOCK TABLES `weight` WRITE;
+/*!40000 ALTER TABLE `weight` DISABLE KEYS */;
+INSERT INTO `weight` VALUES (1,1,2023,'{\"item\":[{\"date\":\"2023-06-05\",\"value\":52.3},{\"date\":\"2023-06-21\",\"value\":58.8}]}');
+/*!40000 ALTER TABLE `weight` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -144,4 +170,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-06-28 16:22:28
+-- Dump completed on 2023-06-28 17:28:24
