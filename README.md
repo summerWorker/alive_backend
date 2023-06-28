@@ -28,43 +28,40 @@ table：user，userAuth
 
 #### 1.1 **登录、注册**
 
-- [x] "/register/check_name"：
+- [x] **"/register/check_name"：**
 
   检查用户名是否重复 
 
+  ```javascript
   @RequestBody：  {username: 'xxx'}
+  ```
 
-- [ ] "/register/send_email_code"
+- [x] **"/register/send_email_code"**
 
   注册第一步：发送邮箱验证码
 
-  @RequestBody: 
-
-  {
-
-  ​    "username": "test",
-
-  ​    "password":"test",
-
-  ​    "email":"test@sjtu.edu.cn"
-
+  ```javascript
+@RequestBody: 
+  { 
+    "username": "test",
+      "password":"test",
+    "email":"test@sjtu.edu.cn"
   }
-
-  //TODO：邮箱发送信息（**目前默认验证码都是123456**）
-
-- [x] "/register"
+```
+  
+**TODO**：邮箱发送信息（**目前默认验证码都是123456**）
+  
+- [x] **"/register"**
 
   注册第二步：验证邮箱验证码
 
-  @RequestBody：
-
+  ```javascript
+@RequestBody：
   {
-
-  ​    "username": "test",
-
-  ​    "check_code":"123456"
-
-  }
+    "username": "test",
+      "check_code":"123456"
+}
+  ```
 
 #### 1.2 用户资料的增删改
 
@@ -78,23 +75,54 @@ table：user，userAuth
 
    3. **档案健康分析**
       1.    接口：`GetHealthCondition`,`GetHealthAdvice`
+   
 3. **饮食记录**服务：
    1. **记录饮食**情况（输入饮食种类），后端计算卡路里摄入量
    2.   接口：`AddMeal`
 
    3. **饮食情况分析**，用户查询饮食、卡路里摄入，健康建议，推荐食谱
       1.    接口：`GetMeal`,`GetCalorieIn`,`GetRecipe`,`GetRecipeAdvice`
+   
 4. **运动记录**服务：
    1. **记录运动**情况（输入类型），后端计算卡路里消耗量
       1.    接口：`AddSport`s
    2. **运动情况分析**，用户查询运动、卡路里消耗，健康建议
       1.    接口：`GetSports`,`GetCalorieOut`,`GetSportsAdvice`
+   
 5. **睡眠记录**服务：
-   1. **记录睡眠**情况：从手环、手机获取，手动输入
-   2.   接口：`AddSleep`
+   
+   - [x] **"/day_sleep"**
 
+     ​	当天睡眠详细数据
+   
+     ```java
+     @RequestBody
+     {
+     	"user_id": 1,
+      	"date":"2023-06-28"
+     }
+     
+     @Return
+     {
+         "awakePeriod": "",
+         "date": "2023-06-28",
+         "deepPeriod": "[8:02,9:40],[9:50,10:20]",
+         "dreamPeriod": "",
+         "healthRecordId": 1,
+         "id": 1,
+         "shallowPeriod": "[20:40],[5:54]",
+         "userId": 1,
+         "week": 3
+     }
+     ```
+   
+   - [ ] 
+   
+   1. **记录睡眠**情况：从手环、手机获取，手动输入
+   2. 接口：`AddSleep`
    3. **睡眠分析** ：查询睡眠、分析睡眠，健康建议
-   4.   接口：`GetSleepByDate`,`GetSleepAdvice`
+   4. 接口：`GetSleepByDate`,`GetSleepAdvice`
+   
 6. **数据分析**服务：所有的分析计算工作放在这里，别处的分析服务只是把数据发个这个接口
    1. **特定类别数据**分析：供其他微服务调用，获取数据+数据类型，返回分析建议。推荐行为。
    2.   接口：`GetAdvice`,`GetRecommend`

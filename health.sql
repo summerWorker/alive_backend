@@ -39,7 +39,7 @@ CREATE TABLE `main_record` (
   PRIMARY KEY (`record_id`),
   KEY `main_record_user_info_user_id_fk` (`user_id`),
   CONSTRAINT `main_record_user_info_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `user_info` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='健康档案数据，保持最新数据记录';
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='健康档案数据，保持最新数据记录';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -48,7 +48,39 @@ CREATE TABLE `main_record` (
 
 LOCK TABLES `main_record` WRITE;
 /*!40000 ALTER TABLE `main_record` DISABLE KEYS */;
+INSERT INTO `main_record` VALUES (1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2023-06-26 22:13:02',1);
 /*!40000 ALTER TABLE `main_record` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `sleep_detail`
+--
+
+DROP TABLE IF EXISTS `sleep_detail`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `sleep_detail` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL COMMENT '用户',
+  `health_record_id` int NOT NULL COMMENT '健康档案id',
+  `week` int NOT NULL COMMENT '周几',
+  `date` date NOT NULL,
+  `deep_period` varchar(255) DEFAULT NULL COMMENT '[8:00,9:13],[10:00,11:02]',
+  `shallow_period` varchar(255) DEFAULT NULL COMMENT '[8:00,9:13],[10:00,11:02]',
+  `awake_period` varchar(255) DEFAULT NULL COMMENT '[8:00,9:13],[10:00,11:02]',
+  `dream_period` varchar(255) DEFAULT NULL COMMENT '[8:00,9:13],[10:00,11:02]',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='睡眠的具体数据：深浅睡眠时间段';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `sleep_detail`
+--
+
+LOCK TABLES `sleep_detail` WRITE;
+/*!40000 ALTER TABLE `sleep_detail` DISABLE KEYS */;
+INSERT INTO `sleep_detail` VALUES (1,1,1,3,'2023-06-28','[8:02,9:40],[9:50,10:20]','[20:40],[5:54]',NULL,NULL);
+/*!40000 ALTER TABLE `sleep_detail` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -67,7 +99,7 @@ CREATE TABLE `user_auth` (
   `status` int DEFAULT NULL COMMENT '0：未用邮箱激活；1:正常',
   `code_update_time` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -76,6 +108,7 @@ CREATE TABLE `user_auth` (
 
 LOCK TABLES `user_auth` WRITE;
 /*!40000 ALTER TABLE `user_auth` DISABLE KEYS */;
+INSERT INTO `user_auth` VALUES (1,'test','test','test@','',1,'2023-06-26 22:12:58');
 /*!40000 ALTER TABLE `user_auth` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -87,7 +120,7 @@ DROP TABLE IF EXISTS `user_info`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `user_info` (
-  `user_id` int NOT NULL  COMMENT '用户id，不向用户展示',
+  `user_id` int NOT NULL COMMENT '用户id，不向用户展示',
   `nickname` varchar(255) NOT NULL COMMENT '用户昵称，可重复',
   `phone` varchar(255) DEFAULT NULL COMMENT '手机号',
   `gender` int DEFAULT NULL COMMENT '性别，可不填',
@@ -102,6 +135,7 @@ CREATE TABLE `user_info` (
 
 LOCK TABLES `user_info` WRITE;
 /*!40000 ALTER TABLE `user_info` DISABLE KEYS */;
+INSERT INTO `user_info` VALUES (1,'test',NULL,NULL);
 /*!40000 ALTER TABLE `user_info` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -114,4 +148,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-06-27 11:44:26
+-- Dump completed on 2023-06-28 10:20:43

@@ -192,7 +192,7 @@ public class UserAuthController {
         UserInfo userInfo = user_auth.getUserInfo();
         JSONObject jsonObject = JSONObject.fromObject(userInfo);
 
-        return MsgUtil.makeMsg(MsgUtil.SUCCESS, "登录成功", JSONObject.fromObject(jsonObject));
+        return MsgUtil.makeMsg(MsgUtil.SUCCESS, "登录成功",jsonObject);
     }
 
 }
