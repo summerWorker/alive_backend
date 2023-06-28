@@ -19,7 +19,11 @@ public class SleepDetailServiceImpl implements SleepDetailService {
     }
 
     @Override
-    public SleepDetail getDaySleepDetail(int userId, Date date) {
-        return sleepDetailDao.getSleepDetailByDate(userId, date);
+    public List<SleepDetail> getDaySleepDetail(int userId, Date date1, Date date2) {
+        return sleepDetailDao.getSleepDetailByDate(userId, date1, date2);
+    }
+    @Override
+    public SleepDetail saveSleepDetail(SleepDetail sleepDetail) {
+        return sleepDetailDao.saveSleepDetail(sleepDetail);
     }
 }

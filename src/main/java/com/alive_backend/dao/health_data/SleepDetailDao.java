@@ -7,5 +7,6 @@ import java.util.List;
 
 public interface SleepDetailDao {
     List<SleepDetail> getSleepDetailByUserId(int userId);
-    SleepDetail getSleepDetailByDate(int userId, Date date);
+    List<SleepDetail> getSleepDetailByDate(int userId, Date date,Date date2);
+    SleepDetail saveSleepDetail(SleepDetail sleepDetail);
 }

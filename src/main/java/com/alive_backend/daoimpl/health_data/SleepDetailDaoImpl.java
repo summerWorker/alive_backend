@@ -15,12 +15,21 @@ public class SleepDetailDaoImpl implements SleepDetailDao {
     private SleepDetailRepository sleepDetailRepository;
 
     @Override
-    public SleepDetail getSleepDetailByDate(int userId, Date date) {
-        return sleepDetailRepository.findByUserIdAndDate(userId, date);
+    public List<SleepDetail> getSleepDetailByDate(int userId, Date date1, Date date2) {
+        return sleepDetailRepository.findByUserIdAndDateBetween(userId, date1, date2);
     }
     @Override
     public List<SleepDetail> getSleepDetailByUserId(int userId) {
         return sleepDetailRepository.findByUserId(userId);
     }
 
+    @Override
+    public SleepDetail saveSleepDetail(SleepDetail sleepDetail) {
+        try {
+            return sleepDetailRepository.save(sleepDetail);
+        } catch (Exception e) {
+            System.out.println(e);
+            return null;
+        }
+    }
 }

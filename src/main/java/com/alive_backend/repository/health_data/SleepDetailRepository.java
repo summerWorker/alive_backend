@@ -10,5 +10,5 @@ import java.util.List;
 @Repository
 public interface SleepDetailRepository extends JpaRepository<SleepDetail, Integer> {
     List<SleepDetail> findByUserId(int id);
-    SleepDetail findByUserIdAndDate(int userId, Date date);
+    List<SleepDetail> findByUserIdAndDateBetween(int id,Date date1,Date date2);
 }

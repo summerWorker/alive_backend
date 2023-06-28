@@ -9,6 +9,14 @@
 
 在src\main\resources中的`application.properties`修改数据库信息
 
+
+
+
+
+## 数据库具体字段
+
+<img src="./health.png">
+
 ---
 
 ## 返回值
@@ -47,6 +55,7 @@ table：user，userAuth
       "password":"test",
     "email":"test@sjtu.edu.cn"
   }
+  ```
 ```
   
 **TODO**：邮箱发送信息（**目前默认验证码都是123456**）
@@ -61,7 +70,7 @@ table：user，userAuth
     "username": "test",
       "check_code":"123456"
 }
-  ```
+```
 
 #### 1.2 用户资料的增删改
 
@@ -90,59 +99,61 @@ table：user，userAuth
       1.    接口：`GetSports`,`GetCalorieOut`,`GetSportsAdvice`
    
 5. **睡眠记录**服务：
-   
+  
    - [x] **"/day_sleep"**
 
      ​	当天睡眠详细数据
    
-     ```java
-     @RequestBody
-     {
-     	"user_id": 1,
-      	"date":"2023-06-28"
-     }
+     ​	bedtime位于：20：00 - 8：00的算作当天（20：00那天）
      
-     @Return
+     ```java
+     @Reques： 
      {
-         "status": 1,
-         "msg": "成功！",
-         "data": {
-             "awakePeriod": "",
-             "date": "2023-06-28",
-             "deepPeriod": "[8:02,9:40],[9:50,10:20]",
-             "dreamPeriod": "",
-             "healthRecordId": 1,
-             "id": 1,
-             "shallowPeriod": "[20:40],[5:54]",
-             "userId": 1,
-             "week": 3
+         "user_id": 1,
+         "start_date":"2023-05-28",
+         "end_date":"2023-06-29"
+     }
+         
+         @Return
+         {
+             "status": 1,
+             "msg": "成功！",
+             "data": {
+                 "sleep_detail": [
+                     {
+                         "date": "2023-06-22",
+                         "detailValue": {
+                             "awake_count": 0,
+                             "sleep_awake_duration": 0,
+                             "bedtime": 1687365360,
+                         "sleep_deep_duration": 88,
+                         "sleep_light_duration": 335,
+                         "sleep_rem_duration": 88,
+                         "duration": 511,
+                         "items": [
+                             {
+                                 "end_time": 1687366140,
+                                 "state": 3,
+                                 "start_time": 1687365360
+                             },
+                             /* ... */
+                         ],
+                         "date_time": 1687392000,
+                         "timezone": 32,
+                         "wake_up_time": 1687396020
+                     },
+                     "id": 1,
+                     "length": 712,
+                     "userId": 1
+                 },
+                 {
+                     "date": "2023-06-22",
+                     /* ... */
+                 }
+             ]
          }
      }
      ```
-   
-   - [x] **"/week_sleep"**
-   
-   ```javascript
-   @RequestBody
-   {
-   	"user_id": 1
-   }
-   @Return
-   {
-       "status": 1,
-       "msg": "成功！",
-       "data": {
-           "weekSleep": [
-               {
-                   // 格式同day_sleep
-               },
-               {
-                   // 格式同day_sleep
-               }
-           ]
-       }
-   }
-   ```
    
    
    
