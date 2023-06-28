@@ -104,19 +104,47 @@ table：user，userAuth
      
      @Return
      {
-         "awakePeriod": "",
-         "date": "2023-06-28",
-         "deepPeriod": "[8:02,9:40],[9:50,10:20]",
-         "dreamPeriod": "",
-         "healthRecordId": 1,
-         "id": 1,
-         "shallowPeriod": "[20:40],[5:54]",
-         "userId": 1,
-         "week": 3
+         "status": 1,
+         "msg": "成功！",
+         "data": {
+             "awakePeriod": "",
+             "date": "2023-06-28",
+             "deepPeriod": "[8:02,9:40],[9:50,10:20]",
+             "dreamPeriod": "",
+             "healthRecordId": 1,
+             "id": 1,
+             "shallowPeriod": "[20:40],[5:54]",
+             "userId": 1,
+             "week": 3
+         }
      }
      ```
    
-   - [ ] 
+   - [x] **"/week_sleep"**
+   
+   ```javascript
+   @RequestBody
+   {
+   	"user_id": 1
+   }
+   @Return
+   {
+       "status": 1,
+       "msg": "成功！",
+       "data": {
+           "weekSleep": [
+               {
+                   // 格式同day_sleep
+               },
+               {
+                   // 格式同day_sleep
+               }
+           ]
+       }
+   }
+   ```
+   
+   
    
    1. **记录睡眠**情况：从手环、手机获取，手动输入
    2. 接口：`AddSleep`

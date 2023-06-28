@@ -7,6 +7,7 @@ import com.alive_backend.utils.constant.Constant;
 import com.alive_backend.utils.constant.UserConstant;
 import com.alive_backend.utils.msg.Msg;
 import com.alive_backend.utils.msg.MsgUtil;
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.sql.Date;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -46,6 +48,26 @@ public class SleepController {
         System.out.println(date);
         CustomJsonConfig jsonConfig = new CustomJsonConfig();
         return MsgUtil.makeMsg(MsgUtil.SUCCESS, MsgUtil.SUCCESS_MSG, JSONObject.fromObject(sleepDetail,jsonConfig));
+
+    }
+    /*
+    * @Brief: 获取一周的睡眠数据(详细)
+    * */
+    @PostMapping("/week_sleep")
+    public Msg getWeekSleep(@RequestBody Map<String,Object> data) {
+        /* 检验参数合法性 */
+        Object id_ = data.get(UserConstant.USER_ID);
+        if (id_ == null ) {
+            return MsgUtil.makeMsg(MsgUtil.ARG_ERROR, "传参错误：{user_id: 0}", null);
+        }
+
+        int id= (int) id_;
+        List<SleepDetail> sleepDetail = sleepDetailService.getWeekSleepDetail(id);
+        CustomJsonConfig jsonConfig = new CustomJsonConfig();
+        Object jsonArray = JSONArray.fromObject(sleepDetail,jsonConfig);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("weekSleep", jsonArray);
+        return MsgUtil.makeMsg(MsgUtil.SUCCESS, MsgUtil.SUCCESS_MSG,jsonObject);
 
     }
 }
