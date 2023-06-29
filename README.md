@@ -40,7 +40,7 @@ table：user，userAuth
 
   检查用户名是否重复 
 
-  ```javascript
+  ```json
   @RequestBody：  {username: 'xxx'}
   ```
 
@@ -48,19 +48,20 @@ table：user，userAuth
 
   注册第一步：发送邮箱验证码
 
-  ```javascript
+  ```json
 @RequestBody: 
   { 
-    "username": "test",
-      "password":"test",
-    "email":"test@sjtu.edu.cn"
+    	"username": "test",
+      	"password":"test",
+  	"email":"test@sjtu.edu.cn"
   }
   ```
 
 
 
-
 ​	**TODO**：邮箱发送信息（**目前默认验证码都是123456**）
+
+
 
 - [x] **"/register"**
 
@@ -168,7 +169,7 @@ table：user，userAuth
      ​	bedtime位于：20：00 - 8：00的算作当天（20：00那天）
      
      ```json
-     @Reques： 
+     @RequestBody： 
      {
          "user_id": 1,
          "start_date":"2023-05-28",
