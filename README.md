@@ -56,21 +56,25 @@ table：user，userAuth
     "email":"test@sjtu.edu.cn"
   }
   ```
-```
-  
-**TODO**：邮箱发送信息（**目前默认验证码都是123456**）
-  
+
+
+
+
+​	**TODO**：邮箱发送信息（**目前默认验证码都是123456**）
+
 - [x] **"/register"**
 
   注册第二步：验证邮箱验证码
-
-  ```javascript
-@RequestBody：
-  {
-    "username": "test",
-      "check_code":"123456"
-}
-```
+  
+  ```json
+  @RequestBody：
+    {
+      "username": "test",
+        "check_code":"123456"
+  }
+  ```
+  
+  
 
 #### 1.2 用户资料的增删改
 
@@ -79,34 +83,91 @@ table：user，userAuth
 1. > table：latest_record、weight、pressure、sleep.....
 
 2. **健康档案**服务：
+  
    1. 个人健康档案的**创建、更新、查询**
-   2.   接口：`ModifyRecord` , `GetRecord`, `GetRecordByDate`
-
+2.   接口：`ModifyRecord` , `GetRecord`, `GetRecordByDate`
+  
    3. **档案健康分析**
       1.    接口：`GetHealthCondition`,`GetHealthAdvice`
    
-3. **饮食记录**服务：
+3. **体重**记录
+  
+   - [x] **"/weight"**
+
+     获取一段时间内的体重
+   
+     ```json
+     @RequestBody
+     {
+         "user_id": 1,
+         "start_date":"2023-06-10",
+         "end_date":"2023-06-29"
+     }
+     
+     @Return
+     {
+         "status": 1,
+         "msg": "成功！",
+         "data": {
+             "weight": [
+                 {
+                     "detailValue": {
+                         "item": [
+                             {
+                                 "date": "2023-06-21",
+                                 "value": 58.8
+                             }
+                         ]
+                     },
+                     "id": 1,
+                     "userId": 1,
+                     "yearId": 2023
+                 }
+             ]
+         }
+     }
+     ```
+   
+   - [ ] **"/add_weight"**
+   
+     增加体重记录，一天内重复数据**覆盖**
+   
+     ``` json
+     @RequestBody
+     {
+         "user_id": 1,
+         "date":"2023-06-10",
+         "weight":59.1
+     }
+     @Return
+     // TODO
+     ```
+   
+     
+   
+4. **饮食记录**服务：
+
    1. **记录饮食**情况（输入饮食种类），后端计算卡路里摄入量
    2.   接口：`AddMeal`
 
    3. **饮食情况分析**，用户查询饮食、卡路里摄入，健康建议，推荐食谱
       1.    接口：`GetMeal`,`GetCalorieIn`,`GetRecipe`,`GetRecipeAdvice`
-   
-4. **运动记录**服务：
+
+5. **运动记录**服务：
    1. **记录运动**情况（输入类型），后端计算卡路里消耗量
       1.    接口：`AddSport`s
    2. **运动情况分析**，用户查询运动、卡路里消耗，健康建议
       1.    接口：`GetSports`,`GetCalorieOut`,`GetSportsAdvice`
-   
-5. **睡眠记录**服务：
-  
+
+6. **睡眠记录**服务：
+
    - [x] **"/day_sleep"**
 
      ​	当天睡眠详细数据
-   
+
      ​	bedtime位于：20：00 - 8：00的算作当天（20：00那天）
      
-     ```java
+     ```json
      @Reques： 
      {
          "user_id": 1,
@@ -154,15 +215,15 @@ table：user，userAuth
          }
      }
      ```
+
    
-   
-   
+
    1. **记录睡眠**情况：从手环、手机获取，手动输入
    2. 接口：`AddSleep`
    3. **睡眠分析** ：查询睡眠、分析睡眠，健康建议
    4. 接口：`GetSleepByDate`,`GetSleepAdvice`
-   
-6. **数据分析**服务：所有的分析计算工作放在这里，别处的分析服务只是把数据发个这个接口
+
+7. **数据分析**服务：所有的分析计算工作放在这里，别处的分析服务只是把数据发个这个接口
    1. **特定类别数据**分析：供其他微服务调用，获取数据+数据类型，返回分析建议。推荐行为。
    2.   接口：`GetAdvice`,`GetRecommend`
 
