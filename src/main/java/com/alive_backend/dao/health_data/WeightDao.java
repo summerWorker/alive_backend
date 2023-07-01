@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface WeightDao {
     Weight getWeightByYear(int id, int year);
+    Weight addWeight(Weight weight);
 }

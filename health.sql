@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 8.0.32, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.33, for macos13 (arm64)
 --
 -- Host: 127.0.0.1    Database: health
 -- ------------------------------------------------------
--- Server version	8.0.32
+-- Server version	8.0.33
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -148,7 +148,7 @@ CREATE TABLE `weight` (
   `year_id` int NOT NULL,
   `detail_value` text COMMENT '"items": [{"date": "2023-06-28", "value": 52,  },{}]',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='体重记录，一年内变化为一条记录';
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='体重记录，一年内变化为一条记录';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -157,7 +157,7 @@ CREATE TABLE `weight` (
 
 LOCK TABLES `weight` WRITE;
 /*!40000 ALTER TABLE `weight` DISABLE KEYS */;
-INSERT INTO `weight` VALUES (1,1,2023,'{\"item\":[{\"date\":\"2023-06-05\",\"value\":52.3},{\"date\":\"2023-06-21\",\"value\":58.8}]}');
+INSERT INTO `weight` VALUES (1,1,2023,'{\"items\":[{\"date\":\"2023-06-10\",\"value\":59.1},{\"date\":\"2023-07-10\",\"value\":56}]}'),(2,1,2022,'{\"items\":[{\"date\":\"2022-06-10\",\"weight\":59.1}]}');
 /*!40000 ALTER TABLE `weight` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -170,4 +170,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-06-29  9:07:59
+-- Dump completed on 2023-07-01 14:46:24

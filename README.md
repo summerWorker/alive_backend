@@ -49,7 +49,7 @@ table：user，userAuth
   注册第一步：发送邮箱验证码
 
   ```json
-@RequestBody: 
+  @RequestBody: 
   { 
     	"username": "test",
       	"password":"test",
@@ -97,11 +97,13 @@ table：user，userAuth
 
      获取一段时间内的体重
    
+     weight为jsonArray，其中一条detailValue记录一年的，每一天的在items中。
+   
      ```json
      @RequestBody
      {
          "user_id": 1,
-         "start_date":"2023-06-10",
+         "start_date":"2022-06-10",
          "end_date":"2023-06-29"
      }
      
@@ -113,10 +115,10 @@ table：user，userAuth
              "weight": [
                  {
                      "detailValue": {
-                         "item": [
+                         "items": [
                              {
-                                 "date": "2023-06-21",
-                                 "value": 58.8
+                                 "date": "2023-06-10",
+                                 "value": 59.1
                              }
                          ]
                      },
@@ -129,7 +131,7 @@ table：user，userAuth
      }
      ```
    
-   - [ ] **"/add_weight"**
+   - [x] **"/add_weight"**
    
      增加体重记录，一天内重复数据**覆盖**
    
@@ -141,9 +143,18 @@ table：user，userAuth
          "weight":59.1
      }
      @Return
-     // TODO
+     {
+         "status": 1,
+         "msg": "成功！",
+         "data": {
+             "detailValue": "{\"items\":[{\"date\":\"2023-06-10\",\"value\":59.1},{\"date\":\"2023-07-10\",\"value\":56}]}",
+             "id": 1,
+             "userId": 1,
+             "yearId": 2023
+         }
+     }
      ```
-   
+     
      
    
 4. **饮食记录**服务：

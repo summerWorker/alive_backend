@@ -30,15 +30,17 @@ public class WeightServiceImpl implements WeightService {
 
         for (int i = year1; i <= year2; i++) {
             Weight weight = weightDao.getWeightByYear(id, i);
-            weightList.add(weight);
+            if(weight!=null)
+                weightList.add(weight);
         }
+        List<Weight> updatedWeightList = new ArrayList<>();
         for(Weight weight:weightList){
             if(weight==null)
                 continue;
             JSONObject jsonObject = JSONObject.fromObject(weight.getDetailValue());
             System.out.println(jsonObject);
-            System.out.println(jsonObject.get("item"));
-            JSONArray jsonArray = JSONArray.fromObject(jsonObject.get("item"));
+            System.out.println(jsonObject.get("items"));
+            JSONArray jsonArray = JSONArray.fromObject(jsonObject.get("items"));
             JSONArray updatedJsonArray = new JSONArray();
             for(int i=0;i<jsonArray.size();i++){
                 JSONObject jsonObject1 = jsonArray.getJSONObject(i);
@@ -47,10 +49,20 @@ public class WeightServiceImpl implements WeightService {
                 if(date_.compareTo(date1)>=0 && date_.compareTo(date2)<=0)
                     updatedJsonArray.add(jsonObject1);
             }
-            jsonObject.put("item",updatedJsonArray);
+            jsonObject.put("items",updatedJsonArray);
             weight.setDetailValue(jsonObject.toString());
+            if (updatedJsonArray.size() > 0)
+                updatedWeightList.add(weight);
         }
-        return weightList;
+        return updatedWeightList;
+    }
+    @Override
+    public Weight getWeightByYear(int id, int year) {
+        return weightDao.getWeightByYear(id, year);
+    }
+    @Override
+    public Weight addWeight(Weight weight) {
+        return weightDao.addWeight(weight);
     }
 
 }

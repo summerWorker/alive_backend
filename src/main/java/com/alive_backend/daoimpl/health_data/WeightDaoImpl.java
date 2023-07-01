@@ -17,4 +17,8 @@ public class WeightDaoImpl implements WeightDao {
         return weightRepository.findByUserIdAndYearId(id,year);
     }
 
+    @Override
+    public Weight addWeight(Weight weight) {
+        return weightRepository.save(weight);
+    }
 }
