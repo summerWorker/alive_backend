@@ -2,8 +2,10 @@ package com.alive_backend.utils.msg;
 
 import net.sf.json.JSONObject;
 
+import java.io.Serializable;
 
-public class Msg {
+
+public class Msg implements Serializable {
     private int status;
     private String msg;
     private JSONObject data;

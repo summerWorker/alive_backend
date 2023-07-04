@@ -10,6 +10,8 @@ import net.sf.json.JSON;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,6 +27,7 @@ public class WeightController {
     private WeightService weightService;
 
     @PostMapping("/weight")
+    @Cacheable(value = "weightCache", key = "#data.get('user_id')+ '_' + #data.get('start_date') + '_' +#data.get('end_date')")
     public Msg getWeight(@RequestBody Map<String, Object> data) {
         /* 检验参数合法性 */
         Object id_ = data.get(UserConstant.USER_ID);
@@ -49,7 +52,10 @@ public class WeightController {
         jsonObject.put("weight", jsonArray);
         return MsgUtil.makeMsg(MsgUtil.SUCCESS, MsgUtil.SUCCESS_MSG, jsonObject);
     }
+
+
     @PostMapping("/add_weight")
+    @CacheEvict(value = "weightCache", allEntries = true)
     public Msg AddWeight(@RequestBody Map<String,Object> data) {
         /* 检验参数合法性 */
         Object id_ = data.get(UserConstant.USER_ID);

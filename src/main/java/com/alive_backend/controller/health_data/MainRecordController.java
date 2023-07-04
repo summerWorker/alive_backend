@@ -7,6 +7,7 @@ import com.alive_backend.utils.msg.Msg;
 import com.alive_backend.utils.msg.MsgUtil;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,6 +20,7 @@ public class MainRecordController {
     private MainRecordService mainRecordService;
 
     @GetMapping("/main_record")
+    @Cacheable(value = "mainRecordCache", key = "#data.get('user_id')")
     public Msg getMainRecordByUserId(@RequestBody Map<String,Object> data) {
         /* 检验参数合法性 */
         Object id_ = data.get(UserConstant.USER_ID);
