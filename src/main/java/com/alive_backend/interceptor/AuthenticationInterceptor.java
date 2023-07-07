@@ -12,6 +12,7 @@ import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import net.bytebuddy.implementation.auxiliary.AuxiliaryType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -32,7 +33,9 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
     @Autowired
     TokenService tokenService;
 
-    private static final String SECRET_KEY = "your_secret_key";
+//    private static final String SECRET_KEY = "your_secret_key";
+    @Autowired
+    private RedisTemplate redisTemplate;
 
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object object) throws Exception {
@@ -77,6 +80,11 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
                 // check if token expire
                 if(jwtVerifier.verify(token).getExpiresAt().before(new java.util.Date())){
                     throw new RuntimeException("token expired");
+                }
+
+                //search redis to check if token in blacklist
+                if(redisTemplate.opsForValue().get("jwt_" + token) != null){
+                    throw new RuntimeException("token xxx expired");
                 }
 
                 try {

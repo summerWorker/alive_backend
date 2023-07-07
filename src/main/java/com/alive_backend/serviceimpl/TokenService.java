@@ -24,8 +24,6 @@ public class TokenService {
                 .sign(Algorithm.HMAC256(user.getUsername() + user.getPassword()));
 
         return token;
-//        token= JWT.create().withAudience(String.valueOf(user.getUserId()))// 将 user id 保存到 token 里面
-//                .sign(Algorithm.HMAC256(user.getPassword()));// 以 password 作为 token 的密钥
     }
 
     public int getUserIdFromToken(String token) {
@@ -33,10 +31,10 @@ public class TokenService {
         int id = jwt.getClaim("user_id").asInt();
         return id;
     }
-//
-//    public String getUsernameFromToken(String token) {
-//        DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC256(SECRET_KEY)).build().verify(token);
-//        String username = decodedJWT.getClaim("username").asString();
-//        return username;
-//    }
+
+    public long getExpireTime(String token) {
+        DecodedJWT jwt = JWT.decode(token);
+        Date expireTime = jwt.getExpiresAt();
+        return expireTime.getTime();
+    }
 }
