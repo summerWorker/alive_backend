@@ -1,11 +1,17 @@
 package com.alive_backend.controller.health_data;
 
+import antlr.Token;
+import com.alive_backend.annotation.UserLoginToken;
 import com.alive_backend.entity.health_data.Weight;
 import com.alive_backend.service.health_data.WeightService;
+import com.alive_backend.serviceimpl.TokenService;
 import com.alive_backend.utils.constant.Constant;
 import com.alive_backend.utils.constant.UserConstant;
 import com.alive_backend.utils.msg.Msg;
 import com.alive_backend.utils.msg.MsgUtil;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.interfaces.DecodedJWT;
+import net.bytebuddy.implementation.auxiliary.AuxiliaryType;
 import net.sf.json.JSON;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -16,6 +22,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import java.sql.Date;
 import java.util.Calendar;
 import java.util.List;
@@ -26,21 +33,27 @@ public class WeightController {
     @Autowired
     private WeightService weightService;
 
+    @Autowired
+    private TokenService tokenService;
+
     @PostMapping("/weight")
+    @UserLoginToken
     @Cacheable(value = "weightCache", key = "#data.get('user_id')+ '_' + #data.get('start_date') + '_' +#data.get('end_date')")
-    public Msg getWeight(@RequestBody Map<String, Object> data) {
+    public Msg getWeight(@RequestBody Map<String, Object> data, HttpServletRequest httpServletRequest) {
+        String token = httpServletRequest.getHeader("token");
+        int id = tokenService.getUserIdFromToken(token);
+
         /* 检验参数合法性 */
-        Object id_ = data.get(UserConstant.USER_ID);
+//        Object id_ = data.get(UserConstant.USER_ID);
         Object date1_ = data.get(Constant.START_DATE);
         Object date2_ = data.get(Constant.END_DATE);
-        if (id_ == null || date1_ == null || date2_ == null) {
+        if (date1_ == null || date2_ == null) {
             return MsgUtil.makeMsg(MsgUtil.ARG_ERROR, "传参错误{user_id:1, start_date:2023-04-01, end_date:2023-06-06}", null);
         }
 
-        int id;
+//        int id;
         Date date1, date2;
         try {
-            id = (int) id_;
             date1 = Date.valueOf((String) date1_);
             date2 = Date.valueOf((String) date2_);
         } catch (Exception e) {
@@ -55,18 +68,20 @@ public class WeightController {
 
 
     @PostMapping("/add_weight")
+    @UserLoginToken
     @CacheEvict(value = "weightCache", allEntries = true)
-    public Msg AddWeight(@RequestBody Map<String,Object> data) {
+    public Msg AddWeight(@RequestBody Map<String,Object> data, HttpServletRequest httpServletRequest) {
+        String token = httpServletRequest.getHeader("token");
+        int id = tokenService.getUserIdFromToken(token);
         /* 检验参数合法性 */
-        Object id_ = data.get(UserConstant.USER_ID);
+//        Object id_ = data.get(UserConstant.USER_ID);
         Object date_ = data.get(Constant.DATE);
         Object weight_ = data.get(Constant.WEIGHT);
-        if (id_ == null || date_ == null || weight_ == null) {
+        if (date_ == null || weight_ == null) {
             return MsgUtil.makeMsg(MsgUtil.ARG_ERROR, "传参错误{user_id:1, date:2023-04-01, weight:60}", null);
         }
-        int id,year; Date date; double weight;
+        int year; Date date; double weight;
         try {
-            id = (int) id_;
             date = Date.valueOf((String) date_);
             weight = ((Integer) weight_).doubleValue();
             Calendar c = Calendar.getInstance();

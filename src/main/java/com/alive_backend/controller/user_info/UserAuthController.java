@@ -1,11 +1,13 @@
 package com.alive_backend.controller.user_info;
 
+import com.alive_backend.annotation.UserLoginToken;
 import com.alive_backend.entity.health_data.MainRecord;
 import com.alive_backend.entity.user_info.UserAuth;
 import com.alive_backend.entity.user_info.UserInfo;
 import com.alive_backend.service.health_data.MainRecordService;
 import com.alive_backend.service.user_info.UserAuthService;
 import com.alive_backend.service.user_info.UserInfoService;
+import com.alive_backend.serviceimpl.TokenService;
 import com.alive_backend.serviceimpl.mail.MailService;
 import com.alive_backend.utils.constant.UserConstant;
 import com.alive_backend.utils.msg.Msg;
@@ -35,6 +37,9 @@ public class UserAuthController {
 
     @Autowired
     private MailService mailService;
+
+    @Autowired
+    private TokenService tokenService;
 
     @PostMapping("/getCheckCode")
     @ResponseBody
@@ -277,9 +282,14 @@ public class UserAuthController {
         if (!user_auth.getPassword().equals(password)) {
             return MsgUtil.makeMsg(MsgUtil.ERROR, "密码错误", null);
         }
+
+        String token = tokenService.getToken(user_auth);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("token", token);
+
         System.out.println(user_auth.getUserInfo());
         UserInfo userInfo = user_auth.getUserInfo();
-        JSONObject jsonObject = JSONObject.fromObject(userInfo);
+        jsonObject.put("userInfo", userInfo);
 
         return MsgUtil.makeMsg(MsgUtil.SUCCESS, "登录成功",jsonObject);
     }
