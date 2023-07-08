@@ -1,8 +1,10 @@
 package com.alive_backend.entity.health_data;
 
-import javax.persistence.*;
-import java.util.Objects;
+import lombok.AllArgsConstructor;
 
+import javax.persistence.*;
+import java.sql.Date;
+import java.util.Objects;
 @Entity
 public class Weight {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,6 +20,16 @@ public class Weight {
     @Basic
     @Column(name = "detail_value")
     private String detailValue;
+
+    public Weight() {
+
+    }
+
+    public Weight(int i, int year, String s) {
+        this.userId = i;
+        this.yearId = year;
+        this.detailValue = s;
+    }
 
     public int getId() {
         return id;

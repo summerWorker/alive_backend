@@ -21,40 +21,45 @@ public class WeightServiceImpl implements WeightService {
 
     @Override
     public List<Weight> getWeight(int id, Date date1, Date date2) {
-        List<Weight> weightList = new ArrayList<>();
-        Calendar c = Calendar.getInstance();
-        c.setTime(date1);
-        int year1 = c.get(Calendar.YEAR);
-        c.setTime(date2);
-        int year2 = c.get(Calendar.YEAR);
+        try {
+            List<Weight> weightList = new ArrayList<>();
+            Calendar c = Calendar.getInstance();
+            c.setTime(date1);
+            int year1 = c.get(Calendar.YEAR);
+            c.setTime(date2);
+            int year2 = c.get(Calendar.YEAR);
 
-        for (int i = year1; i <= year2; i++) {
-            Weight weight = weightDao.getWeightByYear(id, i);
-            if(weight!=null)
-                weightList.add(weight);
-        }
-        List<Weight> updatedWeightList = new ArrayList<>();
-        for(Weight weight:weightList){
-            if(weight==null)
-                continue;
-            JSONObject jsonObject = JSONObject.fromObject(weight.getDetailValue());
-            System.out.println(jsonObject);
-            System.out.println(jsonObject.get("items"));
-            JSONArray jsonArray = JSONArray.fromObject(jsonObject.get("items"));
-            JSONArray updatedJsonArray = new JSONArray();
-            for(int i=0;i<jsonArray.size();i++){
-                JSONObject jsonObject1 = jsonArray.getJSONObject(i);
-                String date = jsonObject1.getString("date");
-                Date date_ = Date.valueOf(date);
-                if(date_.compareTo(date1)>=0 && date_.compareTo(date2)<=0)
-                    updatedJsonArray.add(jsonObject1);
+            for (int i = year1; i <= year2; i++) {
+                Weight weight = weightDao.getWeightByYear(id, i);
+                if(weight!=null)
+                    weightList.add(weight);
             }
-            jsonObject.put("items",updatedJsonArray);
-            weight.setDetailValue(jsonObject.toString());
-            if (updatedJsonArray.size() > 0)
-                updatedWeightList.add(weight);
+            List<Weight> updatedWeightList = new ArrayList<>();
+            for(Weight weight:weightList){
+                if(weight==null)
+                    continue;
+                JSONObject jsonObject = JSONObject.fromObject(weight.getDetailValue());
+                System.out.println(jsonObject);
+                System.out.println(jsonObject.get("items"));
+                JSONArray jsonArray = JSONArray.fromObject(jsonObject.get("items"));
+                JSONArray updatedJsonArray = new JSONArray();
+                for(int i=0;i<jsonArray.size();i++){
+                    JSONObject jsonObject1 = jsonArray.getJSONObject(i);
+                    String date = jsonObject1.getString("date");
+                    Date date_ = Date.valueOf(date);
+                    if(date_.compareTo(date1)>=0 && date_.compareTo(date2)<=0)
+                        updatedJsonArray.add(jsonObject1);
+                }
+                jsonObject.put("items",updatedJsonArray);
+                weight.setDetailValue(jsonObject.toString());
+                if (updatedJsonArray.size() > 0)
+                    updatedWeightList.add(weight);
+            }
+            return updatedWeightList;
+        }catch (Exception e) {
+//            e.printStackTrace();
+            return null;
         }
-        return updatedWeightList;
     }
     @Override
     public Weight getWeightByYear(int id, int year) {
