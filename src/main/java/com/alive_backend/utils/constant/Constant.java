@@ -6,4 +6,5 @@ public class Constant {
     public static final String END_DATE = "end_date";
     public static final String AVERAGE = "average";
     public static final String WEIGHT = "weight";
+    public static final String HEIGHT = "height";
 }

@@ -1,10 +1,5 @@
 # README
 
-后端架构设计：
-[‍‬⁡‍⁣⁣⁢‬‌‍﻿‬﻿⁤⁢⁣⁡⁢‍‌﻿⁢⁡‌⁢⁣⁣‍⁣‬⁤﻿⁤﻿⁣⁤‬⁢﻿后端微服务架构设计 - 飞书云文档 (feishu.cn)](https://sjtu.feishu.cn/docx/PPTwdXZ8jozgVXxBNkUcdLkHnff)
-
-
-
 数据库名：health
 
 在src\main\resources中的`application.properties`修改数据库信息
@@ -86,6 +81,7 @@ table：user，userAuth
 2. **健康档案**服务：
   
    1. 个人健康档案的**创建、更新、查询**
+   
 2.   接口：`ModifyRecord` , `GetRecord`, `GetRecordByDate`
   
    3. **档案健康分析**
@@ -155,8 +151,92 @@ table：user，userAuth
      }
      ```
      
-     
    
+   
+   
+5. 身高记录：
+
+   - [x] **"/height"**
+
+     获取某人某天身高
+
+     ```java
+     @RequestBody
+     {
+         "user_id": 1,
+         "date":"2023-07-10",
+     }
+     @Return
+     {
+         "status": 1,
+         "msg": "成功！",
+         "data": {
+             "date": "2023-07-10",
+             "height": 1.78,
+             "userId": 1
+         }
+     }
+
+   - [x] **"/user_height"**
+
+     获取某人所有身高记录
+
+     ```java
+     @RequestBody
+     {
+         "user_id": 1,
+     }
+     @Return
+     {
+         "status": 1,
+         "msg": "成功！",
+         "data": {
+             "heights": [
+                 {
+                     "date": "2022-07-08",
+                     "height": 1.72,
+                     "userId": 1
+                 },
+                 {
+                     "date": "2023-07-08",
+                     "height": 1.78,
+                     "userId": 1
+                 },
+                 {
+                     "date": "2023-07-10",
+                     "height": 1.78,
+                     "userId": 1
+                 }
+             ]
+         }
+     }
+     ```
+
+   - [x] **"/add_height"**
+
+     增加体重：同日覆盖
+
+     ```java
+     @RequestBody
+     {
+         "user_id": 1,
+         "date":"2023-07-10",
+         "height":1.79
+     }
+     @Return
+     {
+         "status": 1,
+         "msg": "添加成功",
+         "data": {
+             "date": "2023-07-10",
+             "height": 1.79,
+             "userId": 1
+         }
+     }
+     ```
+
+     
+
 4. **饮食记录**服务：
 
    1. **记录饮食**情况（输入饮食种类），后端计算卡路里摄入量
@@ -187,44 +267,44 @@ table：user，userAuth
          "end_date":"2023-06-29"
      }
          
-         @Return
-         {
-             "status": 1,
-             "msg": "成功！",
-             "data": {
-                 "sleep_detail": [
-                     {
-                         "date": "2023-06-22",
-                         "detailValue": {
-                             "awake_count": 0,
-                             "sleep_awake_duration": 0,
-                             "bedtime": 1687365360,
-                         "sleep_deep_duration": 88,
-                         "sleep_light_duration": 335,
-                         "sleep_rem_duration": 88,
-                         "duration": 511,
-                         "items": [
-                             {
-                                 "end_time": 1687366140,
-                                 "state": 3,
-                                 "start_time": 1687365360
-                             },
-                             /* ... */
-                         ],
-                         "date_time": 1687392000,
-                         "timezone": 32,
-                         "wake_up_time": 1687396020
-                     },
-                     "id": 1,
-                     "length": 712,
-                     "userId": 1
-                 },
+     @Return
+     {
+       "status": 1,
+       "msg": "成功！",
+       "data": {
+         "sleep_detail": [
+           {
+             "date": "2023-06-22",
+             "detailValue": {
+               "awake_count": 0,
+               "sleep_awake_duration": 0,
+               "bedtime": 1687365360,
+               "sleep_deep_duration": 88,
+               "sleep_light_duration": 335,
+               "sleep_rem_duration": 88,
+               "duration": 511,
+               "items": [
                  {
-                     "date": "2023-06-22",
-                     /* ... */
-                 }
-             ]
-         }
+                   "end_time": 1687366140,
+                   "state": 3,
+                   "start_time": 1687365360
+                 },
+                 /* ... */
+               ],
+               "date_time": 1687392000,
+               "timezone": 32,
+               "wake_up_time": 1687396020
+             },
+             "id": 1,
+             "length": 712,
+             "userId": 1
+           },
+           {
+             "date": "2023-06-22",
+             /* ... */
+           }
+         ]
+       }
      }
      ```
 
@@ -238,6 +318,29 @@ table：user，userAuth
 7. **数据分析**服务：所有的分析计算工作放在这里，别处的分析服务只是把数据发个这个接口
    1. **特定类别数据**分析：供其他微服务调用，获取数据+数据类型，返回分析建议。推荐行为。
    2.   接口：`GetAdvice`,`GetRecommend`
+   
+   - [x] **"/bmi"**
+   
+     分析BMI
+   
+     ```java
+     @RequestBody： 
+     {
+         "user_id": 1,
+     }
+     @Return
+     {
+         "status": 1,
+         "msg": "成功！",
+         "data": {
+             "bmi": 32.488628979857054,
+             "analysis": "肥胖",
+             "advice": "您的体重属于肥胖范畴，建议您采取积极的饮食和运动计划，减少高热量食物的摄入，增加有氧运动和力量训练。此外，定期监测血压、血脂和血糖等指标，以降低肥胖相关的健康风险。"
+         }
+     }
+     ```
+   
+     
 
 ### 3. 目标管理服务⭐⭐
 

@@ -55,7 +55,6 @@ public class SleepController {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("sleep_detail", jsonArray);
         return MsgUtil.makeMsg(MsgUtil.SUCCESS, MsgUtil.SUCCESS_MSG, jsonObject);
-
     }
 
 }
