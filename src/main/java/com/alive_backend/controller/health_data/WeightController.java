@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.persistence.Id;
 import java.sql.Date;
 import java.util.Calendar;
 import java.util.List;
@@ -125,4 +126,6 @@ public class WeightController {
         return MsgUtil.makeMsg(MsgUtil.SUCCESS, MsgUtil.SUCCESS_MSG, JSONObject.fromObject(weight2));
 
     }
+
+
 }
