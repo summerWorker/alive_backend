@@ -218,6 +218,37 @@ table：user，userAuth
      }
      ```
 
+
+   - [x] **"/period_height"**
+
+     ```java
+     @RequestBody
+     {
+         "user_id": 1,
+         "start_date":"2022-07-10",
+         "end_date":"2023-07-10"
+     }
+     @Return
+     {
+         "status": 1,
+         "msg": "成功！",
+         "data": {
+             "heights": [
+                 {
+                     "date": "2023-07-08",
+                     "height": 1.78,
+                     "userId": 1
+                 },
+                 {
+                     "date": "2023-07-10",
+                     "height": 1.79,
+                     "userId": 1
+                 }
+             ]
+         }
+     }
+     ```
+
      
 
 4. **饮食记录**服务：

@@ -42,6 +42,11 @@ class WeightServiceTest {
             public Weight getLatestWeight(int id) {
                 return null;
             }
+
+            @Override
+            public Weight getWeightBeforeDate(int id, Date date) {
+                return null;
+            }
         };
     }
 

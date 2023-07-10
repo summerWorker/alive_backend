@@ -81,5 +81,9 @@ public class WeightServiceImpl implements WeightService {
     public Weight getLatestWeight(int id) {
         return weightDao.getLatestWeight(id);
     }
+    @Override
+    public Weight getWeightBeforeDate(int id, Date date) {
+        return weightDao.getWeightBeforeDate(id, date);
+    }
 
 }

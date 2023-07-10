@@ -34,5 +34,9 @@ public class WeightDaoImpl implements WeightDao {
     public Weight getLatestWeight(int id) {
         return weightRepository.findTopByUserIdOrderByDateDesc(id);
     }
+    @Override
+    public Weight getWeightBeforeDate(int id, Date date) {
+        return weightRepository.findTopByUserIdAndDateBeforeOrderByDateDesc(id,date);
+    }
 
 }

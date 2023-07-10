@@ -18,6 +18,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -99,4 +102,45 @@ public class WeightController {
             return MsgUtil.makeMsg(MsgUtil.ERROR, "添加失败", null);
         }
     }
+    @PostMapping("/period_weight")
+    public Msg getPeriodWeight(@RequestBody Map<String,Object> data) {
+        // 检验参数合法性
+        Object id_ = data.get(UserConstant.USER_ID);
+        Object start_ = data.get(Constant.START_DATE);
+        Object end_ = data.get(Constant.END_DATE);
+        if (id_ == null || start_ == null || end_ == null) {
+            return MsgUtil.makeMsg(MsgUtil.ERROR, "传参错误{user_id:1,start:yyyy-MM-dd,end:yyyy-MM-dd}", null);
+        }
+        int id; Date start; Date end;
+        try {
+            id = (int) id_;
+            start = Date.valueOf((String) start_);
+            end = Date.valueOf((String) end_);
+        } catch (Exception e) {
+            return MsgUtil.makeMsg(MsgUtil.ERROR, "传参错误{user_id:1,start:yyyy-MM-dd,end:yyyy-MM-dd}", null);
+        }
+        if(start.after(end)) {
+            return MsgUtil.makeMsg(MsgUtil.ERROR, "开始日期不能在结束日期之后", null);
+        }
+        List<Weight> weights = new ArrayList<>();
+        double lastWeight = 0.0;
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(start);
+
+        while (!calendar.getTime().after(end)) {
+            Date currentDate = new Date(calendar.getTime().getTime());
+
+            Weight weight = weightService.getWeightByDate(id, currentDate);
+            if (weight != null)
+                weights.add(weight);
+            // 将日期增加一天
+            calendar.add(Calendar.DAY_OF_MONTH, 1);
+        }
+        JSONArray jsonArray = JSONArray.fromObject(weights, new CustomJsonConfig());
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("weights",jsonArray);
+        return MsgUtil.makeMsg(MsgUtil.SUCCESS, MsgUtil.SUCCESS_MSG, jsonObject);
+    }
+
 }

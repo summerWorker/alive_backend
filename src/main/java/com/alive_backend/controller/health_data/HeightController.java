@@ -1,9 +1,7 @@
 package com.alive_backend.controller.health_data;
 
 import com.alive_backend.entity.health_data.Height;
-import com.alive_backend.entity.health_data.MainRecord;
 import com.alive_backend.service.health_data.HeightService;
-import com.alive_backend.service.health_data.MainRecordService;
 import com.alive_backend.utils.JsonConfig.CustomJsonConfig;
 import com.alive_backend.utils.constant.Constant;
 import com.alive_backend.utils.constant.UserConstant;
@@ -18,6 +16,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -99,4 +100,44 @@ public class HeightController {
             return MsgUtil.makeMsg(MsgUtil.ERROR, "添加失败", null);
         }
     }
+    @PostMapping("/period_height")
+    public Msg getPeriodHeight(@RequestBody Map<String,Object> data) {
+        // 检验参数合法性
+        Object id_ = data.get(UserConstant.USER_ID);
+        Object start_ = data.get(Constant.START_DATE);
+        Object end_ = data.get(Constant.END_DATE);
+        if (id_ == null || start_ == null || end_ == null) {
+            return MsgUtil.makeMsg(MsgUtil.ERROR, "传参错误{user_id:1,start:yyyy-MM-dd,end:yyyy-MM-dd}", null);
+        }
+        int id; Date start; Date end;
+        try {
+            id = (int) id_;
+            start = Date.valueOf((String) start_);
+            end = Date.valueOf((String) end_);
+        } catch (Exception e) {
+            return MsgUtil.makeMsg(MsgUtil.ERROR, "传参错误{user_id:1,start:yyyy-MM-dd,end:yyyy-MM-dd}", null);
+        }
+        if(start.after(end)) {
+            return MsgUtil.makeMsg(MsgUtil.ERROR, "开始日期不能在结束日期之后", null);
+        }
+        List<Height> heights = new ArrayList<>();
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(start);
+
+        while (!calendar.getTime().after(end)) {
+            Date currentDate = new Date(calendar.getTime().getTime());
+
+            Height height = heightService.getHeightByDate(id, currentDate);
+            if (height != null)
+                heights.add(height);
+            // 将日期增加一天
+            calendar.add(Calendar.DAY_OF_MONTH, 1);
+        }
+        JSONArray jsonArray = JSONArray.fromObject(heights, new CustomJsonConfig());
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("heights",jsonArray);
+        return MsgUtil.makeMsg(MsgUtil.SUCCESS, MsgUtil.SUCCESS_MSG, jsonObject);
+    }
+
 }
