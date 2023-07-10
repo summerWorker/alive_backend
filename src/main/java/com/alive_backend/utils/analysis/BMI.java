@@ -1,5 +1,6 @@
 package com.alive_backend.utils.analysis;
 
+import com.alive_backend.utils.constant.Constant;
 import com.alive_backend.utils.constant.WeightConstant;
 import net.sf.json.JSONObject;
 
@@ -11,8 +12,8 @@ public class BMI {
         JSONObject jsonObject = new JSONObject();
 
         jsonObject.put(WeightConstant.BMI, bmi);
-        jsonObject.put(WeightConstant.ANALYSIS, analysis);
-        jsonObject.put(WeightConstant.ADVICE, advice);
+        jsonObject.put(Constant.ANALYSIS, analysis);
+        jsonObject.put(Constant.ADVICE, advice);
         return jsonObject;
     }
 

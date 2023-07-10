@@ -11,6 +11,4 @@ public class WeightConstant {
     public static final String FAT_WEIGHT_ADVICE = "您的体重属于肥胖范畴，建议您采取积极的饮食和运动计划，减少高热量食物的摄入，增加有氧运动和力量训练。此外，定期监测血压、血脂和血糖等指标，以降低肥胖相关的健康风险。";
     /* 传参相关 */
     public static final String BMI = "bmi";
-    public static final String ANALYSIS = "analysis";
-    public static final String ADVICE = "advice";
 }
