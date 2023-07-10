@@ -1,81 +1,39 @@
 package com.alive_backend.entity.user_info;
 
-import javax.persistence.*;
-import com.alive_backend.entity.health_data.MainRecord;
 import lombok.Data;
+import org.bson.types.ObjectId;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.Objects;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 
-@Entity
 @Data
-@Table(name = "user_info", schema = "health", catalog = "")
+@Entity
+@Document(collection = "user_info")
 public class UserInfo {
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     @Id
-    @Column(name = "user_id")
+    public ObjectId _id;
     private int userId;
-    @Basic
-    @Column(name = "nickname")
     private String nickname;
-    @Basic
-    @Column(name = "phone")
     private String phone;
-    @Basic
-    @Column(name = "gender")
-    private Integer gender;
+    private String gender;
+    public UserInfo() {}
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "user_id")
-    private MainRecord mainRecord;
+    public UserInfo(int _userId,String _nickname,String _phone, String _gender) {
+        this.userId = _userId;
+        this.nickname = _nickname;
+        this.phone  = _phone;
+        this.gender = _gender;
+    }
 
-//    public int getUserId() {
-//        return userId;
-//    }
-//
-//    public void setUserId(int userId) {
-//        this.userId = userId;
-//    }
-//
-//    public String getNickname() {
-//        return nickname;
-//    }
-//
-//    public void setNickname(String nickname) {
-//        this.nickname = nickname;
-//    }
-//
-//    public String getPhone() {
-//        return phone;
-//    }
-//
-//    public void setPhone(String phone) {
-//        this.phone = phone;
-//    }
-//
-//    public Integer getGender() {
-//        return gender;
-//    }
-//
-//    public void setGender(Integer gender) {
-//        this.gender = gender;
-//    }
-//    public MainRecord getMainRecord() {
-//        return mainRecord;
-//    }
-//    public void setMainRecord(MainRecord mainRecord) {
-//        this.mainRecord = mainRecord;
-//    }
-//
-//    @Override
-//    public boolean equals(Object o) {
-//        if (this == o) return true;
-//        if (o == null || getClass() != o.getClass()) return false;
-//        UserInfo userInfo = (UserInfo) o;
-//        return userId == userInfo.userId && Objects.equals(nickname, userInfo.nickname) && Objects.equals(phone, userInfo.phone) && Objects.equals(gender, userInfo.gender);
-//    }
-//
-//    @Override
-//    public int hashCode() {
-//        return Objects.hash(userId, nickname, phone, gender);
-//    }
+
+    @Override
+    public String toString() {
+        return String.format(
+                "UserInfo[_id=%s, userId='%d', gender='%s', nickname='%s', phone='%s']",
+                _id, userId, gender, nickname, phone);
+
+    }
+
 }

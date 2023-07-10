@@ -14,4 +14,10 @@ public class UserInfoServiceImpl implements UserInfoService {
     public UserInfo saveUserInfo(UserInfo user) {
         return userInfoDao.saveUserInfo(user);
     }
+    @Override
+    public UserInfo getUserById(int id) {
+        UserInfo user =  userInfoDao.getUserById(id);
+        System.out.println("service user: " + user);
+        return user;
+    }
 }
