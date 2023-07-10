@@ -30,4 +30,9 @@ public class WeightDaoImpl implements WeightDao {
     public List<Weight> getWeightByUser(int id) {
         return weightRepository.findByUserId(id);
     }
+    @Override
+    public Weight getLatestWeight(int id) {
+        return weightRepository.findTopByUserIdOrderByDateDesc(id);
+    }
+
 }

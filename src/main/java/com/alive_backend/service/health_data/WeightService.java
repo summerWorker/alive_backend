@@ -11,4 +11,5 @@ public interface WeightService {
 //    Weight getWeightByYear(int id, int year);
     Weight getWeightByDate(int id, Date date);
     List<Weight> getWeightByUser(int id);
+    Weight getLatestWeight(int id);
 }

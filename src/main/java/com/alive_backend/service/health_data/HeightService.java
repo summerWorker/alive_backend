@@ -10,4 +10,5 @@ public interface HeightService {
     List<Height> getHeightByUser(int id);
 
     Height addHeight(Height height);
+    Height getLatestHeight(int id);
 }

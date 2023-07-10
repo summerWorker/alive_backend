@@ -82,6 +82,50 @@ table：user，userAuth
   
    1. 个人健康档案的**创建、更新、查询**
    
+   - [ ] **"/update_main_record"**
+   
+     获取最新的个人档案：仅完成了体重身高的更新
+   
+     ```java
+     @RequestBody
+     {
+         "user_id": 1
+     }
+     @Return
+     {
+         "status": 1,
+         "msg": "成功！",
+         "data": {
+             "calorieConsume": 0.0,
+             "calorieIn": 0.0,
+             "exerciseTime": 0.0,
+             "healthAdvice": "",
+             "healthScore": 0,
+             "heartRate": 0.0,
+             "height": 1.79,
+             "pressure": 0.0,
+             "recordId": 1,
+             "sleepTime": 0.0,
+             "updateTime": {
+                 "date": 10,
+                 "day": 1,
+                 "hours": 16,
+                 "minutes": 43,
+                 "month": 6,
+                 "nanos": 31000000,
+                 "seconds": 52,
+                 "time": 1688978632031,
+                 "timezoneOffset": -480,
+                 "year": 123
+             },
+             "userId": 1,
+             "weight": 57.2
+         }
+     }
+     ```
+   
+     
+   
 2.   接口：`ModifyRecord` , `GetRecord`, `GetRecordByDate`
   
    3. **档案健康分析**
@@ -89,69 +133,8 @@ table：user，userAuth
    
 3. **体重**记录
   
-   - [x] **"/weight"**
+   **同身高**，把height改成weight
 
-     获取一段时间内的体重
-   
-     weight为jsonArray，其中一条detailValue记录一年的，每一天的在items中。
-   
-     ```json
-     @RequestBody
-     {
-         "user_id": 1,
-         "start_date":"2022-06-10",
-         "end_date":"2023-06-29"
-     }
-     
-     @Return
-     {
-         "status": 1,
-         "msg": "成功！",
-         "data": {
-             "weight": [
-                 {
-                     "detailValue": {
-                         "items": [
-                             {
-                                 "date": "2023-06-10",
-                                 "value": 59.1
-                             }
-                         ]
-                     },
-                     "id": 1,
-                     "userId": 1,
-                     "yearId": 2023
-                 }
-             ]
-         }
-     }
-     ```
-   
-   - [x] **"/add_weight"**
-   
-     增加体重记录，一天内重复数据**覆盖**
-   
-     ``` json
-     @RequestBody
-     {
-         "user_id": 1,
-         "date":"2023-06-10",
-         "weight":59.1
-     }
-     @Return
-     {
-         "status": 1,
-         "msg": "成功！",
-         "data": {
-             "detailValue": "{\"items\":[{\"date\":\"2023-06-10\",\"value\":59.1},{\"date\":\"2023-07-10\",\"value\":56}]}",
-             "id": 1,
-             "userId": 1,
-             "yearId": 2023
-         }
-     }
-     ```
-     
-   
    
    
 5. 身高记录：

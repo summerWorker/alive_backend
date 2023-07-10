@@ -77,5 +77,9 @@ public class WeightServiceImpl implements WeightService {
     public List<Weight> getWeightByUser(int id) {
         return weightDao.getWeightByUser(id);
     }
+    @Override
+    public Weight getLatestWeight(int id) {
+        return weightDao.getLatestWeight(id);
+    }
 
 }

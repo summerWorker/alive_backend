@@ -9,4 +9,5 @@ public interface HeightDao {
     Height getHeightByDate(int id, Date date);
     List<Height> getHeightByUser(int id);
     Height addHeight(Height height);
+    Height getLatestHeight(int id);
 }

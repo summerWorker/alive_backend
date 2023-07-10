@@ -12,4 +12,5 @@ public interface WeightRepository extends JpaRepository<Weight,Integer> {
 //    Weight findByUserIdAndYearId(int id,int yearId);
     Weight findByUserIdAndDate(int id, Date date);
     List<Weight> findByUserId(int id);
+    Weight findTopByUserIdOrderByDateDesc(int id);
 }

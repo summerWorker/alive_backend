@@ -71,7 +71,7 @@ public class HeightController {
         int id; double height; Date date;
         try {
             id = (int) id_;
-            height = (double) height_;
+            height = ((Number) height_).doubleValue();
             date = Date.valueOf((String) date_);
         } catch (Exception e) {
             return MsgUtil.makeMsg(MsgUtil.ERROR, "传参错误{user_id:1,height:1.0,date:yyyy-MM-dd}", null);

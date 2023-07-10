@@ -26,4 +26,8 @@ public class HeightServiceImpl implements HeightService {
     public Height addHeight(Height height) {
         return heightDao.addHeight(height);
     }
+    @Override
+    public Height getLatestHeight(int id) {
+        return heightDao.getLatestHeight(id);
+    }
 }

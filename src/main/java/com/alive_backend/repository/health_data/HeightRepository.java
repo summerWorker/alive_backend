@@ -11,4 +11,5 @@ import java.util.List;
 public interface HeightRepository extends JpaRepository<Height,Integer> {
     Height findByUserIdAndDate(int id, Date date);
     List<Height> findByUserId(int id);
+    Height findTopByUserIdOrderByDateDesc(int id);
 }

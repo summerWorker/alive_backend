@@ -24,4 +24,8 @@ public class HeightDaoImpl implements HeightDao {
     public Height addHeight(Height height) {
         return heightRepository.save(height);
     }
+    @Override
+    public Height getLatestHeight(int id) {
+        return heightRepository.findTopByUserIdOrderByDateDesc(id);
+    }
 }

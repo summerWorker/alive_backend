@@ -71,7 +71,7 @@ public class WeightController {
         int id; double weight; Date date;
         try {
             id = (int) id_;
-            weight = (double) weight_;
+            weight = ((Number) weight_).doubleValue();
             date = Date.valueOf((String) date_);
         } catch (Exception e) {
             return MsgUtil.makeMsg(MsgUtil.ERROR, "传参错误{user_id:1,weight:1.0,date:yyyy-MM-dd}", null);

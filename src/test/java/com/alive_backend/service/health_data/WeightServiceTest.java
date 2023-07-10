@@ -38,6 +38,10 @@ class WeightServiceTest {
                 fakeWeight3.setUserId(1); fakeWeight3.setDate(Date.valueOf("2022-07-12")); fakeWeight3.setWeight(62.0);
                 return Arrays.asList(fakeWeight1, fakeWeight2, fakeWeight3);
             }
+            @Override
+            public Weight getLatestWeight(int id) {
+                return null;
+            }
         };
     }
 
