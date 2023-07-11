@@ -359,12 +359,214 @@ table：user，userAuth
 ### 3. 目标管理服务⭐⭐
 
 1. **设置健康目标**
-2.  接口：`SetGoal`
+
+2. 接口：**“/set_goal”**
+
+   **目前支持的目标类型：**
+
+   ```java
+   public static final String WEIGHT_GOAL = "weight_goal";
+   public static final String CALORIE_GOAL = "calorie_goal";
+   public static final String STEP_GOAL = "step_goal";
+   public static final String SLEEP_LENGTH_GOAL = "sleep_length_goal";
+   public static final String BEDTIME_GOAL = "bedtime_goal";
+   ```
+
+   ```java
+   //-----------------------体重目标---------------------------
+   @RequestBody
+   {
+       "user_id": 1,
+       "goalName":"weight_goal",
+       "goalDdl":"2023-07-20",		//可以没有
+       "goalNum":50							//可以没有（仅仅修改ddl）
+   }
+   @Return
+   {
+       "status": 1,
+       "msg": "成功！",
+       "data": {
+           "goalDdl": "2023-07-20",
+           "goalKey1": 50.0,
+           "goalKey2": "",
+           "goalName": "weight_goal",
+           "userId": 1,
+           "uuid": {
+               "leastSignificantBits": -7264058575103256904,
+               "mostSignificantBits": 7515402167304932717
+           }
+       }
+   }
+   //-----------------------入睡时间---------------------------
+   @RequestBody
+   {
+       "user_id": 1,
+       "goalName":"bedtime_goal",
+       "goalKey2":"22:00"				// 时间可以不精确到秒
+   }
+   @Return
+   {
+       "status": 1,
+       "msg": "成功！",
+       "data": {
+           "goalDdl": "",
+           "goalKey1": 0.0,
+           "goalKey2": "22:00",
+           "goalName": "bedtime_goal",
+           "userId": 1,
+           "uuid": {
+               "leastSignificantBits": -8289062499044848900,
+               "mostSignificantBits": 5559718899068063605
+           }
+       }
+   }
+   
+   //-----------------------睡眠时长---------------------------
+   @RequestBody
+   {
+       "user_id": 1,
+       "goalName":"sleep_length_goal",
+       "goalKey1":482 			//单位是分钟
+   }
+   @Return
+   {
+       "status": 1,
+       "msg": "成功！",
+       "data": {
+           "goalDdl": "",
+           "goalKey1": 482.0,
+           "goalKey2": "",
+           "goalName": "sleep_length_goal",
+           "userId": 1,
+           "uuid": {
+               "leastSignificantBits": -6105039736368870774,
+               "mostSignificantBits": 7119916374390884221
+           }
+       }
+   }
+   //-----------------------步数目标---------------------------
+   @RequestBody
+   {
+       "user_id": 1,
+       "goalName":"step_goal",
+       "goalKey1":20000
+   }
+   //-----------------------卡路里目标---------------------------
+   @RequestBody
+   {
+       "user_id": 1,
+       "goalName":"calorie_goal",
+       "goalKey1":20000
+   }
+   ```
+
+   **"/goals"**：获取一个人的所有目标
+
+   ```java
+   @RequestBody
+   {
+       "user_id": 1
+   }
+   @Return
+   {
+       "status": 1,
+       "msg": "成功！",
+       "data": {
+           "goal": [
+               {
+                   "goalDdl": "",
+                   "goalKey1": 20000.0,
+                   "goalKey2": "",
+                   "goalName": "step_goal",
+                   "userId": 1,
+                   "uuid": {
+                       "leastSignificantBits": -6293041641716376402,
+                       "mostSignificantBits": 4516348637078179217
+                   }
+               },
+               {
+                   "goalDdl": "",
+                   "goalKey1": 0.0,
+                   "goalKey2": "22:00",
+                   "goalName": "bedtime_goal",
+                   "userId": 1,
+                   "uuid": {
+                       "leastSignificantBits": -8289062499044848900,
+                       "mostSignificantBits": 5559718899068063605
+                   }
+               },
+               {
+                   "goalDdl": "",
+                   "goalKey1": 482.0,
+                   "goalKey2": "",
+                   "goalName": "sleep_length_goal",
+                   "userId": 1,
+                   "uuid": {
+                       "leastSignificantBits": -6105039736368870774,
+                       "mostSignificantBits": 7119916374390884221
+                   }
+               },
+               {
+                   "goalDdl": "2023-07-20",
+                   "goalKey1": 50.0,
+                   "goalKey2": "",
+                   "goalName": "weight_goal",
+                   "userId": 1,
+                   "uuid": {
+                       "leastSignificantBits": -7264058575103256904,
+                       "mostSignificantBits": 7515402167304932717
+                   }
+               },
+               {
+                   "goalDdl": "",
+                   "goalKey1": 20000.0,
+                   "goalKey2": "",
+                   "goalName": "calorie_goal",
+                   "userId": 1,
+                   "uuid": {
+                       "leastSignificantBits": -8949422151435618306,
+                       "mostSignificantBits": -8616090509369653940
+                   }
+               }
+           ]
+       }
+   }
+   ```
+
+   **“/goal_name”**：获取特定目标
+
+   ```java
+   @RequestBody
+   {
+       "user_id": 1,
+       "goalName":"calorie_goal"
+   }
+   @Return
+   {
+       "status": 1,
+       "msg": "成功！",
+       "data": {
+           "goalDdl": "",
+           "goalKey1": 20000.0,
+           "goalKey2": "",
+           "goalName": "calorie_goal",
+           "userId": 1,
+           "uuid": {
+               "leastSignificantBits": -8949422151435618306,
+               "mostSignificantBits": -8616090509369653940
+           }
+       }
+   }
+   ```
+
+   
 
 3. **跟踪健康目标的服务：修改完成情况、查询完成情况、统计分析**
+
 4.  接口：`AddImplement` , `GetImplement` ,`AnalyseGoals` 
 
 5. **目标提醒**服务：
+
 6.  TODO：这里是后端主动通知前端吗？用websocket
 
 ## 数据库设计

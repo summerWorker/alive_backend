@@ -27,7 +27,9 @@ public class Weight {
     @Basic
     @Column(name = "date")
     private Date date;
-
+    @Basic
+    @Column(name = "goal")
+    private double goal;
     public int getUserId() {
         return userId;
     }
@@ -51,6 +53,12 @@ public class Weight {
     public void setDate(Date date) {
         this.date = date;
     }
+    public double getGoal() {
+        return goal;
+    }
+    public void setGoal(double goal) {
+        this.goal = goal;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -63,12 +71,13 @@ public class Weight {
         if (Double.compare(weight1.weight, weight) != 0) return false;
         if (!Objects.equals(id, weight1.id)) return false;
         if (date != null ? !date.equals(weight1.date) : weight1.date != null) return false;
+        if (goal != weight1.goal) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, userId, weight, date);
+        return Objects.hash(id, userId, weight, date, goal);
     }
 }
