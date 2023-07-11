@@ -207,7 +207,7 @@ CREATE TABLE `weight` (
   `weight` float NOT NULL COMMENT '‰ΩìÈáçÂçï‰ΩçÂçÉÂÖã',
   `date` date NOT NULL COMMENT 'Êó•Êúü',
   `id` binary(16) NOT NULL COMMENT 'uuid',
-  `goal` float DEFAULT NULL COMMENT 'ÁõÆÊ†áÂçï‰ΩçÂçÉÂÖã',
+  `goal` float NOT NULL DEFAULT '-1' COMMENT 'ÁõÆÊ†áÂçï‰ΩçÂçÉÂÖã',
   PRIMARY KEY (`id`),
   KEY `weight_user_info_user_id_fk` (`user_id`),
   CONSTRAINT `weight_user_info_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `user_info` (`user_id`)
@@ -220,7 +220,7 @@ CREATE TABLE `weight` (
 
 LOCK TABLES `weight` WRITE;
 /*!40000 ALTER TABLE `weight` DISABLE KEYS */;
-INSERT INTO `weight` VALUES (1,57.2,'2023-07-10',_binary 'ï˚ÜRE\È®\„@f∫ï',NULL);
+INSERT INTO `weight` VALUES (1,57.2,'2023-02-22',_binary '\04I$Æ&F§e ñlnI',0),(1,57.2,'2023-07-12',_binary '%\‘|Ø&ÅFj∑®K\‘?\—Ω',50),(1,57.2,'2023-04-22',_binary 'q\Èy\Ù\‡BITÅ\–B‘∞!q≥',0),(1,57.2,'2023-07-10',_binary 'ï˚ÜRE\È®\„@f∫ï',-1),(1,57.2,'2023-07-22',_binary '\ÿ0\„7º}Iƒ´\√jß\n\ÏÅ\Ò',50),(1,57.2,'2023-06-22',_binary '\·h^\–0 BÆæÅI)(â',0);
 /*!40000 ALTER TABLE `weight` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -233,4 +233,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-07-11 17:10:51
+-- Dump completed on 2023-07-11 17:29:47
