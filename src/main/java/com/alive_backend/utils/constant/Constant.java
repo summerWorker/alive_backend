@@ -7,4 +7,7 @@ public class Constant {
     public static final String AVERAGE = "average";
     public static final String WEIGHT = "weight";
     public static final String HEIGHT = "height";
+    public static final String DIASTOLIC = "diastolic";  //舒张压
+    public static final String SYSTOLIC = "systolic";  //收缩压
+    public static final String BLOOD_SUGAR = "blood_sugar";
 }

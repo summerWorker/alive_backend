@@ -16,70 +16,15 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `user_auth`
---
-
-DROP TABLE IF EXISTS `user_auth`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `user_auth` (
-                             `user_id` int NOT NULL AUTO_INCREMENT COMMENT '用户id，不向用户展示',
-                             `username` varchar(255) NOT NULL COMMENT '唯一不重复',
-                             `password` varchar(255) NOT NULL COMMENT '密码',
-                             `email` varchar(255) NOT NULL COMMENT '唯一不重复',
-                             `check_code` varchar(255) DEFAULT NULL,
-                             `status` int DEFAULT NULL COMMENT '0：未用邮箱激活；1:正常',
-                             `code_update_time` timestamp NULL DEFAULT NULL,
-                             PRIMARY KEY (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `user_auth`
---
-
-LOCK TABLES `user_auth` WRITE;
-/*!40000 ALTER TABLE `user_auth` DISABLE KEYS */;
-INSERT INTO `user_auth` VALUES (1,'test','test','test@','',1,'2023-06-26 22:12:58'),(2,'test_save','test_save','test_save@',NULL,NULL,NULL),(3,'test_save','test_save','test_save@',NULL,NULL,NULL);
-/*!40000 ALTER TABLE `user_auth` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `user_info`
---
-
-DROP TABLE IF EXISTS `user_info`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `user_info` (
-                             `user_id` int NOT NULL COMMENT '用户id，不向用户展示',
-                             `nickname` varchar(255) NOT NULL COMMENT '用户昵称，可重复',
-                             `phone` varchar(255) DEFAULT NULL COMMENT '手机号',
-                             `gender` int DEFAULT NULL COMMENT '性别，可不填',
-                             PRIMARY KEY (`user_id`),
-                             CONSTRAINT `user_info_user_auth_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `user_auth` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `user_info`
---
-
-LOCK TABLES `user_info` WRITE;
-/*!40000 ALTER TABLE `user_info` DISABLE KEYS */;
-INSERT INTO `user_info` VALUES (1,'test',NULL,NULL);
-/*!40000 ALTER TABLE `user_info` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `height`
 --
+
 DROP TABLE IF EXISTS `height`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `height` (
   `user_id` int NOT NULL COMMENT '用户id',
-  `id`  BINARY(16) NOT NULL COMMENT '唯一标识',
+  `id` binary(16) NOT NULL COMMENT '唯一标识',
   `height` float NOT NULL COMMENT '身高单位米',
   `date` date NOT NULL COMMENT '时间，精确到天',
   PRIMARY KEY (`id`),
@@ -94,7 +39,7 @@ CREATE TABLE `height` (
 
 LOCK TABLES `height` WRITE;
 /*!40000 ALTER TABLE `height` DISABLE KEYS */;
-INSERT INTO `height` VALUES (1, UUID_TO_BIN(UUID()), 1.72, '2022-07-08'),(1, UUID_TO_BIN(UUID()), 1.78, '2023-07-08');
+INSERT INTO `height` VALUES (1,_binary 'W���\�\�I�`e�.',1.72,'2022-07-08'),(1,_binary 'W��d\�\�I�`e�.',1.78,'2023-07-08'),(1,_binary '���)\�L��B��\�R�',1.79,'2023-07-10');
 /*!40000 ALTER TABLE `height` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -131,7 +76,7 @@ CREATE TABLE `main_record` (
 
 LOCK TABLES `main_record` WRITE;
 /*!40000 ALTER TABLE `main_record` DISABLE KEYS */;
-INSERT INTO `main_record` VALUES (1,1.71,95,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2023-06-26 22:13:02',1);
+INSERT INTO `main_record` VALUES (1,1.79,57.2,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2023-07-10 00:43:52',1);
 /*!40000 ALTER TABLE `main_record` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -163,6 +108,62 @@ INSERT INTO `sleep_detail` VALUES (1,1,'2023-06-22','{\"awake_count\":0,\"sleep_
 UNLOCK TABLES;
 
 --
+-- Table structure for table `user_auth`
+--
+
+DROP TABLE IF EXISTS `user_auth`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `user_auth` (
+  `user_id` int NOT NULL AUTO_INCREMENT COMMENT '用户id，不向用户展示',
+  `username` varchar(255) NOT NULL COMMENT '唯一不重复',
+  `password` varchar(255) NOT NULL COMMENT '密码',
+  `email` varchar(255) NOT NULL COMMENT '唯一不重复',
+  `check_code` varchar(255) DEFAULT NULL,
+  `status` int DEFAULT NULL COMMENT '0：未用邮箱激活；1:正常',
+  `code_update_time` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `user_auth`
+--
+
+LOCK TABLES `user_auth` WRITE;
+/*!40000 ALTER TABLE `user_auth` DISABLE KEYS */;
+INSERT INTO `user_auth` VALUES (1,'test','test','test@','',1,'2023-06-26 22:12:58'),(2,'test_save','test_save','test_save@',NULL,NULL,NULL),(3,'test_save','test_save','test_save@',NULL,NULL,NULL);
+/*!40000 ALTER TABLE `user_auth` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `user_info`
+--
+
+DROP TABLE IF EXISTS `user_info`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `user_info` (
+  `user_id` int NOT NULL COMMENT '用户id，不向用户展示',
+  `nickname` varchar(255) NOT NULL COMMENT '用户昵称，可重复',
+  `phone` varchar(255) DEFAULT NULL COMMENT '手机号',
+  `gender` int DEFAULT NULL COMMENT '性别，可不填',
+  PRIMARY KEY (`user_id`),
+  CONSTRAINT `user_info_user_auth_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `user_auth` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `user_info`
+--
+
+LOCK TABLES `user_info` WRITE;
+/*!40000 ALTER TABLE `user_info` DISABLE KEYS */;
+INSERT INTO `user_info` VALUES (1,'test',NULL,NULL);
+/*!40000 ALTER TABLE `user_info` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `weight`
 --
 
@@ -170,12 +171,14 @@ DROP TABLE IF EXISTS `weight`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `weight` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `user_id` int NOT NULL,
-  `year_id` int NOT NULL,
-  `detail_value` text COMMENT '"items": [{"date": "2023-06-28", "value": 52,  },{}]',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='体重记录，一年内变化为一条记录';
+  `user_id` int NOT NULL COMMENT '用户id',
+  `weight` float NOT NULL COMMENT '体重单位千克',
+  `date` date NOT NULL COMMENT '日期',
+  `id` binary(16) NOT NULL COMMENT 'uuid',
+  PRIMARY KEY (`id`),
+  KEY `weight_user_info_user_id_fk` (`user_id`),
+  CONSTRAINT `weight_user_info_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `user_info` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='体重记录';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -184,7 +187,7 @@ CREATE TABLE `weight` (
 
 LOCK TABLES `weight` WRITE;
 /*!40000 ALTER TABLE `weight` DISABLE KEYS */;
-INSERT INTO `weight` VALUES (1,1,2023,'{\"items\":[{\"date\":\"2023-06-10\",\"value\":59.1},{\"date\":\"2023-07-10\",\"value\":56},{\"date\":\"2023-07-01\",\"value\":56}]}'),(2,1,2022,'{\"items\":[{\"date\":\"2022-06-10\",\"weight\":59.1}]}'),(3,1,1900,'{\"items\":[{\"date\":\"2022-06-10\",\"weight\":59.1}]}'),(4,1,1900,'{\"items\":[{\"date\":\"2022-06-10\",\"weight\":59.1}]}'),(5,1,1900,'{\"items\":[{\"date\":\"2022-06-10\",\"weight\":59.1}]}'),(6,1,1900,'{\"items\":[{\"date\":\"2022-06-10\",\"weight\":59.1}]}'),(7,1,1900,'{\"items\":[{\"date\":\"2022-06-10\",\"weight\":59.1}]}');
+INSERT INTO `weight` VALUES (1,57.2,'2023-07-10',_binary '���RE\�\�@f��');
 /*!40000 ALTER TABLE `weight` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -197,4 +200,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-07-10 14:05:54
+-- Dump completed on 2023-07-11  9:08:47
