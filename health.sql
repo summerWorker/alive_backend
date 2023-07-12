@@ -16,6 +16,64 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `goal`
+--
+
+DROP TABLE IF EXISTS `goal`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `goal` (
+  `user_id` int NOT NULL,
+  `uuid` binary(16) NOT NULL COMMENT '标识符号',
+  `goal_name` varchar(36) NOT NULL COMMENT '目标类型：weight、sleep',
+  `goal_key1` float DEFAULT NULL COMMENT '浮点数，记录数值',
+  `goal_ddl` date DEFAULT NULL COMMENT '目标到期时间，长期目标为空',
+  `goal_key2` varchar(255) DEFAULT NULL COMMENT '目标内容，字符串（入睡时间等）',
+  PRIMARY KEY (`uuid`),
+  KEY `goal_user_info_user_id_fk` (`user_id`),
+  CONSTRAINT `goal_user_info_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `user_info` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='最新目标记录';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `goal`
+--
+
+LOCK TABLES `goal` WRITE;
+/*!40000 ALTER TABLE `goal` DISABLE KEYS */;
+INSERT INTO `goal` VALUES (1,_binary '>�K(\"\�M�������','step_goal',20000,NULL,NULL),(1,_binary 'M(\�\��Ou�\�U�k��','bedtime_goal',NULL,NULL,'22:00'),(1,_binary 'b\�86G}�F���ʊ','sleep_length_goal',482,NULL,NULL),(1,_binary 'hLs\�iMm�0\�6kW�','weight_goal',50,'2023-07-20',NULL),(1,_binary '�mT\�hEL�\�C�&�\��','calorie_goal',20000,NULL,NULL);
+/*!40000 ALTER TABLE `goal` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `height`
+--
+
+DROP TABLE IF EXISTS `height`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `height` (
+  `user_id` int NOT NULL COMMENT '用户id',
+  `id` binary(16) NOT NULL COMMENT '唯一标识',
+  `height` float NOT NULL COMMENT '身高单位米',
+  `date` date NOT NULL COMMENT '时间，精确到天',
+  PRIMARY KEY (`id`),
+  KEY `height___fk` (`user_id`),
+  CONSTRAINT `height___fk` FOREIGN KEY (`user_id`) REFERENCES `user_info` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `height`
+--
+
+LOCK TABLES `height` WRITE;
+/*!40000 ALTER TABLE `height` DISABLE KEYS */;
+INSERT INTO `height` VALUES (1,_binary 'W���\�\�I�`e�.',1.72,'2022-07-08'),(1,_binary 'W��d\�\�I�`e�.',1.78,'2023-07-08'),(1,_binary '���)\�L��B��\�R�',1.79,'2023-07-10');
+/*!40000 ALTER TABLE `height` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `main_record`
 --
 
@@ -24,8 +82,8 @@ DROP TABLE IF EXISTS `main_record`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `main_record` (
   `user_id` int NOT NULL COMMENT '用户id，不向用户展示',
-  `height` float DEFAULT NULL COMMENT '身高',
-  `weight` int DEFAULT NULL COMMENT '体重',
+  `height` float DEFAULT NULL COMMENT '身高，单位米',
+  `weight` float DEFAULT NULL COMMENT '体重',
   `exercise_time` float DEFAULT NULL COMMENT '每天平均运动时长',
   `calorie_in` float DEFAULT NULL COMMENT '日平均卡路里摄入量',
   `calorie_consume` float DEFAULT NULL COMMENT '日平均卡路里消耗量',
@@ -48,7 +106,7 @@ CREATE TABLE `main_record` (
 
 LOCK TABLES `main_record` WRITE;
 /*!40000 ALTER TABLE `main_record` DISABLE KEYS */;
-INSERT INTO `main_record` VALUES (1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2023-06-26 22:13:02',1);
+INSERT INTO `main_record` VALUES (1,1.79,57.2,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2023-07-10 00:43:52',1);
 /*!40000 ALTER TABLE `main_record` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -65,6 +123,8 @@ CREATE TABLE `sleep_detail` (
   `date` date NOT NULL,
   `detail_value` text COMMENT 'json对象，具体说明在readme',
   `length` int NOT NULL COMMENT '深浅+做梦总时长，不算清醒，单位：分钟',
+  `goal_length` int DEFAULT NULL COMMENT '目标睡眠时长单位分钟',
+  `bedtime_goal` time DEFAULT NULL COMMENT '入睡时间目标',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='睡眠的具体数据：深浅睡眠时间段';
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -75,7 +135,7 @@ CREATE TABLE `sleep_detail` (
 
 LOCK TABLES `sleep_detail` WRITE;
 /*!40000 ALTER TABLE `sleep_detail` DISABLE KEYS */;
-INSERT INTO `sleep_detail` VALUES (1,1,'2023-06-22','{\"awake_count\":0,\"sleep_awake_duration\":0,\"bedtime\":1687365360,\"sleep_deep_duration\":88,\"sleep_light_duration\":335,\"sleep_rem_duration\":88,\"duration\":511,\"items\":[{\"end_time\":1687366140,\"state\":3,\"start_time\":1687365360},{\"end_time\":1687367220,\"state\":2,\"start_time\":1687366140},{\"end_time\":1687367520,\"state\":3,\"start_time\":1687367220},{\"end_time\":1687367820,\"state\":4,\"start_time\":1687367520},{\"end_time\":1687368480,\"state\":3,\"start_time\":1687367820},{\"end_time\":1687369920,\"state\":2,\"start_time\":1687368480},{\"end_time\":1687370220,\"state\":3,\"start_time\":1687369920},{\"end_time\":1687370580,\"state\":4,\"start_time\":1687370220},{\"end_time\":1687370640,\"state\":3,\"start_time\":1687370580},{\"end_time\":1687370940,\"state\":4,\"start_time\":1687370640},{\"end_time\":1687372440,\"state\":3,\"start_time\":1687370940},{\"end_time\":1687373520,\"state\":2,\"start_time\":1687372440},{\"end_time\":1687373760,\"state\":3,\"start_time\":1687373520},{\"end_time\":1687374780,\"state\":2,\"start_time\":1687373760},{\"end_time\":1687375020,\"state\":3,\"start_time\":1687374780},{\"end_time\":1687375440,\"state\":4,\"start_time\":1687375020},{\"end_time\":1687376280,\"state\":3,\"start_time\":1687375440},{\"end_time\":1687376580,\"state\":4,\"start_time\":1687376280},{\"end_time\":1687381620,\"state\":3,\"start_time\":1687376580},{\"end_time\":1687382280,\"state\":4,\"start_time\":1687381620},{\"end_time\":1687382700,\"state\":3,\"start_time\":1687382280},{\"end_time\":1687383060,\"state\":4,\"start_time\":1687382700},{\"end_time\":1687384800,\"state\":3,\"start_time\":1687383060},{\"end_time\":1687385460,\"state\":2,\"start_time\":1687384800},{\"end_time\":1687387080,\"state\":3,\"start_time\":1687385460},{\"end_time\":1687387380,\"state\":4,\"start_time\":1687387080},{\"end_time\":1687387440,\"state\":3,\"start_time\":1687387380},{\"end_time\":1687387860,\"state\":4,\"start_time\":1687387440},{\"end_time\":1687388460,\"state\":3,\"start_time\":1687387860},{\"end_time\":1687388820,\"state\":4,\"start_time\":1687388460},{\"end_time\":1687389420,\"state\":3,\"start_time\":1687388820},{\"end_time\":1687389780,\"state\":4,\"start_time\":1687389420},{\"end_time\":1687392660,\"state\":3,\"start_time\":1687389780},{\"end_time\":1687393140,\"state\":4,\"start_time\":1687392660},{\"end_time\":1687393380,\"state\":3,\"start_time\":1687393140},{\"end_time\":1687393740,\"state\":4,\"start_time\":1687393380},{\"end_time\":1687393800,\"state\":3,\"start_time\":1687393740},{\"end_time\":1687394100,\"state\":4,\"start_time\":1687393800},{\"end_time\":1687396020,\"state\":3,\"start_time\":1687394100}],\"date_time\":1687392000,\"timezone\":32,\"wake_up_time\":1687396020}',712),(2,1,'2023-06-23','{\"awake_count\":0,\"sleep_awake_duration\":0,\"bedtime\":1687454880,\"sleep_deep_duration\":108,\"sleep_light_duration\":304,\"sleep_rem_duration\":81,\"duration\":493,\"items\":[{\"end_time\":1687455660,\"state\":3,\"start_time\":1687454880},{\"end_time\":1687458420,\"state\":2,\"start_time\":1687455660},{\"end_time\":1687459920,\"state\":3,\"start_time\":1687458420},{\"end_time\":1687460220,\"state\":4,\"start_time\":1687459920},{\"end_time\":1687460640,\"state\":3,\"start_time\":1687460220},{\"end_time\":1687461240,\"state\":4,\"start_time\":1687460640},{\"end_time\":1687461420,\"state\":3,\"start_time\":1687461240},{\"end_time\":1687461720,\"state\":4,\"start_time\":1687461420},{\"end_time\":1687461900,\"state\":3,\"start_time\":1687461720},{\"end_time\":1687462680,\"state\":2,\"start_time\":1687461900},{\"end_time\":1687462920,\"state\":3,\"start_time\":1687462680},{\"end_time\":1687463820,\"state\":2,\"start_time\":1687462920},{\"end_time\":1687464300,\"state\":3,\"start_time\":1687463820},{\"end_time\":1687465560,\"state\":2,\"start_time\":1687464300},{\"end_time\":1687468320,\"state\":3,\"start_time\":1687465560},{\"end_time\":1687468740,\"state\":4,\"start_time\":1687468320},{\"end_time\":1687471620,\"state\":3,\"start_time\":1687468740},{\"end_time\":1687472400,\"state\":2,\"start_time\":1687471620},{\"end_time\":1687474380,\"state\":3,\"start_time\":1687472400},{\"end_time\":1687474920,\"state\":4,\"start_time\":1687474380},{\"end_time\":1687475040,\"state\":3,\"start_time\":1687474920},{\"end_time\":1687475760,\"state\":4,\"start_time\":1687475040},{\"end_time\":1687480260,\"state\":3,\"start_time\":1687475760},{\"end_time\":1687481340,\"state\":4,\"start_time\":1687480260},{\"end_time\":1687482360,\"state\":3,\"start_time\":1687481340},{\"end_time\":1687482960,\"state\":4,\"start_time\":1687482360},{\"end_time\":1687483020,\"state\":3,\"start_time\":1687482960},{\"end_time\":1687483320,\"state\":4,\"start_time\":1687483020},{\"end_time\":1687484460,\"state\":3,\"start_time\":1687483320}],\"date_time\":1687478400,\"timezone\":32,\"wake_up_time\":1687484460}',496);
+INSERT INTO `sleep_detail` VALUES (1,1,'2023-06-22','{\"awake_count\":0,\"sleep_awake_duration\":0,\"bedtime\":1687365360,\"sleep_deep_duration\":88,\"sleep_light_duration\":335,\"sleep_rem_duration\":88,\"duration\":511,\"items\":[{\"end_time\":1687366140,\"state\":3,\"start_time\":1687365360},{\"end_time\":1687367220,\"state\":2,\"start_time\":1687366140},{\"end_time\":1687367520,\"state\":3,\"start_time\":1687367220},{\"end_time\":1687367820,\"state\":4,\"start_time\":1687367520},{\"end_time\":1687368480,\"state\":3,\"start_time\":1687367820},{\"end_time\":1687369920,\"state\":2,\"start_time\":1687368480},{\"end_time\":1687370220,\"state\":3,\"start_time\":1687369920},{\"end_time\":1687370580,\"state\":4,\"start_time\":1687370220},{\"end_time\":1687370640,\"state\":3,\"start_time\":1687370580},{\"end_time\":1687370940,\"state\":4,\"start_time\":1687370640},{\"end_time\":1687372440,\"state\":3,\"start_time\":1687370940},{\"end_time\":1687373520,\"state\":2,\"start_time\":1687372440},{\"end_time\":1687373760,\"state\":3,\"start_time\":1687373520},{\"end_time\":1687374780,\"state\":2,\"start_time\":1687373760},{\"end_time\":1687375020,\"state\":3,\"start_time\":1687374780},{\"end_time\":1687375440,\"state\":4,\"start_time\":1687375020},{\"end_time\":1687376280,\"state\":3,\"start_time\":1687375440},{\"end_time\":1687376580,\"state\":4,\"start_time\":1687376280},{\"end_time\":1687381620,\"state\":3,\"start_time\":1687376580},{\"end_time\":1687382280,\"state\":4,\"start_time\":1687381620},{\"end_time\":1687382700,\"state\":3,\"start_time\":1687382280},{\"end_time\":1687383060,\"state\":4,\"start_time\":1687382700},{\"end_time\":1687384800,\"state\":3,\"start_time\":1687383060},{\"end_time\":1687385460,\"state\":2,\"start_time\":1687384800},{\"end_time\":1687387080,\"state\":3,\"start_time\":1687385460},{\"end_time\":1687387380,\"state\":4,\"start_time\":1687387080},{\"end_time\":1687387440,\"state\":3,\"start_time\":1687387380},{\"end_time\":1687387860,\"state\":4,\"start_time\":1687387440},{\"end_time\":1687388460,\"state\":3,\"start_time\":1687387860},{\"end_time\":1687388820,\"state\":4,\"start_time\":1687388460},{\"end_time\":1687389420,\"state\":3,\"start_time\":1687388820},{\"end_time\":1687389780,\"state\":4,\"start_time\":1687389420},{\"end_time\":1687392660,\"state\":3,\"start_time\":1687389780},{\"end_time\":1687393140,\"state\":4,\"start_time\":1687392660},{\"end_time\":1687393380,\"state\":3,\"start_time\":1687393140},{\"end_time\":1687393740,\"state\":4,\"start_time\":1687393380},{\"end_time\":1687393800,\"state\":3,\"start_time\":1687393740},{\"end_time\":1687394100,\"state\":4,\"start_time\":1687393800},{\"end_time\":1687396020,\"state\":3,\"start_time\":1687394100}],\"date_time\":1687392000,\"timezone\":32,\"wake_up_time\":1687396020}',712,NULL,NULL),(2,1,'2023-06-23','{\"awake_count\":0,\"sleep_awake_duration\":0,\"bedtime\":1687454880,\"sleep_deep_duration\":108,\"sleep_light_duration\":304,\"sleep_rem_duration\":81,\"duration\":493,\"items\":[{\"end_time\":1687455660,\"state\":3,\"start_time\":1687454880},{\"end_time\":1687458420,\"state\":2,\"start_time\":1687455660},{\"end_time\":1687459920,\"state\":3,\"start_time\":1687458420},{\"end_time\":1687460220,\"state\":4,\"start_time\":1687459920},{\"end_time\":1687460640,\"state\":3,\"start_time\":1687460220},{\"end_time\":1687461240,\"state\":4,\"start_time\":1687460640},{\"end_time\":1687461420,\"state\":3,\"start_time\":1687461240},{\"end_time\":1687461720,\"state\":4,\"start_time\":1687461420},{\"end_time\":1687461900,\"state\":3,\"start_time\":1687461720},{\"end_time\":1687462680,\"state\":2,\"start_time\":1687461900},{\"end_time\":1687462920,\"state\":3,\"start_time\":1687462680},{\"end_time\":1687463820,\"state\":2,\"start_time\":1687462920},{\"end_time\":1687464300,\"state\":3,\"start_time\":1687463820},{\"end_time\":1687465560,\"state\":2,\"start_time\":1687464300},{\"end_time\":1687468320,\"state\":3,\"start_time\":1687465560},{\"end_time\":1687468740,\"state\":4,\"start_time\":1687468320},{\"end_time\":1687471620,\"state\":3,\"start_time\":1687468740},{\"end_time\":1687472400,\"state\":2,\"start_time\":1687471620},{\"end_time\":1687474380,\"state\":3,\"start_time\":1687472400},{\"end_time\":1687474920,\"state\":4,\"start_time\":1687474380},{\"end_time\":1687475040,\"state\":3,\"start_time\":1687474920},{\"end_time\":1687475760,\"state\":4,\"start_time\":1687475040},{\"end_time\":1687480260,\"state\":3,\"start_time\":1687475760},{\"end_time\":1687481340,\"state\":4,\"start_time\":1687480260},{\"end_time\":1687482360,\"state\":3,\"start_time\":1687481340},{\"end_time\":1687482960,\"state\":4,\"start_time\":1687482360},{\"end_time\":1687483020,\"state\":3,\"start_time\":1687482960},{\"end_time\":1687483320,\"state\":4,\"start_time\":1687483020},{\"end_time\":1687484460,\"state\":3,\"start_time\":1687483320}],\"date_time\":1687478400,\"timezone\":32,\"wake_up_time\":1687484460}',496,NULL,NULL);
 /*!40000 ALTER TABLE `sleep_detail` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -95,7 +155,7 @@ CREATE TABLE `user_auth` (
   `status` int DEFAULT NULL COMMENT '0：未用邮箱激活；1:正常',
   `code_update_time` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -104,7 +164,7 @@ CREATE TABLE `user_auth` (
 
 LOCK TABLES `user_auth` WRITE;
 /*!40000 ALTER TABLE `user_auth` DISABLE KEYS */;
-INSERT INTO `user_auth` VALUES (1,'test','test','test@','',1,'2023-06-26 22:12:58');
+INSERT INTO `user_auth` VALUES (1,'test','test','test@','',1,'2023-06-26 22:12:58'),(2,'test_save','test_save','test_save@',NULL,NULL,NULL),(3,'test_save','test_save','test_save@',NULL,NULL,NULL);
 /*!40000 ALTER TABLE `user_auth` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -143,12 +203,15 @@ DROP TABLE IF EXISTS `weight`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `weight` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `user_id` int NOT NULL,
-  `year_id` int NOT NULL,
-  `detail_value` text COMMENT '"items": [{"date": "2023-06-28", "value": 52,  },{}]',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='体重记录，一年内变化为一条记录';
+  `user_id` int NOT NULL COMMENT '用户id',
+  `weight` float NOT NULL COMMENT '体重单位千克',
+  `date` date NOT NULL COMMENT '日期',
+  `id` binary(16) NOT NULL COMMENT 'uuid',
+  `goal` float NOT NULL DEFAULT '-1' COMMENT '目标单位千克',
+  PRIMARY KEY (`id`),
+  KEY `weight_user_info_user_id_fk` (`user_id`),
+  CONSTRAINT `weight_user_info_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `user_info` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='体重记录';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -157,7 +220,7 @@ CREATE TABLE `weight` (
 
 LOCK TABLES `weight` WRITE;
 /*!40000 ALTER TABLE `weight` DISABLE KEYS */;
-INSERT INTO `weight` VALUES (1,1,2023,'{\"items\":[{\"date\":\"2023-06-10\",\"value\":59.1},{\"date\":\"2023-07-10\",\"value\":56}]}'),(2,1,2022,'{\"items\":[{\"date\":\"2022-06-10\",\"weight\":59.1}]}');
+INSERT INTO `weight` VALUES (1,57.2,'2023-02-22',_binary '\04I$�&F�e �lnI',0),(1,57.2,'2023-07-12',_binary '%\�|�&�Fj��K\�?\��',50),(1,57.2,'2023-04-22',_binary 'q\�y\�\�BIT�\�B԰!q�',0),(1,57.2,'2023-07-10',_binary '���RE\�\�@f��',-1),(1,57.2,'2023-07-22',_binary '\�0\�7�}Iī\�j�\n\�\�',50),(1,57.2,'2023-06-22',_binary '\�h^\�0 B���I)(�',0);
 /*!40000 ALTER TABLE `weight` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -170,4 +233,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-07-01 14:46:24
+-- Dump completed on 2023-07-11 17:29:47

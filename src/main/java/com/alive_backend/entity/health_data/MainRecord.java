@@ -18,7 +18,7 @@ public class MainRecord {
     private Double height;
     @Basic
     @Column(name = "weight")
-    private Integer weight;
+    private Double weight;
     @Basic
     @Column(name = "exercise_time")
     private Double exerciseTime;
