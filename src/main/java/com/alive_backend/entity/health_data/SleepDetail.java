@@ -2,6 +2,7 @@ package com.alive_backend.entity.health_data;
 
 import javax.persistence.*;
 import java.sql.Date;
+import java.sql.Time;
 import java.util.Objects;
 
 @Entity
@@ -23,6 +24,13 @@ public class SleepDetail {
     @Basic
     @Column(name = "length")
     private int length;
+    @Basic
+    @Column(name = "goal_length")
+    private int goalLength;
+
+    @Basic
+    @Column(name = "bedtime_goal")
+    private Time bedtimeGoal;
 
     public long getId() {
         return id;
@@ -64,16 +72,28 @@ public class SleepDetail {
         this.length = length;
     }
 
+    public int getGoalLength() {
+        return goalLength;
+    }
+    public void setGoalLength(int goalLength) {
+        this.goalLength = goalLength;
+    }
+    public Time getBedtimeGoal() {
+        return bedtimeGoal;
+    }
+    public void setBedtimeGoal(Time bedtimeGoal) {
+        this.bedtimeGoal = bedtimeGoal;
+    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         SleepDetail that = (SleepDetail) o;
-        return id == that.id && userId == that.userId && length == that.length && Objects.equals(date, that.date) && Objects.equals(detailValue, that.detailValue);
+        return id == that.id && userId == that.userId && length == that.length && Objects.equals(date, that.date) && Objects.equals(detailValue, that.detailValue) && Objects.equals(goalLength, that.goalLength) && Objects.equals(bedtimeGoal, that.bedtimeGoal);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, userId,  date, detailValue, length);
+        return Objects.hash(id, userId,  date, detailValue, length, goalLength, bedtimeGoal);
     }
 }

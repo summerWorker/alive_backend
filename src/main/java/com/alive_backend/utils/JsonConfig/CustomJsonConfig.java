@@ -31,6 +31,9 @@ public class CustomJsonConfig extends JsonConfig {
             }
 
             private Object process(Object value) {
+                if (value == null) {
+                    return ""; // 处理 null 值
+                }
                 if (value instanceof Date) {
                     SimpleDateFormat sdf = new SimpleDateFormat(pattern);
                     return sdf.format((Date) value);

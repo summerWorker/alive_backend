@@ -33,71 +33,76 @@ class WeightServiceImplTest {
     }
 
     @Test
-    void getWeight() {
+    void getWeightByDate() {
         // 创建用于测试的假数据
-        Weight fakeWeight_2022 =new Weight(1, 2022, "{\"items\":[{\"date\":\"2022-07-10\",\"weight\":60.0}]}");
-        Weight fakeWeight_2023 =new Weight(1, 2023, "{\"items\":[{\"date\":\"2023-06-11\",\"weight\":61.0}]}");
-        List<Weight> fakeWeights = Arrays.asList(
-                fakeWeight_2022,
-                fakeWeight_2023
-        );
+        Weight fakeWeight1 = new Weight(), fakeWeight2 = new Weight();
+        fakeWeight1.setUserId(1); fakeWeight1.setDate(Date.valueOf("2022-07-10")); fakeWeight1.setWeight(60.0);
+        fakeWeight2.setUserId(1); fakeWeight2.setDate(Date.valueOf("2022-07-11")); fakeWeight2.setWeight(61.0);
 
         // 指定Mock对象的行为
-        when(weightDao.getWeightByYear(anyInt(), anyInt())).thenReturn(null);
-        when(weightDao.getWeightByYear(1, 2022)).thenReturn(fakeWeight_2022);
-        when(weightDao.getWeightByYear(1, 2023)).thenReturn(fakeWeight_2023);
+        when(weightDao.getWeightByDate(1, Date.valueOf("2022-07-10"))).thenReturn(fakeWeight1);
+        when(weightDao.getWeightByDate(1,Date.valueOf("2022-07-11"))).thenReturn(fakeWeight2);
 
         // 执行被测试的方法
-        List<Weight> weights = weightService.getWeight(1, null, null);
-        assertNull(weights);
+        // 非法日期
+        Weight weight = weightService.getWeightByDate(1, null);
+        assertNull(weight);
 
-        List<Weight> weights1 = weightService.getWeight(1, Date.valueOf("2022-07-10"), Date.valueOf("2023-07-10"));
-        assertEquals(weights1, fakeWeights);
+        // 非法用户ID
+        Weight weight0 = weightService.getWeightByDate(-1, Date.valueOf("2022-07-10"));
+        assertNull(weight0);
+
+        // 合法日期和用户ID
+        Weight weight1 = weightService.getWeightByDate(1, Date.valueOf("2022-07-10"));
+        assertEquals(weight1, fakeWeight1);
+
+        Weight weight2 = weightService.getWeightByDate(1, Date.valueOf("2022-07-11"));
+        assertEquals(weight2, fakeWeight2);
 
         // 验证Mock对象的方法的调用次数
-        verify(weightDao, times(2)).getWeightByYear(anyInt(), anyInt());
+        verify(weightDao, times(3)).getWeightByDate(anyInt(), any(Date.class));
     }
 
     @Test
     void addWeight() {
         // 创建用于测试的假数据
-        Weight addWeight = new Weight();
-        addWeight.setUserId(1); addWeight.setYearId(1900); addWeight.setDetailValue("{\"items\":[{\"date\":\"2022-06-10\",\"weight\":59.1}]}");
+        Weight fakeWeight1 = new Weight();
+        fakeWeight1.setUserId(1); fakeWeight1.setDate(Date.valueOf("2022-07-10")); fakeWeight1.setWeight(60.0);
 
         // 指定Mock对象的行为
-        when(weightDao.addWeight(eq(addWeight))).thenReturn(addWeight);
+        when(weightDao.addWeight(eq(fakeWeight1))).thenReturn(fakeWeight1);
 
         // 执行被测试的方法
-        Weight weight = weightService.addWeight(addWeight);
-        assertEquals(weight, addWeight);
+        Weight weight = weightService.addWeight(fakeWeight1);
+        assertEquals(weight, fakeWeight1);
 
         // 验证Mock对象的方法是否被调用
-        verify(weightDao, times(1)).addWeight(eq(addWeight));
+        verify(weightDao, times(1)).addWeight(eq(fakeWeight1));
     }
 
     @Test
-    void getWeightByYear() {
+    void getWeightByUser() {
         // 创建用于测试的假数据
-        Weight weight2022 = new Weight(1, 2022, "{\"items\":[{\"date\":\"2022-07-10\",\"weight\":60.0}]}");
-
+        Weight fakeWeight1 = new Weight(), fakeWeight2 = new Weight(), fakeWeight3 = new Weight();
+        fakeWeight1.setUserId(1); fakeWeight1.setDate(Date.valueOf("2022-07-10")); fakeWeight1.setWeight(60.0);
+        fakeWeight2.setUserId(1); fakeWeight2.setDate(Date.valueOf("2022-07-11")); fakeWeight2.setWeight(61.0);
+        fakeWeight3.setUserId(1); fakeWeight3.setDate(Date.valueOf("2022-07-12")); fakeWeight3.setWeight(62.0);
+        List<Weight> fakeWeights = Arrays.asList(
+                fakeWeight1, fakeWeight2, fakeWeight3
+        );
         // 指定Mock对象的行为
-        when(weightDao.getWeightByYear(1, 2022)).thenReturn(weight2022);
-        when(weightDao.getWeightByYear(3, 2023)).thenReturn(null);
-        when(weightDao.getWeightByYear(1, 1999)).thenReturn(null);
+        when(weightDao.getWeightByUser(1)).thenReturn(fakeWeights);
 
         // 执行被测试的方法
-        Weight weight = weightService.getWeightByYear(1, 2022);
-        assertEquals(2022, weight.getYearId());
+        // 非法用户ID
+        List<Weight> weights0 = weightService.getWeightByUser(-1);
+        assertTrue(weights0.isEmpty());
 
-        Weight weight1 = weightService.getWeightByYear(3, 2023);
-        assertNull(weight1);
-
-        Weight weight2 = weightService.getWeightByYear(1, 1999);
-        assertNull(weight2);
+        // 合法用户ID
+        List<Weight> weights = weightService.getWeightByUser(1);
+        assertEquals(weights, fakeWeights);
 
         // 验证Mock对象的方法是否被调用
-        verify(weightDao, times(1)).getWeightByYear(1, 2022);
-        verify(weightDao, times(1)).getWeightByYear(3, 2023);
-        verify(weightDao, times(1)).getWeightByYear(1, 1999);
+        verify(weightDao, times(2)).getWeightByUser(anyInt());
     }
 }
