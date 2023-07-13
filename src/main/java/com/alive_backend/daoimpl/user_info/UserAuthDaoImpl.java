@@ -27,4 +27,8 @@ public class UserAuthDaoImpl implements UserAuthDao {
             return null;
         }
     }
+    @Override
+    public UserAuth findUserById(int id) {
+        return userAuthRepository.findByUserId(id);
+    }
 }
