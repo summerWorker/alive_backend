@@ -11,5 +11,7 @@ import java.util.UUID;
 public interface FoodRepository extends JpaRepository<Food, UUID> {
     Food findByName(String name);
     List<Food> findByUserId(int userId);
-    Food getById(UUID id);
+//    Food getById(UUID id);
+
+    Food getFoodById(UUID id);
 }
