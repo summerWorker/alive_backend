@@ -2,6 +2,7 @@ package com.alive_backend.utils.constant;
 
 public class FoodConstant {
     public static final String NAME = "name";
+    public static final String FOOD_ID = "foodId";
     public static final String PICTURE = "picture";
     public static final String USER_ID = "userId";
     public static final String CARBOHYDRATE = "carbohydrate";

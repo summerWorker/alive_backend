@@ -9,7 +9,7 @@ import java.util.UUID;
 public interface DietService {
     Diet addDiet(Diet diet);
 
-    Diet findDietByUserIdAndFoodIdAndDateAndType(UUID userId, UUID foodId, Date date, FoodTypeEnum type);
+    Diet findDietByUserIdAndFoodIdAndDateAndType(int userId, UUID foodId, Date date, int type);
 
     void updateDiet(Diet diet1);
 }

@@ -21,7 +21,7 @@ public class DietServiceImpl implements DietService {
     }
 
     @Override
-    public Diet findDietByUserIdAndFoodIdAndDateAndType(UUID userId, UUID foodId, Date date, FoodTypeEnum type) {
+    public Diet findDietByUserIdAndFoodIdAndDateAndType(int userId, UUID foodId, Date date, int type) {
         return dietDao.findDietByUserIdAndFoodIdAndDateAndType(userId, foodId, date, type);
     }
 

@@ -16,7 +16,7 @@ public class DietDaoImpl implements DietDao {
     @Autowired
     private DietRepository dietRepository;
     @Override
-    public List<Diet> getDietByUserId(UUID userId) {
+    public List<Diet> getDietByUserId(int userId) {
         return dietRepository.getByUserId(userId);
     }
 
@@ -31,7 +31,7 @@ public class DietDaoImpl implements DietDao {
     }
 
     @Override
-    public Diet findDietByUserIdAndFoodIdAndDateAndType(UUID userId, UUID foodId, Date date, FoodTypeEnum type) {
+    public Diet findDietByUserIdAndFoodIdAndDateAndType(int userId, UUID foodId, Date date, int type) {
         return dietRepository.getByUserIdAndFoodIdAndDateAndType(userId, foodId, date, type);
     }
 

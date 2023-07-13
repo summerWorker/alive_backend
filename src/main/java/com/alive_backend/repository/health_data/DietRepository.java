@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface DietRepository extends JpaRepository<Diet, UUID> {
-    List<Diet> getByUserId(UUID userId);
+    List<Diet> getByUserId(int userId);
 
-    Diet getByUserIdAndFoodIdAndDateAndType(UUID userId, UUID foodId, Date date, FoodTypeEnum type);
+    Diet getByUserIdAndFoodIdAndDateAndType(int userId, UUID foodId, Date date, int type);
 }
