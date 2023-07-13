@@ -13,6 +13,7 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@CrossOrigin("http://localhost:3000")
 public class SleepController {
     @Autowired
     private SleepDetailService sleepDetailService;
@@ -31,7 +33,7 @@ public class SleepController {
     * @Brief: 获取一天的睡眠数据(详细)
     * */
     @PostMapping("/day_sleep")
-    @Cacheable(value = "day_sleep", key = "#data.get('user_id')+ '_' + #data.get('start_date') + '_' + #data.get('end_date')")
+//    @Cacheable(value = "day_sleep", key = "#data.get('user_id')+ '_' + #data.get('start_date') + '_' + #data.get('end_date')")
     public Msg getDaySleep(@RequestBody Map<String,Object> data) {
         /* 检验参数合法性 */
         Object id_ = data.get(UserConstant.USER_ID);

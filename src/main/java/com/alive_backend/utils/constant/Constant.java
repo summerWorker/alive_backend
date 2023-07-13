@@ -8,6 +8,10 @@ public class Constant {
     public static final String WEIGHT = "weight";
     public static final String HEIGHT = "height";
     public static final String GOAL = "goal";
+    public static final String SYSTOLIC = "systolic";
+    public static final String DIASTOLIC = "diastolic";
+    public static final String BLOOD_SUGAR = "blood_sugar";
+
 
 
     /* 分析模型 */
