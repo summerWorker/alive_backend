@@ -122,27 +122,26 @@ public class WeightController {
     @PostMapping("/period_weight")
     @UserLoginToken
     @Cacheable(value = "periodWeightCache", key = "#data.get('user_id')+ '_' + #data.get('start_date') + '_' + #data.get('end_date')")
-    public Msg getPeriodWeight(@RequestBody Map<String,Object> data) {
+    public Msg getPeriodWeight(@RequestBody Map<String,Object> data, HttpServletRequest httpServletRequest) {
         // 检验参数合法性
-        Object id_ = data.get(UserConstant.USER_ID);
+        String token = httpServletRequest.getHeader("token");
+        int id = tokenService.getUserIdFromToken(token);
         Object start_ = data.get(Constant.START_DATE);
         Object end_ = data.get(Constant.END_DATE);
-        if (id_ == null || start_ == null || end_ == null) {
-            return MsgUtil.makeMsg(MsgUtil.ERROR, "传参错误{user_id:1,start:yyyy-MM-dd,end:yyyy-MM-dd}", null);
+        if ( start_ == null || end_ == null) {
+            return MsgUtil.makeMsg(MsgUtil.ERROR, "传参错误{start:yyyy-MM-dd,end:yyyy-MM-dd}", null);
         }
-        int id; Date start; Date end;
+        Date start, end;
         try {
-            id = (int) id_;
             start = Date.valueOf((String) start_);
             end = Date.valueOf((String) end_);
         } catch (Exception e) {
-            return MsgUtil.makeMsg(MsgUtil.ERROR, "传参错误{user_id:1,start:yyyy-MM-dd,end:yyyy-MM-dd}", null);
+            return MsgUtil.makeMsg(MsgUtil.ERROR, "日期格式错误{start:yyyy-MM-dd,end:yyyy-MM-dd}", null);
         }
         if(start.after(end)) {
             return MsgUtil.makeMsg(MsgUtil.ERROR, "开始日期不能在结束日期之后", null);
         }
         List<Weight> weights = new ArrayList<>();
-        double lastWeight = 0.0;
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(start);
