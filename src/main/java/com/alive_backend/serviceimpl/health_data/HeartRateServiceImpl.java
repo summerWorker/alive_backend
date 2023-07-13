@@ -21,7 +21,7 @@ public class HeartRateServiceImpl implements HeartRateService {
     @Override
     public List<HeartRate> findHeartRateByUserIdAndDateBetween(int userId, Date date1, Date date2) {
         Long timeStamp1 = date1.getTime();
-        Long timeStamp2 = date2.getTime();
+        Long timeStamp2 = date2.getTime() + 86400000;
         return heartRateDao.findHeartRateByUserIdAndTimeStampBetween(userId, timeStamp1, timeStamp2);
     }
 }
