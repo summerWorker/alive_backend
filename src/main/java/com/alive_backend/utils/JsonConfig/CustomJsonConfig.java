@@ -5,6 +5,7 @@ import net.sf.json.processors.JsonValueProcessor;
 import net.sf.json.util.CycleDetectionStrategy;
 
 import java.sql.Date;
+import java.sql.Time;
 import java.text.SimpleDateFormat;
 
 /*
@@ -37,6 +38,31 @@ public class CustomJsonConfig extends JsonConfig {
                 if (value instanceof Date) {
                     SimpleDateFormat sdf = new SimpleDateFormat(pattern);
                     return sdf.format((Date) value);
+                }
+                return value;
+            }
+        });
+        // 注册时间值处理器
+        registerJsonValueProcessor(Time.class, new JsonValueProcessor() {
+            private final String pattern = "HH:mm:ss";
+
+            @Override
+            public Object processArrayValue(Object value, JsonConfig jsonConfig) {
+                return process(value);
+            }
+
+            @Override
+            public Object processObjectValue(String key, Object value, JsonConfig jsonConfig) {
+                return process(value);
+            }
+
+            private Object process(Object value) {
+                if (value == null) {
+                    return "00:00:00"; // 处理空值
+                }
+                if (value instanceof Time) {
+                    SimpleDateFormat sdf = new SimpleDateFormat(pattern);
+                    return sdf.format((Time) value);
                 }
                 return value;
             }
