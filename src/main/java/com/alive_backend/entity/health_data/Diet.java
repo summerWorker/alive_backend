@@ -1,5 +1,6 @@
 package com.alive_backend.entity.health_data;
 
+import com.alive_backend.entity.basic_data.Food;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -29,6 +30,12 @@ public class Diet {
     @Basic
     @Column(name = "food_id", columnDefinition = "BINARY(16)")
     private UUID foodId;
+//    @ManyToMany
+//    @JoinTable(name = "diet_food",
+//            joinColumns = @JoinColumn(name = "diet_id", referencedColumnName = "id"),
+//            inverseJoinColumns = @JoinColumn(name = "food_id", referencedColumnName = "id"))
+//    private Food food;
+
     @Basic
     @Column(name = "type")
     private int type;

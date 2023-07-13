@@ -35,8 +35,8 @@ public class FoodServiceImpl implements FoodService {
     }
 
     @Override
-    public Food findFoodById(UUID foodId) {
-        return foodDao.findFoodById(foodId);
+    public Food getFoodById(UUID foodId) {
+        return foodDao.getFoodById(foodId);
     }
 
 

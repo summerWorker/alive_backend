@@ -20,9 +20,30 @@ public class FoodController{
     private FoodService foodService;
 
     @PostMapping("/add_food")
-    public Msg addFood(@RequestBody Food food){
-        if(food == null){
-            return MsgUtil.makeMsg(MsgUtil.ERROR, "传参错误", null);
+    public Msg addFood(@RequestBody Map<String,Object> data){
+        Object name_ = data.get(FoodConstant.NAME);
+        Object picture_ = data.get(FoodConstant.PICTURE);
+        Object userId_ = data.get(FoodConstant.USER_ID);
+        Object calorie_ = data.get(FoodConstant.CALORIE);
+        Object carbohydrate_ = data.get(FoodConstant.CARBOHYDRATE);
+        Object protein_ = data.get(FoodConstant.PROTEIN);
+        Object fat_ = data.get(FoodConstant.FAT);
+        Object dietaryFiber_ = data.get(FoodConstant.DIETARY_FIBER);
+        Object sodium_ = data.get(FoodConstant.SODIUM);
+
+        Food food = new Food();
+        try{
+            food.setName((String) name_);
+            food.setPicture((String) picture_);
+            food.setUserId(((Number) userId_).intValue());
+            food.setCalorie(((Number) calorie_).doubleValue());
+            food.setCarbohydrate(((Number) carbohydrate_).doubleValue());
+            food.setProtein(((Number) protein_).doubleValue());
+            food.setFat(((Number) fat_).doubleValue());
+            food.setDietaryFiber(((Number) dietaryFiber_).doubleValue());
+            food.setSodium(((Number) sodium_).doubleValue());
+        }catch (Exception e){
+            return MsgUtil.makeMsg(MsgUtil.ERROR, "传参格式{name:面包, picture:https://img.zcool.cn/community/01e6315d6e20b0a801211f9ef9fe34.jpg@3000w_1l_2o_100sh, userId:-1, calorie:254, carbohydrate:43.1, protein:12.3, fat:3.5, dietaryFiber:6.0, sodium:449.0}", null);
         }
 
         if(foodService.findFoodByName(food.getName()) != null){
