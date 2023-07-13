@@ -38,7 +38,7 @@ public class DietController{
         Object type_ = data.get(DietConstant.TYPE);
         Object amount_ = data.get(DietConstant.AMOUNT);
         if (userId_ == null || foodName_ == null || date_ == null || type_ == null || amount_ == null) {
-            return MsgUtil.makeMsg(MsgUtil.ERROR, "传参格式{userId:1, name:“面包”, date:2020-01-01, type:早餐, amount:1}", null);
+            return MsgUtil.makeMsg(MsgUtil.ERROR, "传参格式{user_id:1, name:“面包”, date:2020-01-01, type:BREAKFAST, amount:1}", null);
         }
 
         Diet diet = new Diet();
@@ -81,7 +81,7 @@ public class DietController{
         } catch (Exception e){
             return MsgUtil.makeMsg(MsgUtil.ERROR, "添加失败", JSONObject.fromObject(e));
         }
-            return MsgUtil.makeMsg(MsgUtil.SUCCESS, "添加成功", JSONObject.fromObject(diet1,new CustomJsonConfig()));
+            return MsgUtil.makeMsg(MsgUtil.SUCCESS, "添加成功", JSONObject.fromObject(diet,new CustomJsonConfig()));
 
     }
 
@@ -91,5 +91,5 @@ public class DietController{
 
 //    @PostMapping("/delete_diet")
 
-//    @GetMapping("/get_diet")
+
 }
