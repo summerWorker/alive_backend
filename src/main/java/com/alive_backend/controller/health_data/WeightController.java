@@ -44,36 +44,32 @@ public class WeightController {
 
     @PostMapping("/weight")
     @UserLoginToken
-    @Cacheable(value = "weightCache", key = "#data.get('user_id')+ '_' + #data.get('start_date') + '_' +#data.get('end_date')")
+    @Cacheable(value = "weightCache", key = "#data.get('user_id')+ '_' + #data.get('date')")
     public Msg getWeight(@RequestBody Map<String, Object> data, HttpServletRequest httpServletRequest) {
         String token = httpServletRequest.getHeader("token");
         int id = tokenService.getUserIdFromToken(token);
 
         /* 检验参数合法性 */
-//        Object id_ = data.get(UserConstant.USER_ID);
         Object date_ = data.get(Constant.DATE);
-        if ( date_ == null) {
-            return MsgUtil.makeMsg(MsgUtil.ERROR, "传参错误{user_id:1,date:yyyy-MM-dd}", null);
-        }
-//        int id;
-        Date date;
+        if ( date_ == null)
+            return MsgUtil.makeMsg(MsgUtil.ERROR, "传参错误{date:yyyy-MM-dd}", null);
+
+        Date date = null;
         try {
-//            id = (int) id_;
             date = Date.valueOf((String) date_);
         } catch (Exception e) {
-            return MsgUtil.makeMsg(MsgUtil.ERROR, "传参错误{user_id:1,date:yyyy-MM-dd}", null);
+            return MsgUtil.makeMsg(MsgUtil.ERROR, "日期格式错误{date:yyyy-MM-dd}", null);
         }
         Weight weight = weightService.getWeightByDate(id, date);
         return MsgUtil.makeMsg(MsgUtil.SUCCESS, MsgUtil.SUCCESS_MSG, JSONObject.fromObject(weight, new CustomJsonConfig()));
     }
     @PostMapping("/user_weight")
-    public Msg getWeightByUser(@RequestBody Map<String,Object> data) {
+    @Cacheable(value = "weightCache", key = "#data.get('user_id')")
+    @UserLoginToken
+    public Msg getWeightByUser(@RequestBody Map<String,Object> data, HttpServletRequest httpServletRequest) {
         // 检验参数合法性
-        Object id_ = data.get(UserConstant.USER_ID);
-        if (id_ == null) {
-            return MsgUtil.makeMsg(MsgUtil.ERROR, "传参错误{user_id:1}", null);
-        }
-        int id = (int) id_;
+        String token = httpServletRequest.getHeader("token");
+        int id = tokenService.getUserIdFromToken(token);
 
         JSONArray jsonArray = JSONArray.fromObject(weightService.getWeightByUser(id), new CustomJsonConfig());
         JSONObject jsonObject = new JSONObject();
@@ -87,20 +83,18 @@ public class WeightController {
         String token = httpServletRequest.getHeader("token");
         int id = tokenService.getUserIdFromToken(token);
         /* 检验参数合法性 */
-//        Object id_ = data.get(UserConstant.USER_ID);
         Object date_ = data.get(Constant.DATE);
         Object weight_ = data.get(Constant.WEIGHT);
         if (date_ == null || weight_ == null) {
-            return MsgUtil.makeMsg(MsgUtil.ARG_ERROR, "传参错误{user_id:1, date:2023-04-01, weight:60}", null);
+            return MsgUtil.makeMsg(MsgUtil.ARG_ERROR, "传参错误{date:2023-04-01, weight:60}", null);
         }
 
         double weight; Date date;
         try {
-//            id = (int) id_;
             weight = ((Number) weight_).doubleValue();
             date = Date.valueOf((String) date_);
         } catch (Exception e) {
-            return MsgUtil.makeMsg(MsgUtil.ERROR, "传参错误{user_id:1,weight:1.0,date:yyyy-MM-dd}", null);
+            return MsgUtil.makeMsg(MsgUtil.ERROR, "日期格式错误{weight:1.0,date:yyyy-MM-dd}", null);
         }
 
         // 同日覆盖
@@ -109,9 +103,9 @@ public class WeightController {
             weight0.setWeight(weight);
             try {
                 Weight newWeight = weightService.addWeight(weight0);
-                return MsgUtil.makeMsg(MsgUtil.SUCCESS, "添加成功", JSONObject.fromObject(newWeight, new CustomJsonConfig()));
+                return MsgUtil.makeMsg(MsgUtil.SUCCESS, MsgUtil.SUCCESS_MSG, JSONObject.fromObject(newWeight, new CustomJsonConfig()));
             } catch (Exception e) {
-                return MsgUtil.makeMsg(MsgUtil.ERROR, "添加失败", null);
+                return MsgUtil.makeMsg(MsgUtil.ERROR, MsgUtil.ERROR_MSG, null);
             }
         }
 
@@ -120,12 +114,14 @@ public class WeightController {
         weight1.setUserId(id); weight1.setWeight(weight); weight1.setDate(date);
         try {
             Weight newWeight = weightService.addWeight(weight1);
-            return MsgUtil.makeMsg(MsgUtil.SUCCESS, "添加成功", JSONObject.fromObject(newWeight, new CustomJsonConfig()));
+            return MsgUtil.makeMsg(MsgUtil.SUCCESS, MsgUtil.SUCCESS_MSG, JSONObject.fromObject(newWeight, new CustomJsonConfig()));
         } catch (Exception e) {
-            return MsgUtil.makeMsg(MsgUtil.ERROR, "添加失败", null);
+            return MsgUtil.makeMsg(MsgUtil.ERROR, MsgUtil.ERROR_MSG, null);
         }
     }
     @PostMapping("/period_weight")
+    @UserLoginToken
+    @Cacheable(value = "periodWeightCache", key = "#data.get('user_id')+ '_' + #data.get('start_date') + '_' + #data.get('end_date')")
     public Msg getPeriodWeight(@RequestBody Map<String,Object> data) {
         // 检验参数合法性
         Object id_ = data.get(UserConstant.USER_ID);

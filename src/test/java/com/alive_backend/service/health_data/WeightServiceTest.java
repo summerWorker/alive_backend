@@ -11,7 +11,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
-class WeightServiceTest {
+public class WeightServiceTest {
     private WeightService weightService;
 
     @BeforeEach
@@ -40,12 +40,16 @@ class WeightServiceTest {
             }
             @Override
             public Weight getLatestWeight(int id) {
-                return null;
+                Weight fakeWeight = new Weight();
+                fakeWeight.setUserId(1); fakeWeight.setDate(Date.valueOf("2022-07-12")); fakeWeight.setWeight(62.0);
+                return fakeWeight;
             }
 
             @Override
             public Weight getWeightBeforeDate(int id, Date date) {
-                return null;
+                Weight fakeWeight = new Weight();
+                fakeWeight.setUserId(1); fakeWeight.setDate(Date.valueOf("2022-07-11")); fakeWeight.setWeight(61.0);
+                return fakeWeight;
             }
         };
     }
@@ -84,5 +88,22 @@ class WeightServiceTest {
         assertEquals(1, weight.get(0).getUserId()); assertEquals(Date.valueOf("2022-07-10"), weight.get(0).getDate()); assertEquals(60.0, weight.get(0).getWeight());
         assertEquals(1, weight.get(1).getUserId()); assertEquals(Date.valueOf("2022-07-11"), weight.get(1).getDate()); assertEquals(61.0, weight.get(1).getWeight());
         assertEquals(1, weight.get(2).getUserId()); assertEquals(Date.valueOf("2022-07-12"), weight.get(2).getDate()); assertEquals(62.0, weight.get(2).getWeight());
+    }
+
+    @Test
+    void getLatestWeight() {
+        Weight weight = weightService.getLatestWeight(1);
+        assertEquals(1, weight.getUserId());
+        assertEquals(Date.valueOf("2022-07-12"), weight.getDate());
+        assertEquals(62.0, weight.getWeight());
+
+    }
+
+    @Test
+    void getWeightBeforeDate() {
+        Weight weight = weightService.getWeightBeforeDate(1, Date.valueOf("2022-07-12"));
+        assertEquals(1, weight.getUserId());
+        assertEquals(Date.valueOf("2022-07-11"), weight.getDate());
+        assertEquals(61.0, weight.getWeight());
     }
 }
