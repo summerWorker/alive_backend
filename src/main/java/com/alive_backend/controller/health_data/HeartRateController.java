@@ -65,4 +65,33 @@ public class HeartRateController {
             return MsgUtil.makeMsg(MsgUtil.SUCCESS, MsgUtil.SUCCESS_MSG, jsonObject);
         }
     }
+    @PostMapping("/add_heartRate")
+    public Msg addHeartRate(@RequestBody Map<String, Object> data){
+        Object userId_ = data.get(UserConstant.USER_ID);
+        Object timeStamp_ = data.get(Constant.TIMESTAMP);
+        Object heartRate_ = data.get(Constant.HEART_RATE);
+        if(userId_ == null || timeStamp_ == null || heartRate_ == null)
+            return MsgUtil.makeMsg(MsgUtil.ARG_ERROR, "传参错误", null);
+        int userId;
+        Long timeStamp;
+        String heartRate;
+        try{
+            userId = (int) userId_;
+            timeStamp = Long.parseLong(String.valueOf(timeStamp_));
+            heartRate = (String) heartRate_;
+        }catch (Exception e){
+            return MsgUtil.makeMsg(MsgUtil.ARG_ERROR, e.toString(), null);
+        }
+        try{
+            HeartRate newHeartRate = new HeartRate();
+            newHeartRate.setUserId(userId);
+            newHeartRate.setTimeStamp(timeStamp);
+            newHeartRate.setDetailValue(heartRate);
+            heartRateService.addHeartRate(newHeartRate);
+            return MsgUtil.makeMsg(MsgUtil.SUCCESS, "添加成功", JSONObject.fromObject(newHeartRate, new CustomJsonConfig()));
+        }
+        catch (Exception e){
+            return MsgUtil.makeMsg(MsgUtil.ERROR, "添加失败", null);
+        }
+    }
 }

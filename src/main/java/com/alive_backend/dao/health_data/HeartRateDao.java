@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface HeartRateDao {
     List<HeartRate> findHeartRateByUserIdAndTimeStampBetween(int userId, Long timeStamp1, Long timeStamp2);
+
+    void addHeartRate(HeartRate newHeartRate);
 }

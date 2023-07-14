@@ -12,6 +12,7 @@ import com.alive_backend.serviceimpl.TokenService;
 import com.alive_backend.utils.constant.UserConstant;
 import com.alive_backend.utils.msg.Msg;
 import com.alive_backend.utils.msg.MsgUtil;
+import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -26,6 +27,7 @@ import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
+@Slf4j
 @RestController
 @CrossOrigin("http://localhost:3000")
 public class MainRecordController {

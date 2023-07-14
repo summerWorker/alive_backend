@@ -24,4 +24,8 @@ public class HeartRateServiceImpl implements HeartRateService {
         Long timeStamp2 = date2.getTime() + 86400000;
         return heartRateDao.findHeartRateByUserIdAndTimeStampBetween(userId, timeStamp1, timeStamp2);
     }
+    @Override
+    public void addHeartRate(HeartRate newHeartRate) {
+        heartRateDao.addHeartRate(newHeartRate);
+    }
 }

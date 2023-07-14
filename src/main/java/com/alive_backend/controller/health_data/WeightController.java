@@ -109,7 +109,6 @@ public class WeightController {
             }
         }
 
-
         Weight weight1 = new Weight();
         weight1.setUserId(id); weight1.setWeight(weight); weight1.setDate(date);
         try {

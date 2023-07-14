@@ -11,6 +11,8 @@ public class Constant {
     public static final String SYSTOLIC = "systolic";
     public static final String DIASTOLIC = "diastolic";
     public static final String BLOOD_SUGAR = "blood_sugar";
+    public static final String TIMESTAMP = "timeStamp";
+    public static final String HEART_RATE = "heartRate";
 
 
 
