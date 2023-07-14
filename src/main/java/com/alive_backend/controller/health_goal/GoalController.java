@@ -51,7 +51,7 @@ public class GoalController {
         Object goalKey1_ = data.get(GoalConstant.GOAL_NUM);
         Object goalKey2_ = data.get(GoalConstant.GOAL_DESC);
         if (id_ == null || goalName_ == null) {
-            return MsgUtil.makeMsg(MsgUtil.ERROR, "传参错误{user_id: 1, goal_name: 'goal_name'}", null);
+            return MsgUtil.makeMsg(MsgUtil.ERROR, "传参错误{user_id: 1, goal_name: 'goalName'}", null);
         }
         int id = (int) id_;
         String goalName = (String) goalName_;
@@ -62,11 +62,11 @@ public class GoalController {
                     try {
                         goalDdl = Date.valueOf((String) goalDdl_);
                     } catch (Exception e) {
-                        return MsgUtil.makeMsg(MsgUtil.ERROR, "日期格式错误{goal_ddl: '2019-01-01'}", null);
+                        return MsgUtil.makeMsg(MsgUtil.ERROR, "日期格式错误{goalDdl: '2019-01-01'}", null);
                     }
                 }
                 if (goalKey1_ == null) {
-                    return MsgUtil.makeMsg(MsgUtil.ERROR, "体重目标需要一个具体的值{goal_num: 60}", null);
+                    return MsgUtil.makeMsg(MsgUtil.ERROR, "体重目标需要一个具体的值{goalKey1: 60}", null);
                 }
                 double goalKey1 = ((Number) goalKey1_).doubleValue();
                 Goal old_goal = goalService.getGoalByGoalName(id, GoalConstant.WEIGHT_GOAL);
@@ -88,7 +88,7 @@ public class GoalController {
 
             case GoalConstant.STEP_GOAL: {
                 if (goalKey1_ == null) {
-                    return MsgUtil.makeMsg(MsgUtil.ERROR, "步数目标需要一个具体的值{goal_num: 10000}", null);
+                    return MsgUtil.makeMsg(MsgUtil.ERROR, "步数目标需要一个具体的值{goalKey1: 10000}", null);
                 }
                 double goalKey1 = ((Number) goalKey1_).doubleValue();
                 // 步数不设置ddl
@@ -108,7 +108,7 @@ public class GoalController {
 
             case GoalConstant.SLEEP_LENGTH_GOAL: {
                 if (goalKey1_ == null) {
-                    return MsgUtil.makeMsg(MsgUtil.ERROR, "睡眠长度目标需要一个具体的值{goal_num: 8.5}", null);
+                    return MsgUtil.makeMsg(MsgUtil.ERROR, "睡眠长度目标需要一个具体的值{goalNum: 8.5}", null);
                 }
                 double goalKey1 = ((Number) goalKey1_).doubleValue();
                 // 睡眠长度不设置ddl
@@ -128,7 +128,7 @@ public class GoalController {
 
             case GoalConstant.BEDTIME_GOAL: {
                 if (goalKey2_ == null) {
-                    return MsgUtil.makeMsg(MsgUtil.ERROR, "入睡时间目标需要一个具体的时间{goal_desc: “21:00”}", null);
+                    return MsgUtil.makeMsg(MsgUtil.ERROR, "入睡时间目标需要一个具体的时间{goalKey2: “21:00”}", null);
                 }
                 String goalKey2 = (String) goalKey2_;
                 goalKey2 = timeValid(goalKey2);
@@ -153,7 +153,7 @@ public class GoalController {
 
             case GoalConstant.CALORIE_GOAL: {
                 if (goalKey1_ == null) {
-                    return MsgUtil.makeMsg(MsgUtil.ERROR, "卡路里目标需要一个具体的值{goal_num: 2000}", null);
+                    return MsgUtil.makeMsg(MsgUtil.ERROR, "卡路里目标需要一个具体的值{goalNum: 2000}", null);
                 }
                 double goalKey1 = ((Number) goalKey1_).doubleValue();
                 // 卡路里不设置ddl

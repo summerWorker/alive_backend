@@ -27,6 +27,10 @@ public class WeightServiceImpl implements WeightService {
     @Override
     public Weight addWeight(Weight weight) {
         Goal goal = goalDao.getGoalByGoalName(weight.getUserId(), GoalConstant.WEIGHT_GOAL);
+        if (goal == null) {
+            weight.setGoal(-1.0);
+            return weightDao.addWeight(weight);
+        }
         Date today = new Date(Calendar.getInstance().getTimeInMillis());
         Date date = weight.getDate();
         if (date.before(today)) {
@@ -34,8 +38,11 @@ public class WeightServiceImpl implements WeightService {
             if(lastWeight != null && lastWeight.getGoal() > 0.0)
                 weight.setGoal(lastWeight.getGoal());
         }
-        else if(goal.getGoalKey1() != null)
-            weight.setGoal(goal.getGoalKey1());
+        else if(goal.getGoalKey1() != null) {
+            Date ddl = goal.getGoalDdl();
+            if(ddl!=null && today.before(ddl))
+                weight.setGoal(goal.getGoalKey1());
+        }
         return weightDao.addWeight(weight);
     }
     @Override

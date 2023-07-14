@@ -23,4 +23,8 @@ public class UserAuthServiceImpl implements UserAuthService {
     public UserAuth saveUserAuth(UserAuth userAuth) {
         return userAuthDao.saveUserAuth(userAuth);
     }
+    @Override
+    public UserAuth findUserById(int id) {
+        return userAuthDao.findUserById(id);
+    }
 }

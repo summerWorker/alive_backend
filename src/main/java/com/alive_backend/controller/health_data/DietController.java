@@ -12,11 +12,15 @@ import com.alive_backend.utils.constant.UserConstant;
 import com.alive_backend.utils.enumerate.FoodTypeEnum;
 import com.alive_backend.utils.msg.Msg;
 import com.alive_backend.utils.msg.MsgUtil;
+import lombok.var;
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -38,7 +42,7 @@ public class DietController{
         Object type_ = data.get(DietConstant.TYPE);
         Object amount_ = data.get(DietConstant.AMOUNT);
         if (userId_ == null || foodName_ == null || date_ == null || type_ == null || amount_ == null) {
-            return MsgUtil.makeMsg(MsgUtil.ERROR, "传参格式{userId:1, name:“面包”, date:2020-01-01, type:早餐, amount:1}", null);
+            return MsgUtil.makeMsg(MsgUtil.ERROR, "传参格式{user_id:1, name:“面包”, date:2020-01-01, type:BREAKFAST, amount:1}", null);
         }
 
         Diet diet = new Diet();
@@ -72,7 +76,7 @@ public class DietController{
         Diet diet1 = dietService.findDietByUserIdAndFoodIdAndDateAndType(diet.getUserId(), diet.getFoodId(), diet.getDate(), diet.getType());
         System.out.println(diet1);
         if(diet1 != null){
-            diet.setAmount(diet1.getAmount() + diet.getAmount());
+            diet.setAmount(diet.getAmount());
             diet.setId(diet1.getId());
         }
         try{
@@ -81,8 +85,36 @@ public class DietController{
         } catch (Exception e){
             return MsgUtil.makeMsg(MsgUtil.ERROR, "添加失败", JSONObject.fromObject(e));
         }
-            return MsgUtil.makeMsg(MsgUtil.SUCCESS, "添加成功", JSONObject.fromObject(diet1,new CustomJsonConfig()));
+            return MsgUtil.makeMsg(MsgUtil.SUCCESS, "添加成功", JSONObject.fromObject(diet,new CustomJsonConfig()));
 
+    }
+
+    @GetMapping("/get_diet")
+    public Msg getDiet(@RequestParam("user_id") int userId, @RequestParam("date") Date date){
+        List<Diet> dietList = dietService.findDietByUserIdAndDate(userId, date);
+        JSONArray jsonArray = new JSONArray();
+
+        if(dietList == null || dietList.size() == 0){
+            return MsgUtil.makeMsg(MsgUtil.EMPTY_ERROR, "查询失败，该用户当天没有添加食物", null);
+        }
+
+        for (Diet diet : dietList) {
+            Food food = foodService.getFoodById(diet.getFoodId());
+
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("id", diet.getId());
+            jsonObject.put("user_id", diet.getUserId());
+            jsonObject.put("food", food);
+            jsonObject.put("date", diet.getDate().toString());
+            jsonObject.put("type", FoodTypeEnum.values()[diet.getType()]);
+            jsonObject.put("amount", diet.getAmount());
+
+            jsonArray.add(jsonObject);
+        }
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("diet_list", jsonArray);
+        return MsgUtil.makeMsg(MsgUtil.SUCCESS, "查询成功", jsonObject);
     }
 
 
@@ -91,5 +123,5 @@ public class DietController{
 
 //    @PostMapping("/delete_diet")
 
-//    @GetMapping("/get_diet")
+
 }

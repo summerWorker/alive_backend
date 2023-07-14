@@ -1,5 +1,7 @@
 package com.alive_backend.entity.health_data;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,13 +15,17 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@JsonIgnoreProperties("id")
 public class Weight {
     @Basic
     @Column(name = "user_id")
     private int userId;
+
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", columnDefinition = "BINARY(16)")
+//    @JsonIgnore
     private UUID id;
     @Basic
     @Column(name = "weight")

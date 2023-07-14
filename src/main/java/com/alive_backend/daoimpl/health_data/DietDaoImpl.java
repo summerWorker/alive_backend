@@ -40,4 +40,9 @@ public class DietDaoImpl implements DietDao {
         dietRepository.save(diet1);
     }
 
+    @Override
+    public List<Diet> findDietByUserIdAndDate(int userId, Date date) {
+        return dietRepository.getByUserIdAndDate(userId, date);
+    }
+
 }

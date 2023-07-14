@@ -13,5 +13,5 @@ public interface FoodService {
 
     List<Food> findFoodByUserId(int userId);
 
-    Food findFoodById(UUID foodId);
+    Food getFoodById(UUID foodId);
 }

@@ -35,11 +35,8 @@ public class FoodDaoImpl implements FoodDao {
 
     @Override
     public Food getFoodById(UUID id) {
-        return foodRepository.getById(id);
+        return foodRepository.getFoodById(id);
     }
 
-    @Override
-    public Food findFoodById(UUID foodId) {
-        return foodRepository.getById(foodId);
-    }
+
 }

@@ -14,5 +14,5 @@ public interface FoodDao {
     List<Food> findFoodByUserId(int userId);
     Food getFoodById(UUID id);
 
-    Food findFoodById(UUID foodId);
+
 }

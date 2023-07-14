@@ -53,5 +53,6 @@ public class Food {
     @Column(name = "sodium")
     private double sodium;
 
+//    @ManyToMany(mappedBy = "food")
 
 }

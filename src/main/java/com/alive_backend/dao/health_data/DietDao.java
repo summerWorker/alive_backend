@@ -15,4 +15,6 @@ public interface DietDao {
     Diet findDietByUserIdAndFoodIdAndDateAndType(int userId, UUID foodId, Date date, int type);
 
     void updateDiet(Diet diet1);
+
+    List<Diet> findDietByUserIdAndDate(int userId, Date date);
 }

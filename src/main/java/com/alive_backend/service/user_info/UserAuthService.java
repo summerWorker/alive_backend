@@ -6,4 +6,5 @@ public interface UserAuthService {
     UserAuth getUserAuthByName(String name);
     UserAuth getUserAuthByEmail(String email);
     UserAuth saveUserAuth(UserAuth userAuth);
+    UserAuth findUserById(int id);
 }

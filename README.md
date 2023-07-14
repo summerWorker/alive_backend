@@ -379,7 +379,7 @@ table：user，userAuth
        "user_id": 1,
        "goalName":"weight_goal",
        "goalDdl":"2023-07-20",		//可以没有
-       "goalNum":50							//可以没有（仅仅修改ddl）
+       "goalKey1":50							//可以没有（仅仅修改ddl）
    }
    @Return
    {
