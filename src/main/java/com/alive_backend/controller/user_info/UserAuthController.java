@@ -9,12 +9,16 @@ import com.alive_backend.service.user_info.UserAuthService;
 import com.alive_backend.service.user_info.UserInfoService;
 import com.alive_backend.serviceimpl.TokenService;
 import com.alive_backend.serviceimpl.mail.MailService;
+import com.alive_backend.utils.AESUtil;
 import com.alive_backend.utils.constant.UserConstant;
 import com.alive_backend.utils.msg.Msg;
 import com.alive_backend.utils.msg.MsgUtil;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,6 +28,7 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 @RestController
+@CrossOrigin("http://localhost:3000")
 public class UserAuthController {
     @Autowired
     private UserAuthService userAuthService;
@@ -40,6 +45,8 @@ public class UserAuthController {
 
     @Autowired
     private TokenService tokenService;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @PostMapping("/getCheckCode")
     @ResponseBody
@@ -87,18 +94,19 @@ public class UserAuthController {
         }
 
         /*check checkCode*/
-        String checkCode = checkCode_obj.toString();
-        String checkCodeInRedis = (String) redisTemplate.opsForValue().get(email);
-        redisTemplate.delete(email);
-        if(!checkCode.equals(checkCodeInRedis)){
-            return MsgUtil.makeMsg(MsgUtil.ERROR, "验证码错误", null);
-        }
+//        String checkCode = checkCode_obj.toString();
+//        String checkCodeInRedis = (String) redisTemplate.opsForValue().get(email);
+//        redisTemplate.delete(email);
+//        if(!checkCode.equals(checkCodeInRedis)){
+//            return MsgUtil.makeMsg(MsgUtil.ERROR, "验证码错误", null);
+//        }
 
         /*add userAuth*/
         String password = password_obj.toString();
         user = new UserAuth();
         user.setUsername(name);
         user.setPassword(password);
+        user.setPassword(passwordEncoder.encode(password));
         user.setEmail(email);
         user.setStatus(UserConstant.STATUS_ACTIVATE);
         userAuthService.saveUserAuth(user);
@@ -156,6 +164,50 @@ public class UserAuthController {
 
         return MsgUtil.makeMsg(MsgUtil.SUCCESS, "登录成功",jsonObject);
     }
+    @PostMapping("/login_email")
+    public Msg LoginEmail(@RequestBody Map<String,Object> data) {
+        /* 参数合法性检验 */
+        Object email_ = data.get(UserConstant.EMAIL);
+        Object password_obj = data.get(UserConstant.PASSWORD);
+        if (email_ == null || password_obj == null) {
+            return MsgUtil.makeMsg(MsgUtil.ERROR, "传参错误：{\"email\": 'xxx', \"password\": 'xxx'}", null);
+        }
+
+        /* 检验用户名 */
+        String email = email_.toString();
+        UserAuth user_auth = userAuthService.getUserAuthByEmail(email);
+        if (user_auth == null) {
+            return MsgUtil.makeMsg(MsgUtil.ERROR, "邮箱未注册", null);
+        }
+        if (user_auth.getStatus() == UserConstant.STATUS_INACTIVATE) {
+            return MsgUtil.makeMsg(MsgUtil.ERROR, "用户未激活", null);
+        }
+
+        /* 检验密码 */
+        String password = data.get(UserConstant.PASSWORD).toString();
+        try {
+            password = AESUtil.decrypt(password);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        boolean passwordMatches = passwordEncoder.matches(password, user_auth.getPassword());
+        if (!passwordMatches) {
+            return MsgUtil.makeMsg(MsgUtil.ERROR, "密码错误", null);
+        }
+
+        String token = tokenService.getToken(user_auth);
+
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("token", token);
+
+        System.out.println(user_auth.getUserInfo());
+        UserInfo userInfo = user_auth.getUserInfo();
+        jsonObject.put("userInfo", userInfo);
+
+        return MsgUtil.makeMsg(MsgUtil.SUCCESS, "登录成功",jsonObject);
+    }
+
 
     @DeleteMapping("/logout")
     @UserLoginToken

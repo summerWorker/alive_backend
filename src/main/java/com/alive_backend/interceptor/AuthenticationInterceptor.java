@@ -12,6 +12,8 @@ import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import net.bytebuddy.implementation.auxiliary.AuxiliaryType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -26,6 +28,7 @@ import java.lang.reflect.Method;
  * @author jinbin
  * @date 2018-07-08 20:41
  */
+@Configuration
 public class AuthenticationInterceptor implements HandlerInterceptor {
     @Autowired
     UserAuthServiceImpl userService;
@@ -39,6 +42,13 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object object) throws Exception {
+
+        String uri = httpServletRequest.getRequestURI();
+        System.out.println(uri);
+        if (uri.contains("/login_email")) {
+            return true; // 放行登录接口
+        }
+
         String token = httpServletRequest.getHeader("token");// 从 http 请求头中取出 token
         // 如果不是映射到方法直接通过
         if(!(object instanceof HandlerMethod)){

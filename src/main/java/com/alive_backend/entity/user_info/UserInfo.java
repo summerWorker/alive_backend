@@ -2,6 +2,8 @@ package com.alive_backend.entity.user_info;
 
 import javax.persistence.*;
 import com.alive_backend.entity.health_data.MainRecord;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
 import java.util.Objects;
@@ -24,9 +26,9 @@ public class UserInfo {
     @Column(name = "gender")
     private Integer gender;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "user_id")
-    private MainRecord mainRecord;
+//    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+//    @JoinColumn(name = "user_id")
+//    private MainRecord mainRecord;
 
 //    public int getUserId() {
 //        return userId;
