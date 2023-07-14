@@ -89,9 +89,19 @@ public class DietController{
 
     }
 
-    @GetMapping("/get_diet")
-    public Msg getDiet(@RequestParam("user_id") int userId, @RequestParam("date") Date date){
-        List<Diet> dietList = dietService.findDietByUserIdAndDate(userId, date);
+    @PostMapping("/get_diet")
+    public Msg getDiet(@RequestBody Map<String,Object> data){
+        Object userId_ = data.get(UserConstant.USER_ID);
+        Object startDate_ = data.get(Constant.START_DATE);
+        Object endDate_ = data.get(Constant.END_DATE);
+        if (userId_ == null || startDate_ == null || endDate_ == null) {
+            return MsgUtil.makeMsg(MsgUtil.ERROR, "传参格式{user_id:1, start_date:2020-01-01, end_date:2020-01-02}", null);
+        }
+        int userId = ((Number) userId_).intValue();
+        Date startDate = Date.valueOf((String) startDate_);
+        Date endDate = Date.valueOf((String) endDate_);
+
+        List<Diet> dietList = dietService.findDietByUserIdAndDateBetween(userId, startDate,endDate);
         JSONArray jsonArray = new JSONArray();
 
         if(dietList == null || dietList.size() == 0){
