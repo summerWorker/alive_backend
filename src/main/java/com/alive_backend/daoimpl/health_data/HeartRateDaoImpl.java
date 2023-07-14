@@ -16,4 +16,8 @@ public class HeartRateDaoImpl implements HeartRateDao {
     public List<HeartRate> findHeartRateByUserIdAndTimeStampBetween(int userId, Long timeStamp1, Long timeStamp2){
         return heartRateRepository.findByUserIdAndTimeStampBetween(userId, timeStamp1, timeStamp2);
     }
+    @Override
+    public void addHeartRate(HeartRate newHeartRate) {
+        heartRateRepository.save(newHeartRate);
+    }
 }

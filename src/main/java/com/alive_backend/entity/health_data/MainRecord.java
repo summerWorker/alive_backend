@@ -32,17 +32,26 @@ public class MainRecord {
     @Column(name = "sleep_time")
     private Double sleepTime;
     @Basic
-    @Column(name = "pressure")
-    private Double pressure;
+    @Column(name = "systolic_pressure")
+    private Double systolicPressure;
+    @Basic
+    @Column(name = "diastolic_pressure")
+    private Double diastolicPressure;
+    @Basic
+    @Column(name = "blood_sugar")
+    private Double bloodSugar;
     @Basic
     @Column(name = "heart_rate")
-    private Double heartRate;
+    private Integer heartRate;
     @Basic
     @Column(name = "health_score")
     private Integer healthScore;
     @Basic
     @Column(name = "health_advice")
     private String healthAdvice;
+    @Basic
+    @Column(name = "steps")
+    private Integer steps;
     @Basic
     @Column(name = "update_time")
     private Timestamp updateTime;

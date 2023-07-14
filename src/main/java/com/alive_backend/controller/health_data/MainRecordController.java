@@ -10,6 +10,7 @@ import com.alive_backend.utils.analysis.BMI;
 import com.alive_backend.utils.constant.UserConstant;
 import com.alive_backend.utils.msg.Msg;
 import com.alive_backend.utils.msg.MsgUtil;
+import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -23,6 +24,7 @@ import java.sql.Timestamp;
 import java.util.Date;
 import java.util.Map;
 
+@Slf4j
 @RestController
 @CrossOrigin("http://localhost:3000")
 public class MainRecordController {
@@ -34,7 +36,7 @@ public class MainRecordController {
     private HeightService heightService;
 
     @PostMapping("/main_record")
-    @Cacheable(value = "mainRecordCache", key = "#data.get('user_id')")
+//    @Cacheable(value = "mainRecordCache", key = "#data.get('user_id')")
     public Msg getMainRecordByUserId(@RequestBody Map<String,Object> data) {
         /* 检验参数合法性 */
         Object id_ = data.get(UserConstant.USER_ID);
