@@ -82,7 +82,7 @@ public class WebSocketServer {
 
                 }
             }
-        }, 0, 1, TimeUnit.DAYS);
+        }, 0, 3, TimeUnit.SECONDS);
     }
 
     /**

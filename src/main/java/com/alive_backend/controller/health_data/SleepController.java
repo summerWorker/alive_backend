@@ -5,6 +5,7 @@ import com.alive_backend.entity.health_data.SleepDetail;
 import com.alive_backend.service.health_data.SleepDetailService;
 import com.alive_backend.serviceimpl.TokenService;
 import com.alive_backend.utils.JsonConfig.CustomJsonConfig;
+import com.alive_backend.utils.analysis.Age;
 import com.alive_backend.utils.analysis.SleepQuality;
 import com.alive_backend.utils.constant.Constant;
 import com.alive_backend.utils.constant.SleepConstant;
@@ -36,6 +37,8 @@ public class SleepController {
 
     @Autowired
     private TokenService tokenService;
+    @Autowired
+    private Age age;
 
     /*
     * @Brief: 获取一天的睡眠数据(详细)
@@ -95,7 +98,7 @@ public class SleepController {
         if (detailValue == null) {
             return MsgUtil.makeMsg(MsgUtil.ARG_ERROR, "该用户当天没有睡眠数据", null);
         }
-        JSONObject jsonObject = SleepQuality.analyseDaySleep(JSONObject.fromObject(detailValue));
+        JSONObject jsonObject = SleepQuality.analyseDaySleep(JSONObject.fromObject(detailValue),age.getAge(id));
         return MsgUtil.makeMsg(MsgUtil.SUCCESS, MsgUtil.SUCCESS_MSG, jsonObject);
 
     }

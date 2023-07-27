@@ -3,6 +3,7 @@ package com.alive_backend.entity.health_data;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.Objects;
 
@@ -59,6 +60,10 @@ public class MainRecord {
     @Id
     @Column(name = "record_id")
     private int recordId;
+
+    @Basic
+    @Column(name = "birthday")
+    private Date birthday;
 
 //    public int getUserId() {
 //        return userId;

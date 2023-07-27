@@ -22,6 +22,11 @@ public class SleepConstant {
     public static final String STAY_UP_LATE = "熬夜";
     public static final String EARLY_BEDTIME = "入睡时间过早";
 
+    // 睡眠时长
+    public static final String NORMAL_DURATION = "睡眠时长合理";
+    public static final String SHORT_DURATION = "睡眠时长过短";
+    public static final String LONG_DURATION = "睡眠时长过长";
+
     //String 数组
     public static final String[] ADVICE_FOR_LATE = {
             "睡前尽量避免刺激性活动和使用电子设备，例如手机、电脑和电视。创建一个安静、舒适、有利于睡眠的环境。",
