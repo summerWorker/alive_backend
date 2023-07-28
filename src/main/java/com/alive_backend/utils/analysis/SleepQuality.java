@@ -22,15 +22,13 @@ public class SleepQuality {
                     "duration": 511,
         * */
         int awakeCount = sleepData.getInt(SleepConstant.AWAKE_COUNT),
-            awakeTime = sleepData.getInt(SleepConstant.AWAKE_TIME),
             deepSleepTime = sleepData.getInt(SleepConstant.DEEP_SLEEP_TIME),
             lightSleepTime = sleepData.getInt(SleepConstant.LIGHT_SLEEP_TIME),
             remSleepTime = sleepData.getInt(SleepConstant.REM_SLEEP_TIME),
             length = sleepData.getInt(SleepConstant.LENGTH);
         long bedtime = sleepData.getLong(SleepConstant.BEDTIME);
 
-        double awakeRate = (double)awakeTime / length,
-               deepSleepRate = (double)deepSleepTime / length,
+        double deepSleepRate = (double)deepSleepTime / length,
                lightSleepRate = (double)lightSleepTime / length,
                remSleepRate = (double)remSleepTime / length;
 
@@ -43,9 +41,13 @@ public class SleepQuality {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put(SleepConstant.BEDTIME, analyseBedtime(hour));
         jsonObject.put(SleepConstant.LENGTH, analyseDuration(length, Age.getType(age)));
+        jsonObject.put(SleepConstant.QUALITY, analyseRate(deepSleepRate, lightSleepRate, remSleepRate));
+        jsonObject.put(SleepConstant.AWAKE,analyseAwake(awakeCount));
 
-        double score = jsonObject.getJSONObject(SleepConstant.BEDTIME).getDouble(Constant.SCORE) * 0.3 +
-                       jsonObject.getJSONObject(SleepConstant.LENGTH).getDouble(Constant.SCORE) * 0.7;
+        double score = jsonObject.getJSONObject(SleepConstant.BEDTIME).getDouble(Constant.SCORE) * 0.15 +
+                       jsonObject.getJSONObject(SleepConstant.LENGTH).getDouble(Constant.SCORE) * 0.4 +
+                       jsonObject.getJSONObject(SleepConstant.QUALITY).getDouble(Constant.SCORE) * 0.4 +
+                       jsonObject.getJSONObject(SleepConstant.AWAKE).getDouble(Constant.SCORE) * 0.05;
         jsonObject.put(Constant.SCORE, score);
         return jsonObject;
     }
@@ -131,5 +133,58 @@ public class SleepQuality {
         }
         return jsonObject;
 
+    }
+
+    // 分析睡眠质量: 深睡眠时间，浅睡眠时间，快速眼动睡眠时间
+    // 先看深度睡眠是否是20%-30%：
+    // 如果正常，则检查REM是否是20%-25%：
+    // 如果正常，则检查是浅睡过多还是REM过多
+    public static JSONObject analyseRate(double deepSleepRate, double lightSleepRate, double remSleepRate) {
+        JSONObject jsonObject = new JSONObject();
+        double score = 100.0;
+        Random random = new Random();
+        if (deepSleepRate >= 0.2) {
+            if (remSleepRate >= 0.2) {
+                jsonObject.put(Constant.ANALYSIS, SleepConstant.NORMAL_RATE);
+                jsonObject.put(Constant.ADVICE, SleepConstant.NORMAL_RATE);
+                jsonObject.put(Constant.SCORE, score);
+            } else {
+                jsonObject.put(Constant.ANALYSIS, SleepConstant.LOW_REM_RATE);
+                jsonObject.put(Constant.ADVICE, "深睡充足。日间增加运动锻炼，可以获得更多的快速眼动睡眠。");
+                jsonObject.put(Constant.SCORE, score - 10);
+            }
+        } else {
+            if(lightSleepRate > 0.6) {
+                jsonObject.put(Constant.ANALYSIS, SleepConstant.HIGH_LIGHT_RATE);
+                jsonObject.put(Constant.ADVICE, SleepConstant.ADVICE_FOR_HIGH_LIGHT_SLEEP[random.nextInt(SleepConstant.ADVICE_FOR_HIGH_LIGHT_SLEEP.length)]);
+            }
+            else if (remSleepRate > 0.25) {
+                jsonObject.put(Constant.ANALYSIS, SleepConstant.HIGH_REM_RATE);
+                jsonObject.put(Constant.ADVICE, SleepConstant.ADVICE_FOR_HIGH_REM_SLEEP[random.nextInt(SleepConstant.ADVICE_FOR_HIGH_REM_SLEEP.length)]);
+            }
+            else {
+                jsonObject.put(Constant.ANALYSIS, SleepConstant.LOW_DEEP_RATE);
+                jsonObject.put(Constant.ADVICE, "深睡眠时间过短，建议放松心情，睡前不要玩手机。");
+            }
+            jsonObject.put(Constant.SCORE, deepSleepRate/0.2 * 100);
+        }
+        return jsonObject;
+    }
+
+    // 分析清醒次数
+    public static JSONObject analyseAwake(int awakeCount) {
+        JSONObject jsonObject = new JSONObject();
+        double score = 100.0;
+        if (awakeCount <= 3) {
+            jsonObject.put(Constant.ANALYSIS, SleepConstant.NORMAL_AWAKE);
+            jsonObject.put(Constant.ADVICE, "睡眠连续性较好。");
+            jsonObject.put(Constant.SCORE, score);
+        }
+        else {
+            jsonObject.put(Constant.ANALYSIS, SleepConstant.HIGH_AWAKE);
+            jsonObject.put(Constant.ADVICE, "建议保持卧室环境安静，有助于睡眠的连续性。");
+            jsonObject.put(Constant.SCORE, score - awakeCount/3 * 10);
+        }
+        return jsonObject;
     }
 }
