@@ -44,6 +44,7 @@ public class SleepQuality {
         jsonObject.put(SleepConstant.QUALITY, analyseRate(deepSleepRate, lightSleepRate, remSleepRate));
         jsonObject.put(SleepConstant.AWAKE,analyseAwake(awakeCount));
 
+        // 分数占比
         double score = jsonObject.getJSONObject(SleepConstant.BEDTIME).getDouble(Constant.SCORE) * 0.15 +
                        jsonObject.getJSONObject(SleepConstant.LENGTH).getDouble(Constant.SCORE) * 0.4 +
                        jsonObject.getJSONObject(SleepConstant.QUALITY).getDouble(Constant.SCORE) * 0.4 +
