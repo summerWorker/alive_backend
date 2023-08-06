@@ -1,10 +1,11 @@
 package com.alive_backend.entity.health_data;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.sql.Date;
+import java.util.Date;
 import java.util.UUID;
 
 @Entity
@@ -26,5 +27,6 @@ public class BloodPressure {
     private int diastolic;
     @Basic
     @Column(name = "date")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone="GMT+8")
     private Date date;
 }

@@ -9,4 +9,6 @@ public interface BloodSugarDao {
     List<BloodSugar> getBloodSugarByDate(int id, Date start, Date end);
 
     BloodSugar addBloodSugar(BloodSugar bloodSugar);
+
+    void addBloodSugar(int user_id, Date date, Double blood_sugar);
 }

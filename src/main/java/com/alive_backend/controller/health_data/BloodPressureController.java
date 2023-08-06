@@ -2,32 +2,36 @@ package com.alive_backend.controller.health_data;
 
 
 import com.alive_backend.dao.health_data.BloodPressureDao;
+import com.alive_backend.entity.event.Event;
 import com.alive_backend.entity.health_data.BloodPressure;
 import com.alive_backend.service.health_data.BloodPressureService;
 import com.alive_backend.utils.JsonConfig.CustomJsonConfig;
 import com.alive_backend.utils.constant.Constant;
+import com.alive_backend.utils.constant.TopicConstant;
 import com.alive_backend.utils.constant.UserConstant;
 import com.alive_backend.utils.msg.Msg;
 import com.alive_backend.utils.msg.MsgUtil;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Map;
-import java.sql.Date;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.Date;
 
 @RestController
 @CrossOrigin("http://localhost:3000")
 public class BloodPressureController {
     @Autowired
     private BloodPressureService bloodPressureService;
+
+    @Autowired
+    private KafkaTemplate kafkaTemplate;
 
     @PostMapping("/blood_pressure")
     public Msg getPeriodBloodPressure(@RequestBody Map<String, Object> data) {
@@ -40,10 +44,11 @@ public class BloodPressureController {
         }
         int id;
         Date start, end;
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         try{
             id = (int) id_;
-            start = Date.valueOf((String) start_);
-            end = Date.valueOf((String) end_);
+            start = dateFormat.parse((String) start_);
+            end = dateFormat.parse((String) end_);
         } catch (Exception e) {
             return MsgUtil.makeMsg(MsgUtil.ERROR, "传参错误{user_id:1,start:yyyy-MM-dd,end:yyyy-MM-dd}", null);
         }
@@ -82,9 +87,10 @@ public class BloodPressureController {
         }
         int id, high, low;
         Date date;
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         try{
             id = (int) id_;
-            date = Date.valueOf((String) date_);
+            date = dateFormat.parse((String) date_);
             high = (int) high_;
             low = (int) low_;
         } catch (Exception e) {
@@ -93,16 +99,21 @@ public class BloodPressureController {
         if(high < 0 || low < 0 || high > 300 || low > 300) {
             return MsgUtil.makeMsg(MsgUtil.ERROR, "血压值不合法", null);
         }
-        BloodPressure bloodPressure = new BloodPressure();
-        bloodPressure.setUserId(id);
-        bloodPressure.setDate(date);
-        bloodPressure.setSystolic(high);
-        bloodPressure.setDiastolic(low);
-        try{
-            BloodPressure ret = bloodPressureService.addBloodPressure(bloodPressure);
-            return MsgUtil.makeMsg(MsgUtil.SUCCESS, MsgUtil.SUCCESS_MSG, JSONObject.fromObject(ret, new CustomJsonConfig()));
-        }catch(Exception e){
-            return MsgUtil.makeMsg(MsgUtil.ERROR, "添加失败", null);
-        }
+
+        //创建一个UUID
+        UUID uuid = UUID.randomUUID();
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("uuid", uuid);
+        Event event = new Event();
+        event.setUser_id(id);
+        event.setDate(date);
+        event.setTopic(TopicConstant.BLOOD_PRESSURE_TOPIC);
+        event.setUuid(uuid);
+        Map<String, Object> map = new HashMap<>();
+        map.put(Constant.DIASTOLIC, low);
+        map.put(Constant.SYSTOLIC, high);
+        event.setData(map);
+        kafkaTemplate.send(TopicConstant.BLOOD_PRESSURE_TOPIC, com.alibaba.fastjson2.JSONObject.toJSONString(event));
+        return MsgUtil.makeMsg(MsgUtil.SUCCESS, MsgUtil.SUCCESS_MSG, jsonObject);
     }
 }

@@ -23,4 +23,13 @@ public class BloodSugarDaoImpl implements BloodSugarDao {
     public BloodSugar addBloodSugar(BloodSugar bloodSugar) {
         return bloodSugarRepository.save(bloodSugar);
     }
+
+    @Override
+    public void addBloodSugar(int user_id, Date date, Double blood_sugar) {
+        BloodSugar bloodSugar = new BloodSugar();
+        bloodSugar.setUserId(user_id);
+        bloodSugar.setDate(date);
+        bloodSugar.setBloodSugar(blood_sugar);
+        bloodSugarRepository.save(bloodSugar);
+    }
 }

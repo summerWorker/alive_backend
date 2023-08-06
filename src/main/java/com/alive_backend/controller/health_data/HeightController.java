@@ -1,30 +1,33 @@
 package com.alive_backend.controller.health_data;
 
+import com.alive_backend.entity.event.Event;
 import com.alive_backend.entity.health_data.Height;
 import com.alive_backend.service.health_data.HeightService;
 import com.alive_backend.utils.JsonConfig.CustomJsonConfig;
 import com.alive_backend.utils.constant.Constant;
+import com.alive_backend.utils.constant.TopicConstant;
 import com.alive_backend.utils.constant.UserConstant;
 import com.alive_backend.utils.msg.Msg;
 import com.alive_backend.utils.msg.MsgUtil;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.sql.Date;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
+@CrossOrigin("*")
 public class HeightController {
     @Autowired
     private HeightService heightService;
+    @Autowired
+    private KafkaTemplate kafkaTemplate;
 
     @PostMapping("/height")
     public Msg getHeightByDate(@RequestBody Map<String,Object> data) {
@@ -77,28 +80,20 @@ public class HeightController {
         } catch (Exception e) {
             return MsgUtil.makeMsg(MsgUtil.ERROR, "传参错误{user_id:1,height:1.0,date:yyyy-MM-dd}", null);
         }
-
-        // 同日覆盖
-        Height height0 = heightService.getHeightByDate(id, date);
-        if (height0 != null) {
-            height0.setHeight(height);
-            try {
-                Height newHeight = heightService.addHeight(height0);
-                return MsgUtil.makeMsg(MsgUtil.SUCCESS, "添加成功", JSONObject.fromObject(newHeight, new CustomJsonConfig()));
-            } catch (Exception e) {
-                return MsgUtil.makeMsg(MsgUtil.ERROR, "添加失败", null);
-            }
-        }
-
-
-        Height height1 = new Height();
-        height1.setUserId(id); height1.setHeight(height); height1.setDate(date);
-        try {
-            Height newHeight = heightService.addHeight(height1);
-            return MsgUtil.makeMsg(MsgUtil.SUCCESS, "添加成功", JSONObject.fromObject(newHeight, new CustomJsonConfig()));
-        } catch (Exception e) {
-            return MsgUtil.makeMsg(MsgUtil.ERROR, "添加失败", null);
-        }
+        //创建一个UUID
+        UUID uuid = UUID.randomUUID();
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("uuid", uuid);
+        Event event = new Event();
+        event.setUser_id(id);
+        event.setDate(date);
+        event.setTopic(TopicConstant.HEIGHT_TOPIC);
+        event.setUuid(uuid);
+        Map<String, Object> map = new HashMap<>();
+        map.put(Constant.HEIGHT, height);
+        event.setData(map);
+        kafkaTemplate.send(TopicConstant.HEIGHT_TOPIC, com.alibaba.fastjson2.JSONObject.toJSONString(event));
+        return MsgUtil.makeMsg(MsgUtil.SUCCESS, MsgUtil.SUCCESS_MSG, jsonObject);
     }
     @PostMapping("/period_height")
     public Msg getPeriodHeight(@RequestBody Map<String,Object> data) {

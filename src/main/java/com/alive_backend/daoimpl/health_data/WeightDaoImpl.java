@@ -6,7 +6,7 @@ import com.alive_backend.repository.health_data.WeightRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Date;
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -37,6 +37,14 @@ public class WeightDaoImpl implements WeightDao {
     @Override
     public Weight getWeightBeforeDate(int id, Date date) {
         return weightRepository.findTopByUserIdAndDateBeforeOrderByDateDesc(id,date);
+    }
+    @Override
+    public void addWeight(int user_id, Date date, Double weight) {
+        Weight weight1 = new Weight();
+        weight1.setUserId(user_id);
+        weight1.setDate(date);
+        weight1.setWeight(weight);
+        weightRepository.save(weight1);
     }
 
 }

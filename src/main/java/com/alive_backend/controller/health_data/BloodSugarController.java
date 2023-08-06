@@ -1,31 +1,35 @@
 package com.alive_backend.controller.health_data;
 
+//import com.alibaba.fastjson2.JSONObject as FastJSONObject;
+import net.sf.json.JSONObject;
+import com.alive_backend.entity.event.Event;
 import com.alive_backend.entity.health_data.BloodSugar;
 import com.alive_backend.service.health_data.BloodSugarService;
 import com.alive_backend.utils.JsonConfig.CustomJsonConfig;
 import com.alive_backend.utils.constant.Constant;
 import com.alive_backend.utils.constant.UserConstant;
+import com.alive_backend.utils.constant.TopicConstant;
 import com.alive_backend.utils.msg.Msg;
 import com.alive_backend.utils.msg.MsgUtil;
 import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @CrossOrigin("http://localhost:3000")
 public class BloodSugarController {
     @Autowired
     private BloodSugarService bloodSugarService;
+
+    @Autowired
+    private KafkaTemplate kafkaTemplate;
 
     @PostMapping("/blood_sugar")
     public Msg getPeriodBloodSugar(@RequestBody Map<String, Object> data) {
@@ -63,7 +67,7 @@ public class BloodSugarController {
     }
 
     @PostMapping("/add_blood_sugar")
-    public Msg addBloodSugar(@RequestBody Map<String, Object> data){
+    public Msg addBloodSugar(@RequestBody Map<String, Object> data) throws Exception{
         Object id_ = data.get(UserConstant.USER_ID);
         Object bloodSugar_ = data.get(Constant.BLOOD_SUGAR);
         Object date_ = data.get(Constant.DATE);
@@ -81,15 +85,20 @@ public class BloodSugarController {
         } catch (Exception e) {
             return MsgUtil.makeMsg(MsgUtil.ERROR, "传参错误{user_id:1,blood_sugar:1.1,date:yyyy-MM-dd HH:mm}", null);
         }
-        BloodSugar bloodSugar1 = new BloodSugar();
-        bloodSugar1.setUserId(id);
-        bloodSugar1.setBloodSugar(bloodSugar);
-        bloodSugar1.setDate(date);
-        try{
-            BloodSugar ret = bloodSugarService.addBloodSugar(bloodSugar1);
-            return MsgUtil.makeMsg(MsgUtil.SUCCESS, MsgUtil.SUCCESS_MSG, JSONObject.fromObject(ret, new CustomJsonConfig()));
-        } catch (Exception e) {
-            return MsgUtil.makeMsg(MsgUtil.ERROR, "添加失败", null);
-        }
+
+        //创建一个UUID
+        UUID uuid = UUID.randomUUID();
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("uuid", uuid);
+        Event event = new Event();
+        event.setUser_id(id);
+        event.setDate(date);
+        event.setTopic(TopicConstant.BLOOD_SUGAR_TOPIC);
+        event.setUuid(uuid);
+        Map<String, Object> map = new HashMap<>();
+        map.put(Constant.BLOOD_SUGAR, bloodSugar);
+        event.setData(map);
+        kafkaTemplate.send(TopicConstant.BLOOD_SUGAR_TOPIC, com.alibaba.fastjson2.JSONObject.toJSONString(event));
+        return MsgUtil.makeMsg(MsgUtil.SUCCESS, MsgUtil.SUCCESS_MSG, jsonObject);
     }
 }

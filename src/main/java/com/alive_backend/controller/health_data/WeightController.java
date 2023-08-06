@@ -2,6 +2,7 @@ package com.alive_backend.controller.health_data;
 
 import antlr.Token;
 import com.alive_backend.annotation.UserLoginToken;
+import com.alive_backend.entity.event.Event;
 import com.alive_backend.entity.health_data.Weight;
 import com.alive_backend.entity.health_data.MainRecord;
 import com.alive_backend.service.health_data.WeightService;
@@ -9,6 +10,7 @@ import com.alive_backend.service.health_data.MainRecordService;
 import com.alive_backend.utils.JsonConfig.CustomJsonConfig;
 import com.alive_backend.serviceimpl.TokenService;
 import com.alive_backend.utils.constant.Constant;
+import com.alive_backend.utils.constant.TopicConstant;
 import com.alive_backend.utils.constant.UserConstant;
 import com.alive_backend.utils.msg.Msg;
 import com.alive_backend.utils.msg.MsgUtil;
@@ -21,6 +23,7 @@ import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,16 +31,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Date;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @CrossOrigin("http://localhost:3000")
 public class WeightController {
     @Autowired
     private WeightService weightService;
+    @Autowired
+    private KafkaTemplate kafkaTemplate;
 
     @Autowired
     private TokenService tokenService;
@@ -97,26 +99,20 @@ public class WeightController {
             return MsgUtil.makeMsg(MsgUtil.ERROR, "日期格式错误{weight:1.0,date:yyyy-MM-dd}", null);
         }
 
-        // 同日覆盖
-        Weight weight0 = weightService.getWeightByDate(id, date);
-        if (weight0 != null) {
-            weight0.setWeight(weight);
-            try {
-                Weight newWeight = weightService.addWeight(weight0);
-                return MsgUtil.makeMsg(MsgUtil.SUCCESS, MsgUtil.SUCCESS_MSG, JSONObject.fromObject(newWeight, new CustomJsonConfig()));
-            } catch (Exception e) {
-                return MsgUtil.makeMsg(MsgUtil.ERROR, MsgUtil.ERROR_MSG, null);
-            }
-        }
-
-        Weight weight1 = new Weight();
-        weight1.setUserId(id); weight1.setWeight(weight); weight1.setDate(date);
-        try {
-            Weight newWeight = weightService.addWeight(weight1);
-            return MsgUtil.makeMsg(MsgUtil.SUCCESS, MsgUtil.SUCCESS_MSG, JSONObject.fromObject(newWeight, new CustomJsonConfig()));
-        } catch (Exception e) {
-            return MsgUtil.makeMsg(MsgUtil.ERROR, MsgUtil.ERROR_MSG, null);
-        }
+        //创建一个UUID
+        UUID uuid = UUID.randomUUID();
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("uuid", uuid);
+        Event event = new Event();
+        event.setUser_id(id);
+        event.setDate(date);
+        event.setTopic(TopicConstant.WEIGHT_TOPIC);
+        event.setUuid(uuid);
+        Map<String, Object> map = new HashMap<>();
+        map.put(Constant.WEIGHT, weight);
+        event.setData(map);
+        kafkaTemplate.send(TopicConstant.BLOOD_SUGAR_TOPIC, com.alibaba.fastjson2.JSONObject.toJSONString(event));
+        return MsgUtil.makeMsg(MsgUtil.SUCCESS, MsgUtil.SUCCESS_MSG, jsonObject);
     }
     @PostMapping("/period_weight")
     @UserLoginToken

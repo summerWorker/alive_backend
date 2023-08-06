@@ -4,7 +4,7 @@ import com.alive_backend.entity.health_data.BloodPressure;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Date;
+import java.util.Date;
 
 @Repository
 public interface BloodPressureRepository extends JpaRepository<BloodPressure, Integer> {

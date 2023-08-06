@@ -6,7 +6,7 @@ import com.alive_backend.repository.health_data.BloodPressureRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Date;
+import java.util.Date;
 
 @Repository
 public class BloodPressureDaoImpl implements BloodPressureDao {
@@ -21,5 +21,15 @@ public class BloodPressureDaoImpl implements BloodPressureDao {
     @Override
     public BloodPressure addBloodPressure(BloodPressure bloodPressure) {
         return bloodPressureRepository.save(bloodPressure);
+    }
+
+    @Override
+    public void addBloodPressure(int user_id, Date date, int systolic, int diastolic) {
+        BloodPressure bloodPressure = new BloodPressure();
+        bloodPressure.setUserId(user_id);
+        bloodPressure.setDate(date);
+        bloodPressure.setSystolic(systolic);
+        bloodPressure.setDiastolic(diastolic);
+        bloodPressureRepository.save(bloodPressure);
     }
 }

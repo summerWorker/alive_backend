@@ -11,11 +11,8 @@ import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.Date;
+import java.util.*;
 import java.time.Year;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
 
 @Service
 public class WeightServiceImpl implements WeightService {
@@ -62,4 +59,19 @@ public class WeightServiceImpl implements WeightService {
         return weightDao.getWeightBeforeDate(id, date);
     }
 
+    @Override
+    public void addWeight(int user_id, Date date, Map<String, Object> data){
+        Double weight = Double.parseDouble(String.valueOf(data.get("weight")));
+        Weight weight0 = getWeightByDate(user_id, date);
+        if(weight0 != null){
+            weight0.setWeight(weight);
+            try{
+                addWeight(weight0);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }else{
+            weightDao.addWeight(user_id, date, weight);
+        }
+    }
 }

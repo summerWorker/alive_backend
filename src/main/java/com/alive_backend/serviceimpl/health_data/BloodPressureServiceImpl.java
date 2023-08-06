@@ -6,7 +6,8 @@ import com.alive_backend.service.health_data.BloodPressureService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.Date;
+import java.util.Date;
+import java.util.Map;
 
 @Service
 public class BloodPressureServiceImpl implements BloodPressureService {
@@ -21,5 +22,12 @@ public class BloodPressureServiceImpl implements BloodPressureService {
     @Override
     public BloodPressure addBloodPressure(BloodPressure bloodPressure) {
         return bloodPressureDao.addBloodPressure(bloodPressure);
+    }
+
+    @Override
+    public void addBloodPressure(int userId, Date date, Map<String, Object> data) {
+        int systolic = Integer.parseInt(String.valueOf(data.get("systolic")));
+        int diastolic = Integer.parseInt(String.valueOf(data.get("diastolic")));
+        bloodPressureDao.addBloodPressure(userId, date, systolic, diastolic);
     }
 }
