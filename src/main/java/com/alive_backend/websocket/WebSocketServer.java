@@ -2,11 +2,14 @@ package com.alive_backend.websocket;
 
 import com.alive_backend.entity.goal.Goal;
 import com.alive_backend.service.goal.GoalService;
+import com.alive_backend.serviceimpl.TokenService;
 import com.alive_backend.serviceimpl.goal.GoalServiceImpl;
 import com.alive_backend.utils.constant.GoalConstant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
@@ -17,12 +20,15 @@ import java.util.Map;
 import java.util.concurrent.*;
 
 
-//@ServerEndpoint(value = "/websocket/{token}") //响应路径为 /ws/{token} 的连接请求
-@ServerEndpoint(value = "/websocket/{userId}") //响应路径为 /ws/{token} 的连接请求
+@ServerEndpoint(value = "/websocket/{token}") //响应路径为 /ws/{token} 的连接请求
+//@ServerEndpoint(value = "/websocket/{userId}") //响应路径为 /ws/{token} 的连接请求
 @Component
 public class WebSocketServer {
     /* fix Component中Autowired注入为null问题 */
+    @Resource
+    private TokenService tokenService;
     private static GoalService goalService;
+    private static WebSocketServer webSocketServer;
     @Autowired
     public void setGoalService(GoalService goalService) {
         WebSocketServer.goalService = goalService;
@@ -39,10 +45,18 @@ public class WebSocketServer {
     private Session session;
     private Integer userId;
 
+    @PostConstruct
+    public void init() {
+        /* fix Component中Autowired注入为null问题 */
+        webSocketServer = this;
+        webSocketServer.tokenService = this.tokenService;
+    }
+
     /**
      * 连接建立成功调用的方法*/
     @OnOpen
-    public void onOpen(Session session,@PathParam("userId") Integer uid) {
+    public void onOpen(Session session,@PathParam("token") String token) {
+        int uid = webSocketServer.tokenService.getUserIdFromToken(token);
         this.session = session;
         this.userId = uid;
         webSocketSet.add(this);     //加入set中
