@@ -74,20 +74,20 @@ public class SleepController {
         return MsgUtil.makeMsg(MsgUtil.SUCCESS, MsgUtil.SUCCESS_MSG, jsonObject);
     }
     @PostMapping("/analyse_sleep")
-    public Msg AnalyseSleep(@RequestBody Map<String, Object> data) {
+    @UserLoginToken
+    public Msg AnalyseSleep(@RequestBody Map<String, Object> data, HttpServletRequest httpServletRequest) {
         // 检验参数合法性
-        Object id_ = data.get(UserConstant.USER_ID);
+        String token = httpServletRequest.getHeader("token");
+        int id = tokenService.getUserIdFromToken(token);
         Object date_ = data.get(Constant.DATE);
-        if (id_ == null || date_ == null) {
-            return MsgUtil.makeMsg(MsgUtil.ARG_ERROR, "传参错误{user_id:1, date:2023-04-01}", null);
+        if ( date_ == null) {
+            return MsgUtil.makeMsg(MsgUtil.ARG_ERROR, "传参错误{ date:2023-04-01}", null);
         }
-        int id;
         Date date;
         try {
-            id = (int) id_;
             date = Date.valueOf((String) date_);
         } catch (Exception e) {
-            return MsgUtil.makeMsg(MsgUtil.ARG_ERROR, "传参错误{user_id:1, date:2023-04-01}", null);
+            return MsgUtil.makeMsg(MsgUtil.ARG_ERROR, "传参错误{ date:2023-04-01}", null);
         }
         List<SleepDetail> sleepDetail = sleepDetailService.getDaySleepDetail(id, date,date);
         if (sleepDetail.size() == 0) {
