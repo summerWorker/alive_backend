@@ -2,7 +2,9 @@ package com.alive_backend.controller.health_data;
 
 import com.alive_backend.annotation.UserLoginToken;
 import com.alive_backend.entity.health_data.BloodSugar;
+import com.alive_backend.entity.health_data.MainRecord;
 import com.alive_backend.service.health_data.BloodSugarService;
+import com.alive_backend.service.health_data.MainRecordService;
 import com.alive_backend.serviceimpl.TokenService;
 import com.alive_backend.utils.JsonConfig.CustomJsonConfig;
 import com.alive_backend.utils.constant.Constant;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -31,6 +34,9 @@ public class BloodSugarController {
     private BloodSugarService bloodSugarService;
     @Autowired
     private TokenService tokenService;
+
+    @Autowired
+    private MainRecordService mainRecordService;
 
     @PostMapping("/blood_sugar")
     @UserLoginToken
@@ -89,6 +95,23 @@ public class BloodSugarController {
         bloodSugar1.setUserId(id);
         bloodSugar1.setBloodSugar(bloodSugar);
         bloodSugar1.setDate(date);
+
+        // add to main record
+        BloodSugar latestBloodSugar = bloodSugarService.getLatestBloodSugar(id);
+        if(latestBloodSugar == null || latestBloodSugar.getDate().before(date)) {
+            MainRecord mainRecord = mainRecordService.getMainRecordByUserId(id);
+            mainRecord.setBloodSugar(bloodSugar);
+            if(mainRecord.getUpdateTime() == null || mainRecord.getUpdateTime().before(date)) {
+                mainRecord.setUpdateTime(Timestamp.valueOf(date + " 00:00:00"));
+            }
+            try {
+                mainRecordService.updateMainRecord(mainRecord);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+        }
+
+
         try{
             BloodSugar ret = bloodSugarService.addBloodSugar(bloodSugar1);
             return MsgUtil.makeMsg(MsgUtil.SUCCESS, MsgUtil.SUCCESS_MSG, JSONObject.fromObject(ret, new CustomJsonConfig()));

@@ -4,7 +4,9 @@ package com.alive_backend.controller.health_data;
 import com.alive_backend.annotation.UserLoginToken;
 import com.alive_backend.dao.health_data.BloodPressureDao;
 import com.alive_backend.entity.health_data.BloodPressure;
+import com.alive_backend.entity.health_data.MainRecord;
 import com.alive_backend.service.health_data.BloodPressureService;
+import com.alive_backend.service.health_data.MainRecordService;
 import com.alive_backend.serviceimpl.TokenService;
 import com.alive_backend.utils.JsonConfig.CustomJsonConfig;
 import com.alive_backend.utils.constant.Constant;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -34,6 +37,9 @@ public class BloodPressureController {
 
     @Autowired
     private TokenService tokenService;
+
+    @Autowired
+    private MainRecordService mainRecordService;
 
     @PostMapping("/blood_pressure")
     @UserLoginToken
@@ -99,6 +105,22 @@ public class BloodPressureController {
         }
         if(high < 0 || low < 0 || high > 300 || low > 300) {
             return MsgUtil.makeMsg(MsgUtil.ERROR, "血压值不合法", null);
+        }
+        // 检查是否是最新的血压记录
+        BloodPressure LatestbloodPressure = bloodPressureService.getLatestBloodPressure(id);
+        if(LatestbloodPressure == null || LatestbloodPressure.getDate().before(date)) {
+            // 写入mainRecord
+            try{
+                MainRecord mainRecord = mainRecordService.getMainRecordByUserId(id);
+                mainRecord.setDiastolicPressure((double)low);
+                mainRecord.setSystolicPressure((double)high);
+                if (mainRecord.getUpdateTime() == null || mainRecord.getUpdateTime().before(date)) {
+                    mainRecord.setUpdateTime(Timestamp.valueOf(date + " 00:00:00"));
+                }
+                mainRecordService.updateMainRecord(mainRecord);
+            }catch (Exception e){
+               System.out.println(e);
+            }
         }
         // 查看当天是否有血压记录
         BloodPressure bloodPressure1 = bloodPressureService.getBloodPressureByDate(id, date);

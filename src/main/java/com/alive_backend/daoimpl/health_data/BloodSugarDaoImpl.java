@@ -23,4 +23,9 @@ public class BloodSugarDaoImpl implements BloodSugarDao {
     public BloodSugar addBloodSugar(BloodSugar bloodSugar) {
         return bloodSugarRepository.save(bloodSugar);
     }
+
+    @Override
+    public BloodSugar getLatestBloodSugar(int id) {
+        return bloodSugarRepository.findTopByUserIdOrderByDateDesc(id);
+    }
 }

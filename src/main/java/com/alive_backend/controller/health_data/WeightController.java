@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -41,6 +42,9 @@ public class WeightController {
 
     @Autowired
     private TokenService tokenService;
+
+    @Autowired
+    private MainRecordService mainRecordService;
 
     @PostMapping("/weight")
     @UserLoginToken
@@ -95,6 +99,19 @@ public class WeightController {
             date = Date.valueOf((String) date_);
         } catch (Exception e) {
             return MsgUtil.makeMsg(MsgUtil.ERROR, "日期格式错误{weight:1.0,date:yyyy-MM-dd}", null);
+        }
+        // update mainRecord
+        Weight lastWeight = weightService.getLatestWeight(id);
+        if(lastWeight == null || !lastWeight.getDate().after(date)) {
+            MainRecord mainRecord = mainRecordService.getMainRecordByUserId(id);
+            mainRecord.setWeight(weight);
+            if(mainRecord.getUpdateTime() == null || mainRecord.getUpdateTime().before(date))
+                mainRecord.setUpdateTime(Timestamp.valueOf(date + " 00:00:00"));
+            try {
+                mainRecordService.updateMainRecord(mainRecord);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
         }
 
         // 同日覆盖
