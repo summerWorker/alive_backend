@@ -22,4 +22,9 @@ public class BloodPressureServiceImpl implements BloodPressureService {
     public BloodPressure addBloodPressure(BloodPressure bloodPressure) {
         return bloodPressureDao.addBloodPressure(bloodPressure);
     }
+
+    @Override
+    public BloodPressure getLatestBloodPressure(int userId) {
+        return bloodPressureDao.getLatestBloodPressure(userId);
+    }
 }

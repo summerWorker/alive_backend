@@ -12,4 +12,5 @@ public interface BloodSugarRepository extends JpaRepository<BloodSugar, Integer>
     BloodSugar findByUserIdAndDate(int userId, Date date);
 
     List<BloodSugar> findByUserIdAndDateBetween(int userId, Date start, Date end);
+    BloodSugar findTopByUserIdOrderByDateDesc(int userId);
 }

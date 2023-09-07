@@ -23,4 +23,9 @@ public class BloodSugarServiceImpl implements BloodSugarService {
     public BloodSugar addBloodSugar(BloodSugar bloodSugar) {
         return bloodSugarDao.addBloodSugar(bloodSugar);
     }
+
+    @Override
+    public BloodSugar getLatestBloodSugar(int id) {
+        return bloodSugarDao.getLatestBloodSugar(id);
+    }
 }

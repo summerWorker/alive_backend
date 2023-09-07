@@ -10,4 +10,5 @@ public interface BloodSugarService {
     List<BloodSugar> getBloodSugarByDate(int id, Date start, Date end);
 
     BloodSugar addBloodSugar(BloodSugar bloodSugar);
+    BloodSugar getLatestBloodSugar(int id);
 }
