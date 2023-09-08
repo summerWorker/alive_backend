@@ -25,11 +25,11 @@ public class SleepDetailDaoImpl implements SleepDetailDao {
 
     @Override
     public SleepDetail saveSleepDetail(SleepDetail sleepDetail) {
-        try {
+//        try {
             return sleepDetailRepository.save(sleepDetail);
-        } catch (Exception e) {
-            System.out.println(e);
-            return null;
-        }
+//        } catch (Exception e) {
+//            System.out.println(e);
+//            return null;
+//        }
     }
 }
