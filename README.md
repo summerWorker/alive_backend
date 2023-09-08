@@ -353,7 +353,40 @@ table：user，userAuth
          }
      }
      ```
+     
+   - [x] **"/sleep"**
    
+     分析睡眠
+     
+     ```javascript
+     @RequestBody
+     {
+       	"user_id": 1,
+         "date":"2023-06-22"
+     }
+     
+     @Return
+     {
+         "status": 1,
+         "msg": "成功！",
+         "data": {
+             "bedtime": {
+                 "analysis": "入睡时间过晚",
+                 "advice": "保持规律的作息时间，每天都在相同的时间段睡觉和起床，有助于培养身体的生物钟，提高睡眠质量。",
+                 "score": 80.0
+             },
+             "duration": {
+                 "analysis": "睡眠时长过长",
+                 "advice": "睡眠时间较长，你的年龄段建议晚上7-9小时睡眠。",
+                 "score": 80.0
+             },
+             "score": 80.0
+         }
+     }
+     ```
+     
+     
+     
      
 
 ### 3. 目标管理服务⭐⭐

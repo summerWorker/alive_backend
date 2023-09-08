@@ -38,6 +38,7 @@ CREATE TABLE `blood_pressure` (
 
 LOCK TABLES `blood_pressure` WRITE;
 /*!40000 ALTER TABLE `blood_pressure` DISABLE KEYS */;
+INSERT INTO `blood_pressure` VALUES (_binary 'vÆØE¶¨6JP\ıÄ','2023-09-07',80,110,1),(_binary '\\\Úì74G«ï|\rr£J','2023-09-01',78,123,1),(_binary '¥(ûrA+B§∑SØc<L≤)','2023-09-09',91,111,1),(_binary 'œú\√\€K˘§\ \È¨.◊Æ\Ú','2023-09-08',71,111,1);
 /*!40000 ALTER TABLE `blood_pressure` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -63,6 +64,7 @@ CREATE TABLE `blood_sugar` (
 
 LOCK TABLES `blood_sugar` WRITE;
 /*!40000 ALTER TABLE `blood_sugar` DISABLE KEYS */;
+INSERT INTO `blood_sugar` VALUES (_binary 'Hi∞m\⁄Hëªó\–\Ã\0Ø…í',5,'2023-09-07 12:24:00.000000',1),(_binary 'Ro<∑ÄHF\'≥÷íjd\ﬁ\⁄?',111,'2023-09-07 16:14:00.000000',1),(_binary 'a\ÿCÈôï]\ÛΩ¬Å¶',100,'2023-09-06 14:18:00.000000',1),(_binary 'Æ8\Ê+rDÚ†ßΩ2ì	Ãè',90,'2023-09-07 13:05:00.000000',1),(_binary 'Æ˝gÇOvB\'∏\ZÅmÅæo',130,'2023-09-07 14:18:00.000000',1);
 /*!40000 ALTER TABLE `blood_sugar` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -155,7 +157,7 @@ CREATE TABLE `goal` (
 
 LOCK TABLES `goal` WRITE;
 /*!40000 ALTER TABLE `goal` DISABLE KEYS */;
-INSERT INTO `goal` VALUES (1,_binary '>ÔøΩK(\"ÔøΩMÔøΩ\Ôø','step_goal',20000,NULL,NULL),(1,_binary 'M(ÔøΩÔøΩÔøΩOu\Ôø','bedtime_goal',NULL,NULL,'22:00'),(1,_binary 'bÔøΩ86G}ÔøΩF\Ôø','sleep_length_goal',482,NULL,NULL),(1,_binary 'hLsÔøΩiMmÔøΩ0\Ôø','weight_goal',50,'2023-07-20',NULL),(1,_binary 'ÔøΩmTÔøΩhELÔøΩ\Ô','calorie_goal',20000,NULL,NULL);
+INSERT INTO `goal` VALUES (1,_binary '>ÔøΩK(\"ÔøΩMÔøΩ\Ôø','step_goal',20000,NULL,NULL),(1,_binary 'M(ÔøΩÔøΩÔøΩOu\Ôø','bedtime_goal',NULL,NULL,'23:59'),(1,_binary 'bÔøΩ86G}ÔøΩF\Ôø','sleep_length_goal',482,NULL,NULL),(1,_binary 'hLsÔøΩiMmÔøΩ0\Ôø','weight_goal',50,'2023-09-20',NULL),(1,_binary 'ÔøΩmTÔøΩhELÔøΩ\Ô','calorie_goal',20000,NULL,NULL);
 /*!40000 ALTER TABLE `goal` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -172,7 +174,7 @@ CREATE TABLE `heart_rate` (
   `time_stamp` bigint DEFAULT NULL,
   `user_id` int DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -181,6 +183,7 @@ CREATE TABLE `heart_rate` (
 
 LOCK TABLES `heart_rate` WRITE;
 /*!40000 ALTER TABLE `heart_rate` DISABLE KEYS */;
+INSERT INTO `heart_rate` VALUES (1,'120',1694089360987,1);
 /*!40000 ALTER TABLE `heart_rate` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -208,7 +211,7 @@ CREATE TABLE `height` (
 
 LOCK TABLES `height` WRITE;
 /*!40000 ALTER TABLE `height` DISABLE KEYS */;
-INSERT INTO `height` VALUES (1,_binary 'WÔøΩÔøΩdÔøΩÔøΩ',1.78,'2023-07-08'),(1,_binary 'WÔøΩÔøΩÔøΩÔøΩ\Ô',1.72,'2022-07-08'),(1,_binary 'ÔøΩÔøΩÔøΩ)ÔøΩL\Ô',1.79,'2023-07-10');
+INSERT INTO `height` VALUES (1,_binary 'x|öªhHì´Oö=q∑',1.78,'2023-09-08'),(1,_binary 'WÔøΩÔøΩdÔøΩÔøΩ',1.78,'2023-07-08'),(1,_binary 'WÔøΩÔøΩÔøΩÔøΩ\Ô',1.72,'2022-07-08'),(1,_binary 'ÔøΩÔøΩÔøΩ)ÔøΩL\Ô',1.79,'2023-07-10');
 /*!40000 ALTER TABLE `height` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -233,10 +236,15 @@ CREATE TABLE `main_record` (
   `health_advice` varchar(255) DEFAULT NULL COMMENT 'ÂÅ•Â∫∑Âª∫ËÆÆ',
   `update_time` timestamp NULL DEFAULT NULL COMMENT 'ÊúÄËøë‰∏ÄÊ¨°Êõ¥Êñ∞Êó∂Èó¥',
   `record_id` int NOT NULL AUTO_INCREMENT,
+  `birthday` date DEFAULT NULL,
+  `blood_sugar` double DEFAULT NULL,
+  `diastolic_pressure` double DEFAULT NULL,
+  `steps` int DEFAULT NULL,
+  `systolic_pressure` double DEFAULT NULL,
   PRIMARY KEY (`record_id`),
   KEY `main_record_user_info_user_id_fk` (`user_id`),
   CONSTRAINT `main_record_user_info_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `user_info` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='ÂÅ•Â∫∑Ê°£Ê°àÊï∞ÊçÆÔºå‰øùÊåÅÊúÄÊñ∞Êï∞ÊçÆËÆ∞ÂΩï';
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='ÂÅ•Â∫∑Ê°£Ê°àÊï∞ÊçÆÔºå‰øùÊåÅÊúÄÊñ∞Êï∞ÊçÆËÆ∞ÂΩï';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -245,7 +253,7 @@ CREATE TABLE `main_record` (
 
 LOCK TABLES `main_record` WRITE;
 /*!40000 ALTER TABLE `main_record` DISABLE KEYS */;
-INSERT INTO `main_record` VALUES (1,1.79,57.2,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2023-07-10 00:43:52',1);
+INSERT INTO `main_record` VALUES (1,1.78,55,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2023-09-08 08:00:00',1,'2002-11-02',111,91,NULL,111),(4,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2023-07-13 09:49:09',2,'2023-07-27',NULL,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `main_record` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -303,7 +311,7 @@ CREATE TABLE `steps` (
 
 LOCK TABLES `steps` WRITE;
 /*!40000 ALTER TABLE `steps` DISABLE KEYS */;
-INSERT INTO `steps` VALUES (_binary 'tÔøΩÔøΩ_H9ÔøΩ\Ô',153,'2023-07-01',4,0,15955,1),(_binary 'w#ÔøΩÔøΩbALCÔøΩ\Ô',153,'2023-07-05',4,2000,15955,1),(_binary 'zÔøΩÔøΩÔøΩ MÔøΩ',153,'2023-07-09',4,2000,15955,1),(_binary 'ÔøΩFÔøΩrIÔøΩ\Ôø',153,'2023-07-11',4,10000,2530,1),(_binary 'ÔøΩÔøΩ≈ÅÔøΩMv\Ôø',153,'2023-04-01',4,10000,2530,1);
+INSERT INTO `steps` VALUES (_binary 'tÔøΩÔøΩ_H9ÔøΩ\Ô',153,'2023-09-01',4,0,15955,1),(_binary 'w#ÔøΩÔøΩbALCÔøΩ\Ô',153,'2023-09-07',4,2000,15955,1),(_binary 'zÔøΩÔøΩÔøΩ MÔøΩ',153,'2023-07-09',4,2000,15955,1),(_binary 'ÔøΩFÔøΩrIÔøΩ\Ôø',153,'2023-07-11',4,10000,2530,1),(_binary 'ÔøΩÔøΩ≈ÅÔøΩMv\Ôø',153,'2023-04-01',4,10000,2530,1);
 /*!40000 ALTER TABLE `steps` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -323,7 +331,7 @@ CREATE TABLE `user_auth` (
   `status` int DEFAULT NULL COMMENT '0ÔºöÊú™Áî®ÈÇÆÁÆ±ÊøÄÊ¥ªÔºõ1:Ê≠£Â∏∏',
   `code_update_time` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -332,7 +340,7 @@ CREATE TABLE `user_auth` (
 
 LOCK TABLES `user_auth` WRITE;
 /*!40000 ALTER TABLE `user_auth` DISABLE KEYS */;
-INSERT INTO `user_auth` VALUES (1,'test','test','test@','',1,'2023-06-26 22:12:58'),(2,'test_save','test_save','test_save@',NULL,NULL,NULL),(3,'test_save','test_save','test_save@',NULL,NULL,NULL);
+INSERT INTO `user_auth` VALUES (1,'test2','$2a$10$H4EgzQqCyYwQnHYJTY8rbOsJKCBEcMFccTnonuOIDxOU5.0A2KxPK','test2@sjtu.edu.cn',NULL,1,NULL),(2,'test_save','test_save','test_save@',NULL,NULL,NULL),(4,'test','test','test@sjtu.edu.cn','',1,'2023-06-26 14:12:58');
 /*!40000 ALTER TABLE `user_auth` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -359,7 +367,7 @@ CREATE TABLE `user_info` (
 
 LOCK TABLES `user_info` WRITE;
 /*!40000 ALTER TABLE `user_info` DISABLE KEYS */;
-INSERT INTO `user_info` VALUES (1,'test',NULL,NULL);
+INSERT INTO `user_info` VALUES (1,'test',NULL,NULL),(4,'test2',NULL,NULL);
 /*!40000 ALTER TABLE `user_info` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -388,7 +396,7 @@ CREATE TABLE `weight` (
 
 LOCK TABLES `weight` WRITE;
 /*!40000 ALTER TABLE `weight` DISABLE KEYS */;
-INSERT INTO `weight` VALUES (1,57.2,'2023-02-22',_binary '\04I$ÔøΩ&FÔøΩe \Ô',0),(1,57.2,'2023-07-12',_binary '%ÔøΩ|ÔøΩ&ÔøΩFj\Ôø',50),(1,57.2,'2023-04-22',_binary 'qÔøΩyÔøΩÔøΩBIT\Ôø',0),(1,57.2,'2023-07-22',_binary 'ÔøΩ0ÔøΩ7ÔøΩ}Iƒ´\Ô',50),(1,57.2,'2023-06-22',_binary 'ÔøΩh^ÔøΩ0 BÔøΩ',0),(1,57.2,'2023-07-10',_binary 'ÔøΩÔøΩÔøΩREÔøΩ',-1);
+INSERT INTO `weight` VALUES (1,57.2,'2023-02-22',_binary '\04I$ÔøΩ&FÔøΩe \Ô',0),(1,57.2,'2023-07-12',_binary '%ÔøΩ|ÔøΩ&ÔøΩFj\Ôø',50),(1,57.2,'2023-04-22',_binary 'qÔøΩyÔøΩÔøΩBIT\Ôø',0),(1,62,'2023-07-29',_binary '°~í…©cBΩµOHR\0-',50),(1,55,'2023-09-08',_binary '\¬\‰É\ oSC}†=á\0ws',50),(1,57.2,'2023-07-22',_binary 'ÔøΩ0ÔøΩ7ÔøΩ}Iƒ´\Ô',50),(1,57.2,'2023-06-22',_binary 'ÔøΩh^ÔøΩ0 BÔøΩ',0),(1,62,'2023-08-10',_binary 'ÔøΩÔøΩÔøΩREÔøΩ',-1);
 /*!40000 ALTER TABLE `weight` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -401,4 +409,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-07-13  9:53:13
+-- Dump completed on 2023-09-08  0:43:20

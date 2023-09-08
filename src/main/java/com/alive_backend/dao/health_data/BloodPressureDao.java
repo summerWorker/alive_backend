@@ -8,4 +8,6 @@ public interface BloodPressureDao {
     BloodPressure getBloodPressureByDate(int userId, Date date);
 
     BloodPressure addBloodPressure(BloodPressure bloodPressure);
+
+    BloodPressure getLatestBloodPressure(int userId);
 }

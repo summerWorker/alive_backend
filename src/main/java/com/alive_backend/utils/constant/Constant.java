@@ -19,5 +19,6 @@ public class Constant {
     /* 分析模型 */
     public static final String ANALYSIS = "analysis";
     public static final String ADVICE = "advice";
+    public static final String SCORE = "score";
 
 }

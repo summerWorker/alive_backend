@@ -9,4 +9,5 @@ import java.sql.Date;
 @Repository
 public interface BloodPressureRepository extends JpaRepository<BloodPressure, Integer> {
     BloodPressure findByUserIdAndDate(int id, Date date);
+    BloodPressure findTopByUserIdOrderByDateDesc(int id);
 }

@@ -7,6 +7,7 @@ import com.alive_backend.entity.health_data.Weight;
 import com.alive_backend.service.health_data.HeightService;
 import com.alive_backend.service.health_data.MainRecordService;
 import com.alive_backend.service.health_data.WeightService;
+import com.alive_backend.utils.JsonConfig.CustomJsonConfig;
 import com.alive_backend.utils.analysis.BMI;
 import com.alive_backend.serviceimpl.TokenService;
 import com.alive_backend.utils.constant.UserConstant;
@@ -56,7 +57,7 @@ public class MainRecordController {
 
         /*  获取main_record */
         MainRecord mainRecord = mainRecordService.getMainRecordByUserId(id);
-        return MsgUtil.makeMsg(MsgUtil.SUCCESS, MsgUtil.SUCCESS_MSG, JSONObject.fromObject(mainRecord));
+        return MsgUtil.makeMsg(MsgUtil.SUCCESS, MsgUtil.SUCCESS_MSG, JSONObject.fromObject(mainRecord, new CustomJsonConfig()));
     }
 
     @PostMapping("/bmi")
@@ -86,7 +87,7 @@ public class MainRecordController {
         }
         int id = (int) id_;
         MainRecord mainRecord = updateMainRecord(id);
-        return MsgUtil.makeMsg(MsgUtil.SUCCESS, MsgUtil.SUCCESS_MSG, JSONObject.fromObject(mainRecord));
+        return MsgUtil.makeMsg(MsgUtil.SUCCESS, MsgUtil.SUCCESS_MSG, JSONObject.fromObject(mainRecord, new CustomJsonConfig()));
     }
 
     public MainRecord updateMainRecord(int userId) {

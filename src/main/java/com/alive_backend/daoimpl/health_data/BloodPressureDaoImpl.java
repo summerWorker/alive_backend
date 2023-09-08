@@ -22,4 +22,9 @@ public class BloodPressureDaoImpl implements BloodPressureDao {
     public BloodPressure addBloodPressure(BloodPressure bloodPressure) {
         return bloodPressureRepository.save(bloodPressure);
     }
+
+    @Override
+    public BloodPressure getLatestBloodPressure(int userId) {
+        return bloodPressureRepository.findTopByUserIdOrderByDateDesc(userId);
+    }
 }
