@@ -1,1 +1,11 @@
-com/alive_backend/AliveBackendApplicationTests.class
+com\alive_backend\dao\health_data\WeightDaoTest$1.class
+com\alive_backend\dao\health_data\WeightDaoTest.class
+com\alive_backend\repository\health_data\WeightRepositoryTest.class
+com\alive_backend\repository\health_data\WeightRepositoryTest$1.class
+com\alive_backend\serviceimpl\health_data\WeightServiceImplTest.class
+com\alive_backend\service\health_data\WeightServiceTest$1.class
+com\alive_backend\controller\health_data\WeightControllerTest.class
+com\alive_backend\serviceimpl\user_info\UserAuthServiceImplTest.class
+com\alive_backend\daoimpl\health_data\WeightDaoImplTest.class
+com\alive_backend\AliveBackendApplicationTests.class
+com\alive_backend\service\health_data\WeightServiceTest.class

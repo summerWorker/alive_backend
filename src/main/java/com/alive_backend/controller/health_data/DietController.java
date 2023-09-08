@@ -86,7 +86,6 @@ public class DietController{
             return MsgUtil.makeMsg(MsgUtil.ERROR, "添加失败", JSONObject.fromObject(e));
         }
             return MsgUtil.makeMsg(MsgUtil.SUCCESS, "添加成功", JSONObject.fromObject(diet,new CustomJsonConfig()));
-
     }
 
     @PostMapping("/get_diet")

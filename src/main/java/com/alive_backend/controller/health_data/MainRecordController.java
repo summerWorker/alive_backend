@@ -43,7 +43,7 @@ public class MainRecordController {
 
     @PostMapping("/main_record")
     @UserLoginToken
-    @Cacheable(value = "mainRecordCache", key = "#data.get('user_id')")
+//    @Cacheable(value = "mainRecordCache", key = "#data.get('user_id')")
     public Msg getMainRecordByUserId(@RequestBody Map<String,Object> data, HttpServletRequest httpServletRequest) {
         String token = httpServletRequest.getHeader("token");
         int id = tokenService.getUserIdFromToken(token);
