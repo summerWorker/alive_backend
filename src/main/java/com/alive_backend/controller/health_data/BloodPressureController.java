@@ -110,7 +110,7 @@ public class BloodPressureController {
         BloodPressure LatestbloodPressure = bloodPressureService.getLatestBloodPressure(id);
         if(LatestbloodPressure == null || LatestbloodPressure.getDate().before(date)) {
             // 写入mainRecord
-            try{
+//            try{
                 MainRecord mainRecord = mainRecordService.getMainRecordByUserId(id);
                 mainRecord.setDiastolicPressure((double)low);
                 mainRecord.setSystolicPressure((double)high);
@@ -118,9 +118,9 @@ public class BloodPressureController {
                     mainRecord.setUpdateTime(Timestamp.valueOf(date + " 00:00:00"));
                 }
                 mainRecordService.updateMainRecord(mainRecord);
-            }catch (Exception e){
-               System.out.println(e);
-            }
+//            }catch (Exception e){
+//               System.out.println(e);
+//            }
         }
         // 查看当天是否有血压记录
         BloodPressure bloodPressure1 = bloodPressureService.getBloodPressureByDate(id, date);
@@ -128,25 +128,24 @@ public class BloodPressureController {
         if(bloodPressure1 != null){
            bloodPressure1.setSystolic(high);
            bloodPressure1.setDiastolic(low);
-            try{
+//            try{
                 BloodPressure ret = bloodPressureService.addBloodPressure(bloodPressure1);
                 return MsgUtil.makeMsg(MsgUtil.SUCCESS, MsgUtil.SUCCESS_MSG, JSONObject.fromObject(ret, new CustomJsonConfig()));
-            }catch(Exception e){
-                return MsgUtil.makeMsg(MsgUtil.ERROR, "添加失败", null);
-
-            }
+//            }catch(Exception e){
+//                return MsgUtil.makeMsg(MsgUtil.ERROR, "添加失败", null);
+//            }
         } else {
             BloodPressure bloodPressure = new BloodPressure();
             bloodPressure.setUserId(id);
             bloodPressure.setDate(date);
             bloodPressure.setSystolic(high);
             bloodPressure.setDiastolic(low);
-            try{
+//            try{
                 BloodPressure ret = bloodPressureService.addBloodPressure(bloodPressure);
                 return MsgUtil.makeMsg(MsgUtil.SUCCESS, MsgUtil.SUCCESS_MSG, JSONObject.fromObject(ret, new CustomJsonConfig()));
-            }catch(Exception e){
-                return MsgUtil.makeMsg(MsgUtil.ERROR, "添加失败", null);
-            }
+//            }catch(Exception e){
+//                return MsgUtil.makeMsg(MsgUtil.ERROR, "添加失败", null);
+//            }
         }
     }
 }

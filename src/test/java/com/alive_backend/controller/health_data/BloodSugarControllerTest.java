@@ -7,6 +7,9 @@ import com.alive_backend.service.health_data.BloodSugarService;
 import com.alive_backend.service.health_data.MainRecordService;
 import com.alive_backend.serviceimpl.TokenService;
 import com.alive_backend.serviceimpl.user_info.UserAuthServiceImpl;
+import com.alive_backend.utils.JsonConfig.CustomJsonConfig;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +26,9 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -56,19 +61,23 @@ class BloodSugarControllerTest {
         bloodSugar.setId(UUID.fromString("1fb504cf-0a9b-4147-bdf5-fbb991a23c62"));
         bloodSugar.setBloodSugar(0.0);
         bloodSugar.setDate(new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime());
-        final List<BloodSugar> bloodSugars = Arrays.asList(bloodSugar);
-        when(mockBloodSugarService.getBloodSugarByDate(0, new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(),
-                new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime())).thenReturn(bloodSugars);
+        final List<BloodSugar> bloodSugars = Collections.singletonList(bloodSugar);
+        // 注入任意参数固定返回值
+        when(mockBloodSugarService.getBloodSugarByDate(anyInt(),any(Date.class),any(Date.class))).thenReturn(bloodSugars);
 
         // Run the test
-        final MockHttpServletResponse response = mockMvc.perform(post("/blood_sugar")
-                        .content("content").contentType(MediaType.APPLICATION_JSON)
+       final MockHttpServletResponse response = mockMvc.perform(post("/blood_sugar")
+                        .content("{\"start_date\":\"2020-01-01\",\"end_date\":\"2020-01-01\"}")
+                       .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andReturn().getResponse();
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        JSONArray jsonArray = JSONArray.fromObject(bloodSugars, new CustomJsonConfig());
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("blood_sugar", jsonArray);
+        assertEquals(jsonObject,JSONObject.fromObject(response.getContentAsString()).get("data"));
     }
 
     @Test
@@ -80,19 +89,42 @@ class BloodSugarControllerTest {
 
         // Run the test
         final MockHttpServletResponse response = mockMvc.perform(post("/blood_sugar")
-                        .content("content").contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"end_date\":\"2020-01-01\"}")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andReturn().getResponse();
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertEquals(-1, JSONObject.fromObject(response.getContentAsString()).get("status"));
+
+        final MockHttpServletResponse response0 = mockMvc.perform(post("/blood_sugar")
+                        .content("{\"start_date\":\"202\",\"end_date\":\"2020-01-01\"}")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andReturn().getResponse();
+
+        // Verify the results
+        assertThat(response0.getStatus()).isEqualTo(HttpStatus.OK.value());
+        assertEquals(-1, JSONObject.fromObject(response0.getContentAsString()).get("status"));
+
+        final MockHttpServletResponse response1 = mockMvc.perform(post("/blood_sugar")
+                        .content("{\"start_date\":\"2020-01-01\",\"end_date\":\"2010-01-01\"}")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andReturn().getResponse();
+
+        // Verify the results
+        assertThat(response1.getStatus()).isEqualTo(HttpStatus.OK.value());
+        assertEquals(-1, JSONObject.fromObject(response1.getContentAsString()).get("status"));
     }
 
     @Test
     void testAddBloodSugar() throws Exception {
         // Setup
         when(mockTokenService.getUserIdFromToken("token")).thenReturn(0);
+        MainRecord mainRecord = new MainRecord();
+        when(mockMainRecordService.getMainRecordByUserId(0)).thenReturn(mainRecord);
 
         // Configure BloodSugarService.getLatestBloodSugar(...).
         final BloodSugar bloodSugar = new BloodSugar();
@@ -112,13 +144,14 @@ class BloodSugarControllerTest {
 
         // Run the test
         final MockHttpServletResponse response = mockMvc.perform(post("/add_blood_sugar")
-                        .content("content").contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"blood_sugar\":\"0.0\",\"date\":\"2020-01-01 10:00\"}")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andReturn().getResponse();
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertEquals(JSONObject.fromObject(bloodSugar1, new CustomJsonConfig()), JSONObject.fromObject(response.getContentAsString()).get("data"));
     }
 
     @Test

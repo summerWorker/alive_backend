@@ -107,33 +107,29 @@ public class WeightController {
             mainRecord.setWeight(weight);
             if(mainRecord.getUpdateTime() == null || mainRecord.getUpdateTime().before(date))
                 mainRecord.setUpdateTime(Timestamp.valueOf(date + " 00:00:00"));
-            try {
-                mainRecordService.updateMainRecord(mainRecord);
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-            }
+            mainRecordService.updateMainRecord(mainRecord);
         }
 
         // 同日覆盖
         Weight weight0 = weightService.getWeightByDate(id, date);
         if (weight0 != null) {
             weight0.setWeight(weight);
-            try {
+//            try {
                 Weight newWeight = weightService.addWeight(weight0);
                 return MsgUtil.makeMsg(MsgUtil.SUCCESS, MsgUtil.SUCCESS_MSG, JSONObject.fromObject(newWeight, new CustomJsonConfig()));
-            } catch (Exception e) {
-                return MsgUtil.makeMsg(MsgUtil.ERROR, MsgUtil.ERROR_MSG, null);
-            }
+//            } catch (Exception e) {
+//                return MsgUtil.makeMsg(MsgUtil.ERROR, MsgUtil.ERROR_MSG, null);
+//            }
         }
 
         Weight weight1 = new Weight();
         weight1.setUserId(id); weight1.setWeight(weight); weight1.setDate(date);
-        try {
+//        try {
             Weight newWeight = weightService.addWeight(weight1);
             return MsgUtil.makeMsg(MsgUtil.SUCCESS, MsgUtil.SUCCESS_MSG, JSONObject.fromObject(newWeight, new CustomJsonConfig()));
-        } catch (Exception e) {
-            return MsgUtil.makeMsg(MsgUtil.ERROR, MsgUtil.ERROR_MSG, null);
-        }
+//        } catch (Exception e) {
+//            return MsgUtil.makeMsg(MsgUtil.ERROR, MsgUtil.ERROR_MSG, null);
+//        }
     }
     @PostMapping("/period_weight")
     @UserLoginToken
