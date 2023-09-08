@@ -48,7 +48,7 @@ public class WeightController {
 
     @PostMapping("/weight")
     @UserLoginToken
-    @Cacheable(value = "weightCache", key = "#data.get('user_id')+ '_' + #data.get('date')")
+//    @Cacheable(value = "weightCache", key = "#data.get('user_id')+ '_' + #data.get('date')")
     public Msg getWeight(@RequestBody Map<String, Object> data, HttpServletRequest httpServletRequest) {
         String token = httpServletRequest.getHeader("token");
         int id = tokenService.getUserIdFromToken(token);
@@ -68,7 +68,7 @@ public class WeightController {
         return MsgUtil.makeMsg(MsgUtil.SUCCESS, MsgUtil.SUCCESS_MSG, JSONObject.fromObject(weight, new CustomJsonConfig()));
     }
     @PostMapping("/user_weight")
-    @Cacheable(value = "weightCache", key = "#data.get('user_id')")
+//    @Cacheable(value = "weightCache", key = "#data.get('user_id')")
     @UserLoginToken
     public Msg getWeightByUser(@RequestBody Map<String,Object> data, HttpServletRequest httpServletRequest) {
         // 检验参数合法性

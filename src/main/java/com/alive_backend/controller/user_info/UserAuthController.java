@@ -49,8 +49,9 @@ public class UserAuthController {
     private PasswordEncoder passwordEncoder;
 
     @PostMapping("/getCheckCode")
-    @ResponseBody
-    public Msg getCheckCode(String email){
+//    @ResponseBody
+    public Msg getCheckCode(@RequestBody Map<String, Object> data){
+        String email = data.get(UserConstant.EMAIL).toString();
         String checkCode = String.valueOf(new Random().nextInt(899999) + 100000);
         String message = "您的注册验证码为："+checkCode;
         try {

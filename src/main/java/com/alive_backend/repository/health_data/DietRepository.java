@@ -14,4 +14,5 @@ public interface DietRepository extends JpaRepository<Diet, UUID> {
     Diet getByUserIdAndFoodIdAndDateAndType(int userId, UUID foodId, Date date, int type);
 
     List<Diet> getByUserIdAndDate(int userId, Date date);
+    List<Diet> getByUserIdAndDateBetween(int userId, Date startDate, Date endDate);
 }

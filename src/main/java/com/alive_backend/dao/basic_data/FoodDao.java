@@ -8,11 +8,7 @@ import java.util.UUID;
 public interface FoodDao {
     void addFood(Food food);
     Food findFoodByName(String name);
-
     void deleteFood(Food food);
-
     List<Food> findFoodByUserId(int userId);
     Food getFoodById(UUID id);
-
-
 }

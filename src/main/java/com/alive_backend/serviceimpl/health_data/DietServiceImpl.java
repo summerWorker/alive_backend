@@ -35,4 +35,9 @@ public class DietServiceImpl implements DietService {
     public List<Diet> findDietByUserIdAndDate(int userId, Date date) {
         return dietDao.findDietByUserIdAndDate(userId, date);
     }
+
+    @Override
+    public List<Diet> findDietByUserIdAndDateBetween(int userId, Date startDate, Date endDate) {
+        return dietDao.findDietByUserIdAndDateBetween(userId, startDate, endDate);
+    }
 }

@@ -17,4 +17,5 @@ public interface DietDao {
     void updateDiet(Diet diet1);
 
     List<Diet> findDietByUserIdAndDate(int userId, Date date);
+    List<Diet> findDietByUserIdAndDateBetween(int userId, Date startDate, Date endDate);
 }

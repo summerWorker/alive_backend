@@ -45,4 +45,9 @@ public class DietDaoImpl implements DietDao {
         return dietRepository.getByUserIdAndDate(userId, date);
     }
 
+    @Override
+    public List<Diet> findDietByUserIdAndDateBetween(int userId, Date startDate, Date endDate) {
+        return dietRepository.getByUserIdAndDateBetween(userId, startDate, endDate);
+    }
+
 }

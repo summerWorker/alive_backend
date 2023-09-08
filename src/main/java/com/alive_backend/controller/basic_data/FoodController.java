@@ -88,8 +88,11 @@ public class FoodController{
         return MsgUtil.makeMsg(MsgUtil.SUCCESS, "删除成功", JSONObject.fromObject(food));
     }
 
-    @GetMapping("/get_food")
-    public Msg getFood(@RequestParam("userId") int userId){
+    @PostMapping("/get_food")
+    public Msg getFood(@RequestBody Map<String, Object> data){
+        Object userId_ = data.get(FoodConstant.USER_ID);
+        int userId = ((Number) userId_).intValue();
+
         if(userId < 0){
             return MsgUtil.makeMsg(MsgUtil.ERROR, "传参错误,userId > 0", null);
         }
