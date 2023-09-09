@@ -99,12 +99,12 @@ public class UserAuthController {
         }
 
         /*check checkCode*/
-//        String checkCode = checkCode_obj.toString();
-//        String checkCodeInRedis = (String) redisTemplate.opsForValue().get(email);
-//        redisTemplate.delete(email);
-//        if(!checkCode.equals(checkCodeInRedis)){
-//            return MsgUtil.makeMsg(MsgUtil.ERROR, "验证码错误", null);
-//        }
+        String checkCode = checkCode_obj.toString();
+        String checkCodeInRedis = (String) redisTemplate.opsForValue().get(email);
+        redisTemplate.delete(email);
+        if(!checkCode.equals(checkCodeInRedis)){
+            return MsgUtil.makeMsg(MsgUtil.ERROR, "验证码错误", null);
+        }
 
         /*add userAuth*/
         String password = password_obj.toString();
