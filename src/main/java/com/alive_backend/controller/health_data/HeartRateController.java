@@ -57,16 +57,16 @@ public class HeartRateController {
                 return MsgUtil.makeMsg(MsgUtil.ARG_ERROR, e.toString(), null);
             }
             //先去redis缓存中查找
-            Object heartRatesCache = redisUtil.get("HeartRates_" + userId + "_" + date1 + "_" + date2);
-            if(heartRatesCache != null){
-                List<HeartRate> heartRates = (List<HeartRate>) heartRatesCache;
-                CustomJsonConfig jsonConfig = new CustomJsonConfig();
-                JSONArray jsonArray = JSONArray.fromObject(heartRates,jsonConfig);
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("heartRates", jsonArray);
-                System.out.println("从缓存中读取");
-                return MsgUtil.makeMsg(MsgUtil.SUCCESS, MsgUtil.SUCCESS_MSG, jsonObject);
-            }
+//            Object heartRatesCache = redisUtil.get("HeartRates_" + userId + "_" + date1 + "_" + date2);
+//            if(heartRatesCache != null){
+//                List<HeartRate> heartRates = (List<HeartRate>) heartRatesCache;
+//                CustomJsonConfig jsonConfig = new CustomJsonConfig();
+//                JSONArray jsonArray = JSONArray.fromObject(heartRates,jsonConfig);
+//                JSONObject jsonObject = new JSONObject();
+//                jsonObject.put("heartRates", jsonArray);
+//                System.out.println("从缓存中读取");
+//                return MsgUtil.makeMsg(MsgUtil.SUCCESS, MsgUtil.SUCCESS_MSG, jsonObject);
+//            }
             System.out.println("从数据库中读取");
             List<HeartRate> heartRates = heartRateService.findHeartRateByUserIdAndDateBetween(userId, date1, date2);
             redisUtil.set("HeartRates_" + userId + "_" + date1 + "_" + date2, heartRates, 60 * 60 * 24 * 7);
