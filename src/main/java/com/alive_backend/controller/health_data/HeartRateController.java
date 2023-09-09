@@ -108,6 +108,10 @@ public class HeartRateController {
         }catch (Exception e){
             return MsgUtil.makeMsg(MsgUtil.ARG_ERROR, e.toString(), null);
         }
+
+        //update main record
+
+
 //        try{
             HeartRate newHeartRate = new HeartRate();
             newHeartRate.setUserId(userId);

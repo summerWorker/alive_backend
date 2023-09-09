@@ -3,9 +3,11 @@ package com.alive_backend.controller.health_data;
 import com.alive_backend.annotation.UserLoginToken;
 import com.alive_backend.entity.basic_data.Food;
 import com.alive_backend.entity.health_data.Diet;
+import com.alive_backend.entity.health_data.MainRecord;
 import com.alive_backend.entity.user_info.UserAuth;
 import com.alive_backend.service.basic_data.FoodService;
 import com.alive_backend.service.health_data.DietService;
+import com.alive_backend.service.health_data.MainRecordService;
 import com.alive_backend.service.user_info.UserAuthService;
 import com.alive_backend.serviceimpl.TokenService;
 import com.alive_backend.utils.JsonConfig.CustomJsonConfig;
@@ -25,6 +27,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -43,6 +46,8 @@ public class DietController{
 
     @Autowired
     private TokenService tokenService;
+    @Autowired
+    private MainRecordService mainRecordService;
 
     @PostMapping("/add_diet")
     @UserLoginToken
@@ -92,7 +97,21 @@ public class DietController{
 
         //查看用户是否已经添加过该食物
         Diet diet1 = dietService.findDietByUserIdAndFoodIdAndDateAndType(diet.getUserId(), diet.getFoodId(), diet.getDate(), diet.getType());
-        System.out.println(diet1);
+//        System.out.println(diet1);
+        //更新main_record
+        if(diet1 == null || !diet1.getDate().after(date)) {
+            MainRecord mainRecord = mainRecordService.getMainRecordByUserId(userId);
+            mainRecord.setCalorieIn(mainRecord.getCalorieIn() + food.getCalorie() * amount);
+            if(mainRecord.getUpdateTime() == null || mainRecord.getUpdateTime().before(date)) {
+                mainRecord.setUpdateTime(Timestamp.valueOf(date.toString() + " 00:00:00"));
+            }
+//            try{
+            mainRecordService.updateMainRecord(mainRecord);
+//            } catch (Exception e) {
+//                System.out.println(e.getMessage());
+//            }
+        }
+
         if(diet1 != null){
             diet.setAmount(diet.getAmount());
             diet.setId(diet1.getId());

@@ -1,7 +1,9 @@
 package com.alive_backend.controller.basic_data;
 
+import com.alive_backend.annotation.UserLoginToken;
 import com.alive_backend.entity.basic_data.Food;
 import com.alive_backend.service.basic_data.FoodService;
+import com.alive_backend.serviceimpl.TokenService;
 import com.alive_backend.utils.constant.FoodConstant;
 import com.alive_backend.utils.msg.Msg;
 import com.alive_backend.utils.msg.MsgUtil;
@@ -9,6 +11,7 @@ import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -19,11 +22,17 @@ public class FoodController{
     @Autowired
     private FoodService foodService;
 
+    @Autowired
+    private TokenService tokenService;
+
     @PostMapping("/add_food")
-    public Msg addFood(@RequestBody Map<String,Object> data){
+    @UserLoginToken
+    public Msg addFood(@RequestBody Map<String,Object> data, HttpServletRequest httpServletRequest){
+        String token = httpServletRequest.getHeader("token");
+        int userId = tokenService.getUserIdFromToken(token);
+
         Object name_ = data.get(FoodConstant.NAME);
         Object picture_ = data.get(FoodConstant.PICTURE);
-        Object userId_ = data.get(FoodConstant.USER_ID);
         Object calorie_ = data.get(FoodConstant.CALORIE);
         Object carbohydrate_ = data.get(FoodConstant.CARBOHYDRATE);
         Object protein_ = data.get(FoodConstant.PROTEIN);
@@ -35,7 +44,7 @@ public class FoodController{
         try{
             food.setName((String) name_);
             food.setPicture((String) picture_);
-            food.setUserId(((Number) userId_).intValue());
+            food.setUserId(userId);
             food.setCalorie(((Number) calorie_).doubleValue());
             food.setCarbohydrate(((Number) carbohydrate_).doubleValue());
             food.setProtein(((Number) protein_).doubleValue());
@@ -59,11 +68,13 @@ public class FoodController{
     }
 
     @PostMapping("/delete_food")
-    public Msg deleteFood(@RequestBody Map<String, Object> data){
+    @UserLoginToken
+    public Msg deleteFood(@RequestBody Map<String, Object> data, HttpServletRequest httpServletRequest){
         Object name_ = data.get(FoodConstant.NAME);
-        Object user_id_ = data.get(FoodConstant.USER_ID);
+        String token = httpServletRequest.getHeader("token");
+        int userId = tokenService.getUserIdFromToken(token);
 
-        if(name_ == null || user_id_ == null){
+        if(name_ == null || token == null){
             return MsgUtil.makeMsg(MsgUtil.ERROR, "传参错误", null);
         }
 
@@ -72,7 +83,7 @@ public class FoodController{
             return MsgUtil.makeMsg(MsgUtil.ERROR, "删除失败，食物不存在", null);
         }
 
-        if(food.getUserId() != (int) user_id_){
+        if(food.getUserId() != userId){
             if(food.getUserId() == -1){
                 return MsgUtil.makeMsg(MsgUtil.ERROR, "删除失败，食物为公共食物", null);
             }else {
@@ -89,9 +100,10 @@ public class FoodController{
     }
 
     @PostMapping("/get_food")
-    public Msg getFood(@RequestBody Map<String, Object> data){
-        Object userId_ = data.get(FoodConstant.USER_ID);
-        int userId = ((Number) userId_).intValue();
+    @UserLoginToken
+    public Msg getFood(@RequestBody Map<String, Object> data, HttpServletRequest httpServletRequest){
+        String token = httpServletRequest.getHeader("token");
+        int userId = tokenService.getUserIdFromToken(token);
 
         if(userId < 0){
             return MsgUtil.makeMsg(MsgUtil.ERROR, "传参错误,userId > 0", null);
