@@ -52,7 +52,7 @@ public class HeightController {
         try {
             date = Date.valueOf((String) date_);
         } catch (Exception e) {
-            return MsgUtil.makeMsg(MsgUtil.ERROR, "传参错误{user_id:1,date:yyyy-MM-dd}", null);
+            return MsgUtil.makeMsg(MsgUtil.ERROR, "传参错误{date:yyyy-MM-dd}", null);
         }
         Height height = heightService.getHeightByDate(id, date);
         return MsgUtil.makeMsg(MsgUtil.SUCCESS, MsgUtil.SUCCESS_MSG, JSONObject.fromObject(height, new CustomJsonConfig()));
@@ -85,7 +85,7 @@ public class HeightController {
             height = ((Number) height_).doubleValue();
             date = Date.valueOf((String) date_);
         } catch (Exception e) {
-            return MsgUtil.makeMsg(MsgUtil.ERROR, "传参错误{user_id:1,height:1.0,date:yyyy-MM-dd}", null);
+            return MsgUtil.makeMsg(MsgUtil.ERROR, "传参错误{height:1.0,date:yyyy-MM-dd}", null);
         }
         // update main_record
         Height lastHeight = heightService.getLatestHeight(id);
@@ -95,34 +95,34 @@ public class HeightController {
             if(mainRecord.getUpdateTime() == null || mainRecord.getUpdateTime().before(date)) {
                 mainRecord.setUpdateTime(Timestamp.valueOf(date.toString() + " 00:00:00"));
             }
-            try{
+//            try{
                 mainRecordService.updateMainRecord(mainRecord);
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-            }
+//            } catch (Exception e) {
+//                System.out.println(e.getMessage());
+//            }
         }
 
         // 同日覆盖
         Height height0 = heightService.getHeightByDate(id, date);
         if (height0 != null) {
             height0.setHeight(height);
-            try {
+//            try {
                 Height newHeight = heightService.addHeight(height0);
                 return MsgUtil.makeMsg(MsgUtil.SUCCESS, "添加成功", JSONObject.fromObject(newHeight, new CustomJsonConfig()));
-            } catch (Exception e) {
-                return MsgUtil.makeMsg(MsgUtil.ERROR, "添加失败", null);
-            }
+//            } catch (Exception e) {
+//                return MsgUtil.makeMsg(MsgUtil.ERROR, "添加失败", null);
+//            }
         }
 
 
         Height height1 = new Height();
         height1.setUserId(id); height1.setHeight(height); height1.setDate(date);
-        try {
+//        try {
             Height newHeight = heightService.addHeight(height1);
             return MsgUtil.makeMsg(MsgUtil.SUCCESS, "添加成功", JSONObject.fromObject(newHeight, new CustomJsonConfig()));
-        } catch (Exception e) {
-            return MsgUtil.makeMsg(MsgUtil.ERROR, "添加失败", null);
-        }
+//        } catch (Exception e) {
+//            return MsgUtil.makeMsg(MsgUtil.ERROR, "添加失败", null);
+//        }
     }
     @PostMapping("/period_height")
     @UserLoginToken

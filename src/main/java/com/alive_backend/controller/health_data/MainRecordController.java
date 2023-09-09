@@ -44,7 +44,7 @@ public class MainRecordController {
 
     @PostMapping("/main_record")
     @UserLoginToken
-    @Cacheable(value = "mainRecordCache", key = "#data.get('user_id')")
+//    @Cacheable(value = "mainRecordCache", key = "#data.get('user_id')")
     public Msg getMainRecordByUserId(@RequestBody Map<String,Object> data, HttpServletRequest httpServletRequest) {
         String token = httpServletRequest.getHeader("token");
         int id = tokenService.getUserIdFromToken(token);
@@ -61,14 +61,11 @@ public class MainRecordController {
     }
 
     @PostMapping("/bmi")
+    @UserLoginToken
 //    @Cacheable(value = "bmiCache", key = "#data.get('user_id')")
-    public Msg AnalyseBMI(@RequestBody Map<String, Object> data) {
+    public Msg AnalyseBMI(@RequestBody Map<String, Object> data, HttpServletRequest httpServletRequest) {
         // 检验参数合法性
-        Object id_ = data.get(UserConstant.USER_ID);
-        if (id_ == null) {
-            return MsgUtil.makeMsg(MsgUtil.ARG_ERROR, "传参错误{user_id:1}", null);
-        }
-        int id = (int) id_;
+        int id=tokenService.getUserIdFromToken(httpServletRequest.getHeader("token"));
         MainRecord mainRecord = mainRecordService.getMainRecordByUserId(id);
         if (mainRecord == null || mainRecord.getWeight() == null || mainRecord.getHeight() == null) {
             return MsgUtil.makeMsg(MsgUtil.ARG_ERROR, "数据不全", null);
@@ -79,20 +76,17 @@ public class MainRecordController {
         return MsgUtil.makeMsg(MsgUtil.SUCCESS, MsgUtil.SUCCESS_MSG, result);
     }
     @PostMapping("/update_main_record")
-    public Msg getLatestRecord(@RequestBody Map<String, Object> data) {
+    @UserLoginToken
+    public Msg getLatestRecord(@RequestBody Map<String, Object> data,HttpServletRequest httpServletRequest) {
         // 检验参数合法性
-        Object id_ = data.get(UserConstant.USER_ID);
-        if (id_ == null) {
-            return MsgUtil.makeMsg(MsgUtil.ARG_ERROR, "传参错误{user_id:1}", null);
-        }
-        int id = (int) id_;
+        int id=tokenService.getUserIdFromToken(httpServletRequest.getHeader("token"));
         MainRecord mainRecord = updateMainRecord(id);
         return MsgUtil.makeMsg(MsgUtil.SUCCESS, MsgUtil.SUCCESS_MSG, JSONObject.fromObject(mainRecord, new CustomJsonConfig()));
     }
 
     public MainRecord updateMainRecord(int userId) {
         MainRecord mainRecord = mainRecordService.getMainRecordByUserId(userId);
-        Date latest_date = new Date();
+        Date latest_date = mainRecord.getUpdateTime();
         //寻找最新的体重记录
         Weight weight = weightService.getLatestWeight(userId);
         if (weight != null) {

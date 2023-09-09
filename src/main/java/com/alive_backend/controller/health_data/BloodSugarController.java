@@ -102,21 +102,21 @@ public class BloodSugarController {
             MainRecord mainRecord = mainRecordService.getMainRecordByUserId(id);
             mainRecord.setBloodSugar(bloodSugar);
             if(mainRecord.getUpdateTime() == null || mainRecord.getUpdateTime().before(date)) {
-                mainRecord.setUpdateTime(Timestamp.valueOf(date + " 00:00:00"));
+                mainRecord.setUpdateTime(Timestamp.valueOf(date_ + ":00"));
             }
-            try {
+//            try {
                 mainRecordService.updateMainRecord(mainRecord);
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-            }
+//            } catch (Exception e) {
+//                System.out.println(e.getMessage());
+//            }
         }
 
 
-        try{
+//        try{
             BloodSugar ret = bloodSugarService.addBloodSugar(bloodSugar1);
             return MsgUtil.makeMsg(MsgUtil.SUCCESS, MsgUtil.SUCCESS_MSG, JSONObject.fromObject(ret, new CustomJsonConfig()));
-        } catch (Exception e) {
-            return MsgUtil.makeMsg(MsgUtil.ERROR, "添加失败", null);
-        }
+//        } catch (Exception e) {
+//            return MsgUtil.makeMsg(MsgUtil.ERROR, "添加失败", null);
+//        }
     }
 }
