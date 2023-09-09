@@ -52,6 +52,10 @@ public class UserAuthController {
 //    @ResponseBody
     public Msg getCheckCode(@RequestBody Map<String, Object> data){
         String email = data.get(UserConstant.EMAIL).toString();
+        UserAuth userAuth = userAuthService.getUserAuthByEmail(email);
+        if (userAuth != null){
+            return MsgUtil.makeMsg(MsgUtil.ERROR,"该邮箱已被注册");
+        }
         String checkCode = String.valueOf(new Random().nextInt(899999) + 100000);
         String message = "您的注册验证码为："+checkCode;
         try {
@@ -95,12 +99,12 @@ public class UserAuthController {
         }
 
         /*check checkCode*/
-//        String checkCode = checkCode_obj.toString();
-//        String checkCodeInRedis = (String) redisTemplate.opsForValue().get(email);
-//        redisTemplate.delete(email);
-//        if(!checkCode.equals(checkCodeInRedis)){
-//            return MsgUtil.makeMsg(MsgUtil.ERROR, "验证码错误", null);
-//        }
+        String checkCode = checkCode_obj.toString();
+        String checkCodeInRedis = (String) redisTemplate.opsForValue().get(email);
+        redisTemplate.delete(email);
+        if(!checkCode.equals(checkCodeInRedis)){
+            return MsgUtil.makeMsg(MsgUtil.ERROR, "验证码错误", null);
+        }
 
         /*add userAuth*/
         String password = password_obj.toString();

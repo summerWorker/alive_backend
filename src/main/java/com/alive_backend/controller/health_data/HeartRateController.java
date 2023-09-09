@@ -1,6 +1,7 @@
 package com.alive_backend.controller.health_data;
 import com.alive_backend.annotation.UserLoginToken;
 import com.alive_backend.entity.health_data.HeartRate;
+import com.alive_backend.entity.health_data.MainRecord;
 import com.alive_backend.service.health_data.HeartRateService;
 import com.alive_backend.service.health_data.MainRecordService;
 import com.alive_backend.serviceimpl.TokenService;
@@ -9,6 +10,7 @@ import com.alive_backend.utils.constant.Constant;
 import com.alive_backend.utils.constant.UserConstant;
 import com.alive_backend.utils.msg.Msg;
 import com.alive_backend.utils.msg.MsgUtil;
+import com.alive_backend.utils.redis.RedisUtil;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -33,6 +35,9 @@ public class HeartRateController {
     private TokenService tokenService;
     @Autowired
     private MainRecordService mainRecordService;
+    @Autowired
+    private RedisUtil redisUtil;
+
     @PostMapping("/heartRate")
     @UserLoginToken
 //    @Cacheable(value = "heartRate", key = "#data.get('user_id') + '_' + #data.get('start_date') + '_' + #data.get('end_date')")
@@ -51,7 +56,20 @@ public class HeartRateController {
             }catch (Exception e){
                 return MsgUtil.makeMsg(MsgUtil.ARG_ERROR, e.toString(), null);
             }
+            //先去redis缓存中查找
+            Object heartRatesCache = redisUtil.get("HeartRates_" + userId + "_" + date1 + "_" + date2);
+            if(heartRatesCache != null){
+                List<HeartRate> heartRates = (List<HeartRate>) heartRatesCache;
+                CustomJsonConfig jsonConfig = new CustomJsonConfig();
+                JSONArray jsonArray = JSONArray.fromObject(heartRates,jsonConfig);
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("heartRates", jsonArray);
+                System.out.println("从缓存中读取");
+                return MsgUtil.makeMsg(MsgUtil.SUCCESS, MsgUtil.SUCCESS_MSG, jsonObject);
+            }
+            System.out.println("从数据库中读取");
             List<HeartRate> heartRates = heartRateService.findHeartRateByUserIdAndDateBetween(userId, date1, date2);
+            redisUtil.set("HeartRates_" + userId + "_" + date1 + "_" + date2, heartRates, 60 * 60 * 24 * 7);
             CustomJsonConfig jsonConfig = new CustomJsonConfig();
             JSONArray jsonArray = JSONArray.fromObject(heartRates,jsonConfig);
             JSONObject jsonObject = new JSONObject();
@@ -100,6 +118,10 @@ public class HeartRateController {
             newHeartRate.setTimeStamp(timeStamp);
             newHeartRate.setDetailValue(heartRate);
             heartRateService.addHeartRate(newHeartRate);
+            MainRecord mainRecord = mainRecordService.getMainRecordByUserId(userId);
+            mainRecord.setHeartRate(Integer.valueOf(heartRate));
+            redisUtil.del("MainRecord_" + String.valueOf(userId));
+            redisUtil.set("MainRecord_" + String.valueOf(userId), mainRecord, 60 * 60 * 24 * 7);
             return MsgUtil.makeMsg(MsgUtil.SUCCESS, "添加成功", JSONObject.fromObject(newHeartRate, new CustomJsonConfig()));
         }
 //        catch (Exception e){

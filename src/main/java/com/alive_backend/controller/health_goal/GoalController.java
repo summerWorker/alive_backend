@@ -1,7 +1,9 @@
 package com.alive_backend.controller.health_goal;
 
+import com.alive_backend.annotation.UserLoginToken;
 import com.alive_backend.entity.goal.Goal;
 import com.alive_backend.service.goal.GoalService;
+import com.alive_backend.serviceimpl.TokenService;
 import com.alive_backend.utils.JsonConfig.CustomJsonConfig;
 import com.alive_backend.utils.constant.Constant;
 import com.alive_backend.utils.constant.GoalConstant;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import java.sql.Date;
 import java.sql.Time;
 import java.util.List;
@@ -28,14 +31,19 @@ public class GoalController {
     @Autowired
     private GoalService goalService;
 
+    @Autowired
+    private TokenService tokenService;
+
     @PostMapping("/goals")
-    public Msg getGoalsByUserId(@RequestBody Map<String ,Object> data) {
+    @UserLoginToken
+    public Msg getGoalsByUserId(@RequestBody Map<String ,Object> data, HttpServletRequest httpServletRequest) {
         // 检验参数合法性
-        Object id_ = data.get(UserConstant.USER_ID);
-        if (id_ == null) {
-            return MsgUtil.makeMsg(MsgUtil.ERROR, "传参错误{user_id: 1}", null);
-        }
-        int id = (int) id_;
+        String token = httpServletRequest.getHeader("token");
+        int id = tokenService.getUserIdFromToken(token);
+//        if (id_ == null) {
+//            return MsgUtil.makeMsg(MsgUtil.ERROR, "传参错误{user_id: 1}", null);
+//        }
+//        int id = (int) id_;
         List<Goal> goals = goalService.getGoalsByUserId(id);
         JSONArray jsonArray = JSONArray.fromObject(goals, new CustomJsonConfig());
         JSONObject jsonObject = new JSONObject();
@@ -43,17 +51,19 @@ public class GoalController {
         return MsgUtil.makeMsg(MsgUtil.SUCCESS, MsgUtil.SUCCESS_MSG, jsonObject);
     }
     @PostMapping("/set_goal")
-    public Msg setGoals(@RequestBody Map<String, Object> data) {
+    @UserLoginToken
+    public Msg setGoals(@RequestBody Map<String, Object> data, HttpServletRequest httpServletRequest) {
         // 检验参数合法性
-        Object id_ = data.get(UserConstant.USER_ID);
+        String token = httpServletRequest.getHeader("token");
+        int id = tokenService.getUserIdFromToken(token);
         Object goalName_ = data.get(GoalConstant.GOAL_NAME);
         Object goalDdl_ = data.get(GoalConstant.GOAL_DDL);
         Object goalKey1_ = data.get(GoalConstant.GOAL_NUM);
         Object goalKey2_ = data.get(GoalConstant.GOAL_DESC);
-        if (id_ == null || goalName_ == null) {
-            return MsgUtil.makeMsg(MsgUtil.ERROR, "传参错误{user_id: 1, goal_name: 'goalName'}", null);
-        }
-        int id = (int) id_;
+//        if (id_ == null || goalName_ == null) {
+//            return MsgUtil.makeMsg(MsgUtil.ERROR, "传参错误{user_id: 1, goal_name: 'goalName'}", null);
+//        }
+//        int id = (int) id_;
         String goalName = (String) goalName_;
         switch (goalName) {
             case GoalConstant.WEIGHT_GOAL: {
@@ -198,17 +208,19 @@ public class GoalController {
     }
 
     @PostMapping("/goal_name")
-    public Msg getGoalByName(@RequestBody Map<String,Object> data) {
+    @UserLoginToken
+    public Msg getGoalByName(@RequestBody Map<String,Object> data, HttpServletRequest httpServletRequest) {
         // 检验参数合法性
         Object goalName_ = data.get(GoalConstant.GOAL_NAME);
-        Object id_ = data.get(UserConstant.USER_ID);
-        if (goalName_ == null || id_ == null) {
-            return MsgUtil.makeMsg(MsgUtil.ERROR, "传参错误{user_id:1,goal_name:\"height\"}", null);
+//        Object id_ = data.get(UserConstant.USER_ID);
+        int id = tokenService.getUserIdFromToken(httpServletRequest.getHeader("token"));
+        if (goalName_ == null) {
+            return MsgUtil.makeMsg(MsgUtil.ERROR, "传参错误{goal_name:\"height\"}", null);
         }
         String goalName = (String) goalName_;
         for(String name : GoalConstant.GOAL_TYPES) {
             if(name.equals(goalName)) {
-                int id = ((Number) id_).intValue();
+//                int id = ((Number) id_).intValue();
                 Goal goal = goalService.getGoalByGoalName(id, goalName);
                 if(goal == null) {
                     return MsgUtil.makeMsg(MsgUtil.ERROR, "没有找到", null);
