@@ -11,9 +11,11 @@ import com.alive_backend.utils.constant.Constant;
 import com.alive_backend.utils.constant.UserConstant;
 import com.alive_backend.utils.msg.Msg;
 import com.alive_backend.utils.msg.MsgUtil;
+import com.alive_backend.utils.redis.RedisUtil;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.index.ReactiveIndexOperations;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -37,6 +39,8 @@ public class HeightController {
     @Autowired
     private MainRecordService mainRecordService;
 
+    @Autowired
+    private RedisUtil redisUtil;
 
     @PostMapping("/height")
     @UserLoginToken
@@ -90,8 +94,10 @@ public class HeightController {
         // update main_record
         Height lastHeight = heightService.getLatestHeight(id);
         if(lastHeight == null || !lastHeight.getDate().after(date)) {
+            redisUtil.del("MainRecord_" + String.valueOf(id));
             MainRecord mainRecord = mainRecordService.getMainRecordByUserId(id);
             mainRecord.setHeight(height);
+            redisUtil.set("MainRecord_" + String.valueOf(id), mainRecord, 60 * 60 * 24);
             if(mainRecord.getUpdateTime() == null || mainRecord.getUpdateTime().before(date)) {
                 mainRecord.setUpdateTime(Timestamp.valueOf(date.toString() + " 00:00:00"));
             }

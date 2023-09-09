@@ -13,6 +13,7 @@ import com.alive_backend.utils.constant.Constant;
 import com.alive_backend.utils.constant.UserConstant;
 import com.alive_backend.utils.msg.Msg;
 import com.alive_backend.utils.msg.MsgUtil;
+import com.alive_backend.utils.redis.RedisUtil;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,8 @@ public class BloodPressureController {
 
     @Autowired
     private MainRecordService mainRecordService;
+    @Autowired
+    private RedisUtil redisUtil;
 
     @PostMapping("/blood_pressure")
     @UserLoginToken
@@ -118,6 +121,8 @@ public class BloodPressureController {
                     mainRecord.setUpdateTime(Timestamp.valueOf(date + " 00:00:00"));
                 }
                 mainRecordService.updateMainRecord(mainRecord);
+            redisUtil.del("MainRecord_" + String.valueOf(id));
+            redisUtil.set("MainRecord_" + String.valueOf(id), mainRecord, 60 * 60 * 24);
 //            }catch (Exception e){
 //               System.out.println(e);
 //            }
