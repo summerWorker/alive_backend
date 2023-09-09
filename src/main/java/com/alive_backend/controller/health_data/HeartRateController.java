@@ -2,6 +2,7 @@ package com.alive_backend.controller.health_data;
 import com.alive_backend.annotation.UserLoginToken;
 import com.alive_backend.entity.health_data.HeartRate;
 import com.alive_backend.service.health_data.HeartRateService;
+import com.alive_backend.service.health_data.MainRecordService;
 import com.alive_backend.serviceimpl.TokenService;
 import com.alive_backend.utils.JsonConfig.CustomJsonConfig;
 import com.alive_backend.utils.constant.Constant;
@@ -30,6 +31,8 @@ public class HeartRateController {
     private HeartRateService heartRateService;
     @Autowired
     private TokenService tokenService;
+    @Autowired
+    private MainRecordService mainRecordService;
     @PostMapping("/heartRate")
     @UserLoginToken
 //    @Cacheable(value = "heartRate", key = "#data.get('user_id') + '_' + #data.get('start_date') + '_' + #data.get('end_date')")
@@ -87,6 +90,10 @@ public class HeartRateController {
         }catch (Exception e){
             return MsgUtil.makeMsg(MsgUtil.ARG_ERROR, e.toString(), null);
         }
+
+        //update main record
+
+
 //        try{
             HeartRate newHeartRate = new HeartRate();
             newHeartRate.setUserId(userId);

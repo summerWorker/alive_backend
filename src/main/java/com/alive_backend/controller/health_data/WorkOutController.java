@@ -4,9 +4,11 @@ import com.alive_backend.annotation.UserLoginToken;
 import com.alive_backend.entity.basic_data.Exercise;
 import com.alive_backend.entity.basic_data.Food;
 import com.alive_backend.entity.health_data.Diet;
+import com.alive_backend.entity.health_data.MainRecord;
 import com.alive_backend.entity.health_data.WorkOut;
 import com.alive_backend.entity.user_info.UserAuth;
 import com.alive_backend.service.basic_data.ExerciseService;
+import com.alive_backend.service.health_data.MainRecordService;
 import com.alive_backend.service.health_data.WorkOutService;
 import com.alive_backend.service.user_info.UserAuthService;
 import com.alive_backend.serviceimpl.TokenService;
@@ -25,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 
@@ -42,7 +45,8 @@ public class WorkOutController {
 
     @Autowired
     private TokenService tokenService;
-
+    @Autowired
+    private MainRecordService mainRecordService;
     @PostMapping("/add_workout")
     @UserLoginToken
     public Msg addWorkOut(@RequestBody Map<String,Object> data, HttpServletRequest httpServletRequest){
@@ -87,6 +91,27 @@ public class WorkOutController {
 
         //查看用户是否已经添加过该运动
         WorkOut workOut1 = workOutService.findWorkOutByUserIdAndExerciseIdAndDate(workOut.getUserId(), workOut.getExerciseId(), workOut.getDate());
+        //update main_record
+        if(workOut1 == null || !workOut1.getDate().after(date)){
+            MainRecord mainRecord = mainRecordService.getMainRecordByUserId(userId);
+            //更新运动时长和消耗卡路里
+            mainRecord.setExerciseTime(mainRecord.getExerciseTime() + amount);
+            if(workOut1 != null){
+                mainRecord.setExerciseTime(mainRecord.getExerciseTime() - workOut1.getAmount());
+            }
+            double calorieConsume = mainRecord.getCalorieConsume() + amount * exercise.getCalorie() / 60;
+            String formattedCalorieConsume = String.format("%.2f", calorieConsume); // 保留两位小数
+            mainRecord.setCalorieConsume(Double.parseDouble(formattedCalorieConsume));
+            if(mainRecord.getUpdateTime() == null || mainRecord.getUpdateTime().before(date)) {
+                mainRecord.setUpdateTime(Timestamp.valueOf(date.toString() + " 00:00:00"));
+            }
+//            try{
+            mainRecordService.updateMainRecord(mainRecord);
+//            } catch (Exception e) {
+//                System.out.println(e.getMessage());
+//            }
+        }
+
         if(workOut1 != null){
             workOut.setId(workOut1.getId());
         }
