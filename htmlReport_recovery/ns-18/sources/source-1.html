@@ -1,0 +1,156 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > BMI</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.alive_backend.utils.analysis</a>
+</div>
+
+<h1>Coverage Summary for Class: BMI (com.alive_backend.utils.analysis)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">BMI</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/23)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.alive_backend.utils.analysis;
+&nbsp;
+&nbsp;import com.alive_backend.utils.constant.Constant;
+&nbsp;import com.alive_backend.utils.constant.WeightConstant;
+&nbsp;import net.sf.json.JSONObject;
+&nbsp;
+<b class="nc">&nbsp;public class BMI {</b>
+&nbsp;    public static JSONObject analyseBMI(double weight, double height) {
+<b class="nc">&nbsp;        double bmi = calculateBMI(weight, height);</b>
+<b class="nc">&nbsp;        String analysis = analyzeBMI(bmi);</b>
+<b class="nc">&nbsp;        String advice = generateHealthAdvice(analysis);</b>
+<b class="nc">&nbsp;        JSONObject jsonObject = new JSONObject();</b>
+&nbsp;
+<b class="nc">&nbsp;        jsonObject.put(WeightConstant.BMI, bmi);</b>
+<b class="nc">&nbsp;        jsonObject.put(Constant.ANALYSIS, analysis);</b>
+<b class="nc">&nbsp;        jsonObject.put(Constant.ADVICE, advice);</b>
+<b class="nc">&nbsp;        return jsonObject;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // 计算BMI值
+&nbsp;    public static double calculateBMI(double weight, double height) {
+<b class="nc">&nbsp;        return weight / (height * height);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // 根据BMI值进行健康分析
+&nbsp;    public static String analyzeBMI(double bmi) {
+<b class="nc">&nbsp;        if (bmi &lt; 18.5) {</b>
+<b class="nc">&nbsp;            return WeightConstant.UNDER_WEIGHT;</b>
+<b class="nc">&nbsp;        } else if (bmi &lt; 24.9) {</b>
+<b class="nc">&nbsp;            return WeightConstant.NORMAL_WEIGHT;</b>
+<b class="nc">&nbsp;        } else if (bmi &lt; 29.9) {</b>
+<b class="nc">&nbsp;            return WeightConstant.OVER_WEIGHT;</b>
+&nbsp;        } else {
+<b class="nc">&nbsp;            return WeightConstant.FAT_WEIGHT;</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    // 根据BMI值的健康分析生成健康建议
+&nbsp;    public static String generateHealthAdvice(String analysis) {
+<b class="nc">&nbsp;        switch (analysis) {</b>
+&nbsp;            case WeightConstant.UNDER_WEIGHT:
+<b class="nc">&nbsp;                return WeightConstant.UNDER_WEIGHT_ADVICE;</b>
+&nbsp;            case WeightConstant.NORMAL_WEIGHT:
+<b class="nc">&nbsp;                return WeightConstant.NORMAL_WEIGHT_ADVICE;</b>
+&nbsp;            case WeightConstant.OVER_WEIGHT:
+<b class="nc">&nbsp;                return WeightConstant.OVER_WEIGHT_ADVICE;</b>
+&nbsp;            case WeightConstant.FAT_WEIGHT:
+<b class="nc">&nbsp;                return WeightConstant.FAT_WEIGHT_ADVICE;</b>
+&nbsp;            default:
+<b class="nc">&nbsp;                return &quot;Hello!&quot;;</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-07-13 22:35</div>
+</div>
+</body>
+</html>

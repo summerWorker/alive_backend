@@ -1,0 +1,143 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > ParseWeek</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.alive_backend.utils</a>
+</div>
+
+<h1>Coverage Summary for Class: ParseWeek (com.alive_backend.utils)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ParseWeek</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/14)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.alive_backend.utils;
+&nbsp;
+&nbsp;import java.util.Calendar;
+&nbsp;import java.sql.Date;
+&nbsp;
+<b class="nc">&nbsp;public class ParseWeek {</b>
+&nbsp;    public static int main(Date date) {
+&nbsp;
+&nbsp;        // 创建 Calendar 实例，并将日期设置为要计算的日期
+<b class="nc">&nbsp;        Calendar calendar = Calendar.getInstance();</b>
+<b class="nc">&nbsp;        calendar.setTime(date);</b>
+&nbsp;
+&nbsp;        // 获取星期几的值，其中 1 表示星期日，2 表示星期一，以此类推
+<b class="nc">&nbsp;        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);</b>
+&nbsp;
+&nbsp;        // 打印结果
+<b class="nc">&nbsp;        return getDayOfWeekString(dayOfWeek);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private static int getDayOfWeekString(int dayOfWeek) {
+<b class="nc">&nbsp;        switch (dayOfWeek) {</b>
+&nbsp;            case Calendar.SUNDAY:
+<b class="nc">&nbsp;                return 7;</b>
+&nbsp;            case Calendar.MONDAY:
+<b class="nc">&nbsp;                return 1;</b>
+&nbsp;            case Calendar.TUESDAY:
+<b class="nc">&nbsp;                return 2;</b>
+&nbsp;            case Calendar.WEDNESDAY:
+<b class="nc">&nbsp;                return 3;</b>
+&nbsp;            case Calendar.THURSDAY:
+<b class="nc">&nbsp;                return 4;</b>
+&nbsp;            case Calendar.FRIDAY:
+<b class="nc">&nbsp;                return 5;</b>
+&nbsp;            case Calendar.SATURDAY:
+<b class="nc">&nbsp;                return 6;</b>
+&nbsp;            default:
+<b class="nc">&nbsp;               return 0;</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-07-13 22:35</div>
+</div>
+</body>
+</html>

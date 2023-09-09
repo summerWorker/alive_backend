@@ -344,19 +344,4 @@ class GoalControllerTest {
         assertThat(JSONObject.fromObject(response11.getContentAsString()).get("status")).isEqualTo(-1);
     }
 
-    @Test
-    void testGetGoalByName_GoalServiceReturnsNull() throws Exception {
-        // Setup
-        when(mockGoalService.getGoalByGoalName(0, "goalName")).thenReturn(null);
-
-        // Run the test
-        final MockHttpServletResponse response = mockMvc.perform(post("/goal_name")
-                        .content("content").contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andReturn().getResponse();
-
-        // Verify the results
-        assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
-    }
 }

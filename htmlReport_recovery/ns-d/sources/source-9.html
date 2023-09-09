@@ -1,0 +1,84 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > DietRepository</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.alive_backend.repository.health_data</a>
+</div>
+
+<h1>Coverage Summary for Class: DietRepository (com.alive_backend.repository.health_data)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">DietRepository</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.alive_backend.repository.health_data;
+&nbsp;
+&nbsp;import com.alive_backend.entity.health_data.Diet;
+&nbsp;import com.alive_backend.utils.enumerate.FoodTypeEnum;
+&nbsp;import org.springframework.data.jpa.repository.JpaRepository;
+&nbsp;
+&nbsp;import java.sql.Date;
+&nbsp;import java.util.List;
+&nbsp;import java.util.UUID;
+&nbsp;
+&nbsp;public interface DietRepository extends JpaRepository&lt;Diet, UUID&gt; {
+&nbsp;    List&lt;Diet&gt; getByUserId(int userId);
+&nbsp;
+&nbsp;    Diet getByUserIdAndFoodIdAndDateAndType(int userId, UUID foodId, Date date, int type);
+&nbsp;
+&nbsp;    List&lt;Diet&gt; getByUserIdAndDate(int userId, Date date);
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-09-09 13:32</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,262 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > WebSocketServer</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.alive_backend.websocket</a>
+</div>
+
+<h1>Coverage Summary for Class: WebSocketServer (com.alive_backend.websocket)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">WebSocketServer</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    23.1%
+  </span>
+  <span class="absValue">
+    (3/13)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    8.5%
+  </span>
+  <span class="absValue">
+    (5/59)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.alive_backend.websocket;
+&nbsp;
+&nbsp;import com.alive_backend.entity.goal.Goal;
+&nbsp;import com.alive_backend.service.goal.GoalService;
+&nbsp;import com.alive_backend.serviceimpl.goal.GoalServiceImpl;
+&nbsp;import com.alive_backend.utils.constant.GoalConstant;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.stereotype.Component;
+&nbsp;
+&nbsp;import javax.websocket.*;
+&nbsp;import javax.websocket.server.PathParam;
+&nbsp;import javax.websocket.server.ServerEndpoint;
+&nbsp;import java.io.IOException;
+&nbsp;import java.sql.Date;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Map;
+&nbsp;import java.util.concurrent.*;
+&nbsp;
+&nbsp;
+&nbsp;//@ServerEndpoint(value = &quot;/websocket/{token}&quot;) //响应路径为 /ws/{token} 的连接请求
+&nbsp;@ServerEndpoint(value = &quot;/websocket/{userId}&quot;) //响应路径为 /ws/{token} 的连接请求
+&nbsp;@Component
+<b class="fc">&nbsp;public class WebSocketServer {</b>
+&nbsp;    /* fix Component中Autowired注入为null问题 */
+&nbsp;    private static GoalService goalService;
+&nbsp;    @Autowired
+&nbsp;    public void setGoalService(GoalService goalService) {
+<b class="fc">&nbsp;        WebSocketServer.goalService = goalService;</b>
+&nbsp;    }
+&nbsp;    //静态变量，用来记录当前在线连接数。应该把它设计成线程安全的。
+<b class="fc">&nbsp;    private static int onlineCount = 0;</b>
+&nbsp;
+<b class="fc">&nbsp;    private Map&lt;Integer, ScheduledExecutorService&gt; schedulerMap = new ConcurrentHashMap&lt;&gt;();</b>
+&nbsp;
+&nbsp;    //concurrent包的线程安全Set，用来存放每个客户端对应的MyWebSocket对象。
+<b class="fc">&nbsp;    private static CopyOnWriteArraySet&lt;WebSocketServer&gt; webSocketSet = new CopyOnWriteArraySet&lt;WebSocketServer&gt;();</b>
+&nbsp;
+&nbsp;    //与某个客户端的连接会话，需要通过它来给客户端发送数据
+&nbsp;    private Session session;
+&nbsp;    private Integer userId;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * 连接建立成功调用的方法*/
+&nbsp;    @OnOpen
+&nbsp;    public void onOpen(Session session,@PathParam(&quot;userId&quot;) Integer uid) {
+<b class="nc">&nbsp;        this.session = session;</b>
+<b class="nc">&nbsp;        this.userId = uid;</b>
+<b class="nc">&nbsp;        webSocketSet.add(this);     //加入set中</b>
+<b class="nc">&nbsp;        addOnlineCount();           //在线数加1</b>
+<b class="nc">&nbsp;        System.out.println(&quot;有新连接加入！当前在线人数为&quot; + getOnlineCount());</b>
+&nbsp;        try {
+<b class="nc">&nbsp;            sendMessage(&quot;连接成功&quot;);</b>
+<b class="nc">&nbsp;        } catch (IOException e) {</b>
+<b class="nc">&nbsp;            System.out.println(&quot;IO异常&quot;);</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;        // 创建一个定时任务调度器
+<b class="nc">&nbsp;        ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();</b>
+&nbsp;
+<b class="nc">&nbsp;        schedulerMap.put(uid, scheduler);</b>
+&nbsp;
+<b class="nc">&nbsp;        scheduler.scheduleAtFixedRate(() -&gt; {</b>
+&nbsp;            try {
+<b class="nc">&nbsp;                sendMessage(&quot;你好&quot;+uid);</b>
+<b class="nc">&nbsp;            } catch (IOException e) {</b>
+<b class="nc">&nbsp;                e.printStackTrace();</b>
+<b class="nc">&nbsp;            }</b>
+<b class="nc">&nbsp;            Goal weight_goal = goalService.getGoalByGoalName(uid, GoalConstant.WEIGHT_GOAL);</b>
+<b class="nc">&nbsp;            System.out.println(weight_goal);</b>
+<b class="nc">&nbsp;            if(weight_goal != null) {</b>
+<b class="nc">&nbsp;                Date weight_goal_date = weight_goal.getGoalDdl();</b>
+<b class="nc">&nbsp;                long weight_goal_time = weight_goal_date.getTime();</b>
+<b class="nc">&nbsp;                long now_time = System.currentTimeMillis();</b>
+<b class="nc">&nbsp;                long time = weight_goal_time - now_time;</b>
+<b class="nc">&nbsp;                if(time &gt; 0) {</b>
+&nbsp;
+&nbsp;                    try {
+<b class="nc">&nbsp;                        int left_days = (int) (time / (1000 * 60 * 60 * 24));</b>
+<b class="nc">&nbsp;                        sendMessage(&quot;设置了体重目标:&quot;+ weight_goal.getGoalKey1() +&quot; kg，还有&quot;+left_days+&quot;天截止&quot;);</b>
+<b class="nc">&nbsp;                    } catch (IOException e) {</b>
+<b class="nc">&nbsp;                        e.printStackTrace();</b>
+<b class="nc">&nbsp;                    }</b>
+&nbsp;
+&nbsp;                }
+&nbsp;            }
+&nbsp;        }, 0, 1, TimeUnit.DAYS);
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * 连接关闭调用的方法
+&nbsp;     */
+&nbsp;    @OnClose
+&nbsp;    public void onClose() {
+<b class="nc">&nbsp;        webSocketSet.remove(this);  //从set中删除</b>
+<b class="nc">&nbsp;        subOnlineCount();           //在线数减1</b>
+<b class="nc">&nbsp;        System.out.println(&quot;有一连接关闭！当前在线人数为&quot; + getOnlineCount());</b>
+&nbsp;
+&nbsp;        // 关闭并移除定时任务调度器
+<b class="nc">&nbsp;        ScheduledExecutorService scheduler = schedulerMap.remove(this.userId);</b>
+<b class="nc">&nbsp;        if (scheduler != null) {</b>
+<b class="nc">&nbsp;            scheduler.shutdown();</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * 收到客户端消息后调用的方法
+&nbsp;     *
+&nbsp;     * @param message 客户端发送过来的消息*/
+&nbsp;    @OnMessage
+&nbsp;    public void onMessage(String message, Session session) {
+<b class="nc">&nbsp;        System.out.println(&quot;来自客户端的消息:&quot; + message);</b>
+&nbsp;
+&nbsp;        //群发消息
+<b class="nc">&nbsp;        for (WebSocketServer item : webSocketSet) {</b>
+&nbsp;            try {
+<b class="nc">&nbsp;                item.sendMessage(message);</b>
+<b class="nc">&nbsp;            } catch (IOException e) {</b>
+<b class="nc">&nbsp;                e.printStackTrace();</b>
+<b class="nc">&nbsp;            }</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * 发生错误时调用
+&nbsp;     * */
+&nbsp;     @OnError
+&nbsp;     public void onError(Session session, Throwable error) {
+<b class="nc">&nbsp;     System.out.println(&quot;发生错误&quot;);</b>
+<b class="nc">&nbsp;     error.printStackTrace();</b>
+&nbsp;     }
+&nbsp;     public void sendMessage(String message) throws IOException {
+<b class="nc">&nbsp;     this.session.getBasicRemote().sendText(message);</b>
+&nbsp;     //this.session.getAsyncRemote().sendText(message);
+&nbsp;     }
+&nbsp;     /**
+&nbsp;      * 群发自定义消息
+&nbsp;      * */
+&nbsp;    public static void sendInfo(String message) throws IOException {
+<b class="nc">&nbsp;        for (WebSocketServer item : webSocketSet) {</b>
+&nbsp;            try {
+<b class="nc">&nbsp;                item.sendMessage(message);</b>
+<b class="nc">&nbsp;            } catch (IOException e) {</b>
+<b class="nc">&nbsp;                continue;</b>
+<b class="nc">&nbsp;            }</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public static synchronized int getOnlineCount() {
+<b class="nc">&nbsp;        return onlineCount;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public static synchronized void addOnlineCount() {
+<b class="nc">&nbsp;        WebSocketServer.onlineCount++;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public static synchronized void subOnlineCount() {
+<b class="nc">&nbsp;        WebSocketServer.onlineCount--;</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-07-13 22:35</div>
+</div>
+</body>
+</html>

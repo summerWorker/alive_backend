@@ -197,7 +197,17 @@ class BloodPressureControllerTest {
         // Verify the results
         assertEquals(HttpStatus.OK.value(), response.getStatus());
         assertEquals(-1, JSONObject.fromObject(response.getContentAsString()).getInt("status"));
-    }
+       final MockHttpServletResponse response21 = mockMvc.perform(post("/blood_pressure")
+                            .content("{\"start_date\":\"2001\",\"end_date\":\"2000-01-01\"}")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .accept(MediaType.APPLICATION_JSON)
+                            .param("token", "token"))
+                    .andReturn().getResponse();
+
+            // Verify the results
+            assertEquals(HttpStatus.OK.value(), response21.getStatus());
+            assertEquals(-1, JSONObject.fromObject(response21.getContentAsString()).getInt("status"));
+        }
 
     @Autowired
     private MockMvc mockMvc;

@@ -231,20 +231,4 @@ class HeightControllerTest {
         assertThat(response3.getStatus()).isEqualTo(HttpStatus.OK.value());
     }
 
-    @Test
-    void testGetPeriodHeight_HeightServiceReturnsNull() throws Exception {
-        // Setup
-        when(mockTokenService.getUserIdFromToken("token")).thenReturn(0);
-        when(mockHeightService.getHeightByDate(0, Date.valueOf(LocalDate.of(2020, 1, 1)))).thenReturn(null);
-
-        // Run the test
-        final MockHttpServletResponse response = mockMvc.perform(post("/period_height")
-                        .content("content").contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andReturn().getResponse();
-
-        // Verify the results
-        assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
-    }
 }

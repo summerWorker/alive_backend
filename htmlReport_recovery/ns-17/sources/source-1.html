@@ -1,0 +1,219 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > CustomJsonConfig</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.alive_backend.utils.JsonConfig</a>
+</div>
+
+<h1>Coverage Summary for Class: CustomJsonConfig (com.alive_backend.utils.JsonConfig)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">CustomJsonConfig</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/4)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">CustomJsonConfig$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/10)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">CustomJsonConfig$2</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/10)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/24)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.alive_backend.utils.JsonConfig;
+&nbsp;
+&nbsp;import net.sf.json.JsonConfig;
+&nbsp;import net.sf.json.processors.JsonValueProcessor;
+&nbsp;import net.sf.json.util.CycleDetectionStrategy;
+&nbsp;
+&nbsp;import java.sql.Date;
+&nbsp;import java.sql.Time;
+&nbsp;import java.text.SimpleDateFormat;
+&nbsp;
+&nbsp;/*
+&nbsp;*  java.sql.Date.getHours() 方法在 Java 8 中被废弃，在 Java 9 中被移除
+&nbsp;*   为了避免版本问题，重新自定义了日期转换方式
+&nbsp;* */
+&nbsp;public class CustomJsonConfig extends JsonConfig {
+<b class="nc">&nbsp;    public CustomJsonConfig() {</b>
+&nbsp;        // 设置循环引用检测策略
+<b class="nc">&nbsp;        setCycleDetectionStrategy(CycleDetectionStrategy.LENIENT);</b>
+&nbsp;
+&nbsp;        // 注册日期值处理器
+<b class="nc">&nbsp;        registerJsonValueProcessor(Date.class, new JsonValueProcessor() {</b>
+<b class="nc">&nbsp;            private final String pattern = &quot;yyyy-MM-dd&quot;;</b>
+&nbsp;
+&nbsp;            @Override
+&nbsp;            public Object processArrayValue(Object value, JsonConfig jsonConfig) {
+<b class="nc">&nbsp;                return process(value);</b>
+&nbsp;            }
+&nbsp;
+&nbsp;            @Override
+&nbsp;            public Object processObjectValue(String key, Object value, JsonConfig jsonConfig) {
+<b class="nc">&nbsp;                return process(value);</b>
+&nbsp;            }
+&nbsp;
+&nbsp;            private Object process(Object value) {
+<b class="nc">&nbsp;                if (value == null) {</b>
+<b class="nc">&nbsp;                    return &quot;&quot;; // 处理 null 值</b>
+&nbsp;                }
+<b class="nc">&nbsp;                if (value instanceof Date) {</b>
+<b class="nc">&nbsp;                    SimpleDateFormat sdf = new SimpleDateFormat(pattern);</b>
+<b class="nc">&nbsp;                    return sdf.format((Date) value);</b>
+&nbsp;                }
+<b class="nc">&nbsp;                return value;</b>
+&nbsp;            }
+&nbsp;        });
+&nbsp;        // 注册时间值处理器
+<b class="nc">&nbsp;        registerJsonValueProcessor(Time.class, new JsonValueProcessor() {</b>
+<b class="nc">&nbsp;            private final String pattern = &quot;HH:mm:ss&quot;;</b>
+&nbsp;
+&nbsp;            @Override
+&nbsp;            public Object processArrayValue(Object value, JsonConfig jsonConfig) {
+<b class="nc">&nbsp;                return process(value);</b>
+&nbsp;            }
+&nbsp;
+&nbsp;            @Override
+&nbsp;            public Object processObjectValue(String key, Object value, JsonConfig jsonConfig) {
+<b class="nc">&nbsp;                return process(value);</b>
+&nbsp;            }
+&nbsp;
+&nbsp;            private Object process(Object value) {
+<b class="nc">&nbsp;                if (value == null) {</b>
+<b class="nc">&nbsp;                    return &quot;00:00:00&quot;; // 处理空值</b>
+&nbsp;                }
+<b class="nc">&nbsp;                if (value instanceof Time) {</b>
+<b class="nc">&nbsp;                    SimpleDateFormat sdf = new SimpleDateFormat(pattern);</b>
+<b class="nc">&nbsp;                    return sdf.format((Time) value);</b>
+&nbsp;                }
+<b class="nc">&nbsp;                return value;</b>
+&nbsp;            }
+&nbsp;        });
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-07-13 22:35</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,167 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > SleepQuality</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.alive_backend.utils.analysis</a>
+</div>
+
+<h1>Coverage Summary for Class: SleepQuality (com.alive_backend.utils.analysis)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">SleepQuality</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/30)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.alive_backend.utils.analysis;
+&nbsp;
+&nbsp;import com.alive_backend.utils.constant.Constant;
+&nbsp;import com.alive_backend.utils.constant.SleepConstant;
+&nbsp;import net.sf.json.JSONObject;
+&nbsp;
+&nbsp;import java.time.Instant;
+&nbsp;import java.time.LocalDateTime;
+&nbsp;import java.time.ZoneId;
+&nbsp;import java.util.Date;
+&nbsp;import java.util.Random;
+&nbsp;
+<b class="nc">&nbsp;public class SleepQuality {</b>
+&nbsp;    public static JSONObject analyseDaySleep(JSONObject sleepData) {
+&nbsp;        /*
+&nbsp;        *  &quot;awake_count&quot;: 0,
+&nbsp;                    &quot;sleep_awake_duration&quot;: 0,
+&nbsp;                    &quot;bedtime&quot;: 1687365360,
+&nbsp;                    &quot;sleep_deep_duration&quot;: 88,
+&nbsp;                    &quot;sleep_light_duration&quot;: 335,
+&nbsp;                    &quot;sleep_rem_duration&quot;: 88,
+&nbsp;                    &quot;duration&quot;: 511,
+&nbsp;        * */
+<b class="nc">&nbsp;        int awakeCount = sleepData.getInt(SleepConstant.AWAKE_COUNT),</b>
+<b class="nc">&nbsp;            awakeTime = sleepData.getInt(SleepConstant.AWAKE_TIME),</b>
+<b class="nc">&nbsp;            deepSleepTime = sleepData.getInt(SleepConstant.DEEP_SLEEP_TIME),</b>
+<b class="nc">&nbsp;            lightSleepTime = sleepData.getInt(SleepConstant.LIGHT_SLEEP_TIME),</b>
+<b class="nc">&nbsp;            remSleepTime = sleepData.getInt(SleepConstant.REM_SLEEP_TIME),</b>
+<b class="nc">&nbsp;            length = sleepData.getInt(SleepConstant.LENGTH);</b>
+<b class="nc">&nbsp;        long bedtime = sleepData.getLong(SleepConstant.BEDTIME);</b>
+&nbsp;
+<b class="nc">&nbsp;        double awakeRate = (double)awakeTime / length,</b>
+<b class="nc">&nbsp;               deepSleepRate = (double)deepSleepTime / length,</b>
+<b class="nc">&nbsp;               lightSleepRate = (double)lightSleepTime / length,</b>
+<b class="nc">&nbsp;               remSleepRate = (double)remSleepTime / length;</b>
+&nbsp;
+<b class="nc">&nbsp;        Instant instant = Instant.ofEpochSecond(bedtime);</b>
+<b class="nc">&nbsp;        ZoneId zoneId = ZoneId.systemDefault(); // 获取当地的ZoneId</b>
+<b class="nc">&nbsp;        LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, zoneId);  // 将Instant对象转换为当地时间的LocalDateTime对象</b>
+<b class="nc">&nbsp;        int hour = localDateTime.getHour();</b>
+&nbsp;
+&nbsp;
+<b class="nc">&nbsp;        JSONObject jsonObject = new JSONObject();</b>
+<b class="nc">&nbsp;        jsonObject.put(SleepConstant.BEDTIME, analyseBedtime(hour));</b>
+<b class="nc">&nbsp;        return jsonObject;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // 分析入睡时间
+&nbsp;    public static JSONObject analyseBedtime(int hour) {
+<b class="nc">&nbsp;        JSONObject jsonObject = new JSONObject();</b>
+<b class="nc">&nbsp;        Random random = new Random();</b>
+<b class="nc">&nbsp;        if (hour &lt;= 22 &amp;&amp; hour &gt; 8) {</b>
+<b class="nc">&nbsp;            jsonObject.put(Constant.ANALYSIS, SleepConstant.NORMAL_BEDTIME);</b>
+<b class="nc">&nbsp;            jsonObject.put(Constant.ADVICE, &quot;人体生物钟建议晚上23点前入睡，你做的很好！&quot;);</b>
+<b class="nc">&nbsp;        } else if (hour &gt; 22 || hour &lt;= 2) {</b>
+<b class="nc">&nbsp;            jsonObject.put(Constant.ANALYSIS, SleepConstant.LATE_BEDTIME);</b>
+<b class="nc">&nbsp;            jsonObject.put(Constant.ADVICE,SleepConstant.ADVICE_FOR_LATE[random.nextInt(SleepConstant.ADVICE_FOR_LATE.length)]);</b>
+&nbsp;        } else {
+<b class="nc">&nbsp;            jsonObject.put(Constant.ANALYSIS, SleepConstant.STAY_UP_LATE);</b>
+<b class="nc">&nbsp;            jsonObject.put(Constant.ADVICE, SleepConstant.ADVICE_FOR_STAY_UP[random.nextInt(SleepConstant.ADVICE_FOR_STAY_UP.length)]);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return jsonObject;</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-07-13 22:35</div>
+</div>
+</body>
+</html>

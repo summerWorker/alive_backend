@@ -1,0 +1,325 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > GoalController</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.alive_backend.controller.health_goal</a>
+</div>
+
+<h1>Coverage Summary for Class: GoalController (com.alive_backend.controller.health_goal)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">GoalController</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (5/5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (120/120)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.alive_backend.controller.health_goal;
+&nbsp;
+&nbsp;import com.alive_backend.entity.goal.Goal;
+&nbsp;import com.alive_backend.service.goal.GoalService;
+&nbsp;import com.alive_backend.utils.JsonConfig.CustomJsonConfig;
+&nbsp;import com.alive_backend.utils.constant.Constant;
+&nbsp;import com.alive_backend.utils.constant.GoalConstant;
+&nbsp;import com.alive_backend.utils.constant.UserConstant;
+&nbsp;import com.alive_backend.utils.msg.Msg;
+&nbsp;import com.alive_backend.utils.msg.MsgUtil;
+&nbsp;import net.sf.json.JSON;
+&nbsp;import net.sf.json.JSONArray;
+&nbsp;import net.sf.json.JSONObject;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.web.bind.annotation.PostMapping;
+&nbsp;import org.springframework.web.bind.annotation.RequestBody;
+&nbsp;import org.springframework.web.bind.annotation.RestController;
+&nbsp;
+&nbsp;import java.sql.Date;
+&nbsp;import java.sql.Time;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Map;
+&nbsp;import java.util.regex.Matcher;
+&nbsp;import java.util.regex.Pattern;
+&nbsp;
+&nbsp;@RestController
+<b class="fc">&nbsp;public class GoalController {</b>
+&nbsp;    @Autowired
+&nbsp;    private GoalService goalService;
+&nbsp;
+&nbsp;    @PostMapping(&quot;/goals&quot;)
+&nbsp;    public Msg getGoalsByUserId(@RequestBody Map&lt;String ,Object&gt; data) {
+&nbsp;        // 检验参数合法性
+<b class="fc">&nbsp;        Object id_ = data.get(UserConstant.USER_ID);</b>
+<b class="fc">&nbsp;        if (id_ == null) {</b>
+<b class="fc">&nbsp;            return MsgUtil.makeMsg(MsgUtil.ERROR, &quot;传参错误{user_id: 1}&quot;, null);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        int id = (int) id_;</b>
+<b class="fc">&nbsp;        List&lt;Goal&gt; goals = goalService.getGoalsByUserId(id);</b>
+<b class="fc">&nbsp;        JSONArray jsonArray = JSONArray.fromObject(goals, new CustomJsonConfig());</b>
+<b class="fc">&nbsp;        JSONObject jsonObject = new JSONObject();</b>
+<b class="fc">&nbsp;        jsonObject.put(Constant.GOAL, jsonArray);</b>
+<b class="fc">&nbsp;        return MsgUtil.makeMsg(MsgUtil.SUCCESS, MsgUtil.SUCCESS_MSG, jsonObject);</b>
+&nbsp;    }
+&nbsp;    @PostMapping(&quot;/set_goal&quot;)
+&nbsp;    public Msg setGoals(@RequestBody Map&lt;String, Object&gt; data) {
+&nbsp;        // 检验参数合法性
+<b class="fc">&nbsp;        Object id_ = data.get(UserConstant.USER_ID);</b>
+<b class="fc">&nbsp;        Object goalName_ = data.get(GoalConstant.GOAL_NAME);</b>
+<b class="fc">&nbsp;        Object goalDdl_ = data.get(GoalConstant.GOAL_DDL);</b>
+<b class="fc">&nbsp;        Object goalKey1_ = data.get(GoalConstant.GOAL_NUM);</b>
+<b class="fc">&nbsp;        Object goalKey2_ = data.get(GoalConstant.GOAL_DESC);</b>
+<b class="fc">&nbsp;        if (id_ == null || goalName_ == null) {</b>
+<b class="fc">&nbsp;            return MsgUtil.makeMsg(MsgUtil.ERROR, &quot;传参错误{user_id: 1, goal_name: &#39;goalName&#39;}&quot;, null);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        int id = (int) id_;</b>
+<b class="fc">&nbsp;        String goalName = (String) goalName_;</b>
+<b class="fc">&nbsp;        switch (goalName) {</b>
+&nbsp;            case GoalConstant.WEIGHT_GOAL: {
+<b class="fc">&nbsp;                Date goalDdl = null;</b>
+<b class="fc">&nbsp;                if (goalDdl_ != null) {</b>
+&nbsp;                    try {
+<b class="fc">&nbsp;                        goalDdl = Date.valueOf((String) goalDdl_);</b>
+<b class="fc">&nbsp;                    } catch (Exception e) {</b>
+<b class="fc">&nbsp;                        return MsgUtil.makeMsg(MsgUtil.ERROR, &quot;日期格式错误{goalDdl: &#39;2019-01-01&#39;}&quot;, null);</b>
+<b class="fc">&nbsp;                    }</b>
+&nbsp;                }
+<b class="fc">&nbsp;                if (goalKey1_ == null) {</b>
+<b class="fc">&nbsp;                    return MsgUtil.makeMsg(MsgUtil.ERROR, &quot;体重目标需要一个具体的值{goalKey1: 60}&quot;, null);</b>
+&nbsp;                }
+<b class="fc">&nbsp;                double goalKey1 = ((Number) goalKey1_).doubleValue();</b>
+<b class="fc">&nbsp;                Goal old_goal = goalService.getGoalByGoalName(id, GoalConstant.WEIGHT_GOAL);</b>
+<b class="fc">&nbsp;                if (old_goal == null) {</b>
+<b class="fc">&nbsp;                    old_goal = new Goal();</b>
+<b class="fc">&nbsp;                    old_goal.setUserId(id);</b>
+<b class="fc">&nbsp;                    old_goal.setGoalName(GoalConstant.WEIGHT_GOAL);</b>
+<b class="fc">&nbsp;                    old_goal.setGoalKey1(goalKey1);</b>
+<b class="fc">&nbsp;                    old_goal.setGoalDdl(goalDdl);</b>
+<b class="fc">&nbsp;                    goalService.setGoal(old_goal);</b>
+&nbsp;                } else {
+<b class="fc">&nbsp;                    old_goal.setGoalKey1(goalKey1);</b>
+<b class="fc">&nbsp;                    old_goal.setGoalDdl(goalDdl);</b>
+<b class="fc">&nbsp;                    goalService.setGoal(old_goal);</b>
+&nbsp;                }
+&nbsp;
+<b class="fc">&nbsp;                return MsgUtil.makeMsg(MsgUtil.SUCCESS, MsgUtil.SUCCESS_MSG, JSONObject.fromObject(old_goal, new CustomJsonConfig()));</b>
+&nbsp;            }
+&nbsp;
+&nbsp;            case GoalConstant.STEP_GOAL: {
+<b class="fc">&nbsp;                if (goalKey1_ == null) {</b>
+<b class="fc">&nbsp;                    return MsgUtil.makeMsg(MsgUtil.ERROR, &quot;步数目标需要一个具体的值{goalKey1: 10000}&quot;, null);</b>
+&nbsp;                }
+<b class="fc">&nbsp;                double goalKey1 = ((Number) goalKey1_).doubleValue();</b>
+&nbsp;                // 步数不设置ddl
+<b class="fc">&nbsp;                Goal old_goal = goalService.getGoalByGoalName(id, GoalConstant.STEP_GOAL);</b>
+<b class="fc">&nbsp;                if (old_goal == null) {</b>
+<b class="fc">&nbsp;                    old_goal = new Goal();</b>
+<b class="fc">&nbsp;                    old_goal.setUserId(id);</b>
+<b class="fc">&nbsp;                    old_goal.setGoalName(GoalConstant.STEP_GOAL);</b>
+<b class="fc">&nbsp;                    old_goal.setGoalKey1(goalKey1);</b>
+<b class="fc">&nbsp;                    goalService.setGoal(old_goal);</b>
+&nbsp;                } else {
+<b class="fc">&nbsp;                    old_goal.setGoalKey1(goalKey1);</b>
+<b class="fc">&nbsp;                    goalService.setGoal(old_goal);</b>
+&nbsp;                }
+<b class="fc">&nbsp;                return MsgUtil.makeMsg(MsgUtil.SUCCESS, MsgUtil.SUCCESS_MSG, JSONObject.fromObject(old_goal, new CustomJsonConfig()));</b>
+&nbsp;            }
+&nbsp;
+&nbsp;            case GoalConstant.SLEEP_LENGTH_GOAL: {
+<b class="fc">&nbsp;                  if (goalKey1_ == null) {</b>
+<b class="fc">&nbsp;                    return MsgUtil.makeMsg(MsgUtil.ERROR, &quot;睡眠长度目标需要一个具体的值{goalNum: 8.5}&quot;, null);</b>
+&nbsp;                }
+<b class="fc">&nbsp;                double goalKey1 = ((Number) goalKey1_).doubleValue();</b>
+&nbsp;                // 睡眠长度不设置ddl
+<b class="fc">&nbsp;                Goal old_goal = goalService.getGoalByGoalName(id, GoalConstant.SLEEP_LENGTH_GOAL);</b>
+<b class="fc">&nbsp;                if (old_goal == null) {</b>
+<b class="fc">&nbsp;                    old_goal = new Goal();</b>
+<b class="fc">&nbsp;                    old_goal.setUserId(id);</b>
+<b class="fc">&nbsp;                    old_goal.setGoalName(GoalConstant.SLEEP_LENGTH_GOAL);</b>
+<b class="fc">&nbsp;                    old_goal.setGoalKey1(goalKey1);</b>
+<b class="fc">&nbsp;                    goalService.setGoal(old_goal);</b>
+&nbsp;                } else {
+<b class="fc">&nbsp;                    old_goal.setGoalKey1(goalKey1);</b>
+<b class="fc">&nbsp;                    goalService.setGoal(old_goal);</b>
+&nbsp;                }
+<b class="fc">&nbsp;                return MsgUtil.makeMsg(MsgUtil.SUCCESS, MsgUtil.SUCCESS_MSG, JSONObject.fromObject(old_goal, new CustomJsonConfig()));</b>
+&nbsp;            }
+&nbsp;
+&nbsp;            case GoalConstant.BEDTIME_GOAL: {
+<b class="fc">&nbsp;                if (goalKey2_ == null) {</b>
+<b class="fc">&nbsp;                    return MsgUtil.makeMsg(MsgUtil.ERROR, &quot;入睡时间目标需要一个具体的时间{goalKey2: “21:00”}&quot;, null);</b>
+&nbsp;                }
+<b class="fc">&nbsp;                String goalKey2 = (String) goalKey2_;</b>
+<b class="fc">&nbsp;                goalKey2 = timeValid(goalKey2);</b>
+<b class="fc">&nbsp;                if (goalKey2 == null) {</b>
+<b class="fc">&nbsp;                    return MsgUtil.makeMsg(MsgUtil.ERROR, &quot;入睡时间格式错误,至少需要时分，英文冒号，“21:00”}&quot;, null);</b>
+&nbsp;                }
+&nbsp;
+&nbsp;                // 入睡时间不设置ddl
+<b class="fc">&nbsp;                Goal old_goal = goalService.getGoalByGoalName(id, GoalConstant.BEDTIME_GOAL);</b>
+<b class="fc">&nbsp;                if (old_goal == null) {</b>
+<b class="fc">&nbsp;                    old_goal = new Goal();</b>
+<b class="fc">&nbsp;                    old_goal.setUserId(id);</b>
+<b class="fc">&nbsp;                    old_goal.setGoalName(GoalConstant.BEDTIME_GOAL);</b>
+<b class="fc">&nbsp;                    old_goal.setGoalKey2(goalKey2);</b>
+<b class="fc">&nbsp;                    goalService.setGoal(old_goal);</b>
+&nbsp;                } else {
+<b class="fc">&nbsp;                    old_goal.setGoalKey2(goalKey2);</b>
+<b class="fc">&nbsp;                    goalService.setGoal(old_goal);</b>
+&nbsp;                }
+<b class="fc">&nbsp;                return MsgUtil.makeMsg(MsgUtil.SUCCESS, MsgUtil.SUCCESS_MSG, JSONObject.fromObject(old_goal, new CustomJsonConfig()));</b>
+&nbsp;            }
+&nbsp;
+&nbsp;            case GoalConstant.CALORIE_GOAL: {
+<b class="fc">&nbsp;                if (goalKey1_ == null) {</b>
+<b class="fc">&nbsp;                    return MsgUtil.makeMsg(MsgUtil.ERROR, &quot;卡路里目标需要一个具体的值{goalNum: 2000}&quot;, null);</b>
+&nbsp;                }
+<b class="fc">&nbsp;                double goalKey1 = ((Number) goalKey1_).doubleValue();</b>
+&nbsp;                // 卡路里不设置ddl
+<b class="fc">&nbsp;                Goal old_goal = goalService.getGoalByGoalName(id, GoalConstant.CALORIE_GOAL);</b>
+<b class="fc">&nbsp;                if (old_goal == null) {</b>
+<b class="fc">&nbsp;                    old_goal = new Goal();</b>
+<b class="fc">&nbsp;                    old_goal.setUserId(id);</b>
+<b class="fc">&nbsp;                    old_goal.setGoalName(GoalConstant.CALORIE_GOAL);</b>
+<b class="fc">&nbsp;                    old_goal.setGoalKey1(goalKey1);</b>
+<b class="fc">&nbsp;                    goalService.setGoal(old_goal);</b>
+&nbsp;                } else {
+<b class="fc">&nbsp;                    old_goal.setGoalKey1(goalKey1);</b>
+<b class="fc">&nbsp;                    goalService.setGoal(old_goal);</b>
+&nbsp;                }
+<b class="fc">&nbsp;                return MsgUtil.makeMsg(MsgUtil.SUCCESS, MsgUtil.SUCCESS_MSG, JSONObject.fromObject(old_goal, new CustomJsonConfig()));</b>
+&nbsp;            }
+&nbsp;
+&nbsp;            default:
+<b class="fc">&nbsp;                return MsgUtil.makeMsg(MsgUtil.ERROR, &quot;目标类型错误&quot;, null);</b>
+&nbsp;
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /* 检验时间格式，自动补上秒位:00 */
+&nbsp;    private String timeValid(String time) {
+&nbsp;        // 定义时间格式的正则表达式，匹配 hh:mm 或 hh:mm:ss 格式
+<b class="fc">&nbsp;        String pattern = &quot;^([01]?[0-9]|2[0-3]):[0-5][0-9](:[0-5][0-9])?$&quot;;</b>
+<b class="fc">&nbsp;        Pattern regex = Pattern.compile(pattern);</b>
+<b class="fc">&nbsp;        Matcher matcher = regex.matcher(time);</b>
+<b class="fc">&nbsp;        if (matcher.matches()) {</b>
+&nbsp;            // 时间格式匹配，不需要进行补充秒
+<b class="fc">&nbsp;            return time;</b>
+&nbsp;        } else {
+&nbsp;            // 时间格式不匹配，尝试进行补充秒并再次检验
+<b class="fc">&nbsp;            String correctedTime = time + &quot;:00&quot;;</b>
+<b class="fc">&nbsp;            matcher = regex.matcher(correctedTime);</b>
+<b class="fc">&nbsp;            if(matcher.matches())</b>
+<b class="fc">&nbsp;                return correctedTime;</b>
+&nbsp;            else
+<b class="fc">&nbsp;                return null;</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    @PostMapping(&quot;/goal_name&quot;)
+&nbsp;    public Msg getGoalByName(@RequestBody Map&lt;String,Object&gt; data) {
+&nbsp;        // 检验参数合法性
+<b class="fc">&nbsp;        Object goalName_ = data.get(GoalConstant.GOAL_NAME);</b>
+<b class="fc">&nbsp;        Object id_ = data.get(UserConstant.USER_ID);</b>
+<b class="fc">&nbsp;        if (goalName_ == null || id_ == null) {</b>
+<b class="fc">&nbsp;            return MsgUtil.makeMsg(MsgUtil.ERROR, &quot;传参错误{user_id:1,goal_name:\&quot;height\&quot;}&quot;, null);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        String goalName = (String) goalName_;</b>
+<b class="fc">&nbsp;        for(String name : GoalConstant.GOAL_TYPES) {</b>
+<b class="fc">&nbsp;            if(name.equals(goalName)) {</b>
+<b class="fc">&nbsp;                int id = ((Number) id_).intValue();</b>
+<b class="fc">&nbsp;                Goal goal = goalService.getGoalByGoalName(id, goalName);</b>
+<b class="fc">&nbsp;                if(goal == null) {</b>
+<b class="fc">&nbsp;                    return MsgUtil.makeMsg(MsgUtil.ERROR, &quot;没有找到&quot;, null);</b>
+&nbsp;                } else {
+<b class="fc">&nbsp;                    return MsgUtil.makeMsg(MsgUtil.SUCCESS, MsgUtil.SUCCESS_MSG, JSONObject.fromObject(goal, new CustomJsonConfig()));</b>
+&nbsp;                }
+&nbsp;            }
+&nbsp;        }
+<b class="fc">&nbsp;        return MsgUtil.makeMsg(MsgUtil.ERROR, &quot;目标类型错误&quot;, null);</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-09-09 13:32</div>
+</div>
+</body>
+</html>
