@@ -95,9 +95,16 @@ public class WorkOutController {
         if(workOut1 == null || !workOut1.getDate().after(date)){
             MainRecord mainRecord = mainRecordService.getMainRecordByUserId(userId);
             //更新运动时长和消耗卡路里
-            mainRecord.setExerciseTime(mainRecord.getExerciseTime() + amount);
+            if(mainRecord.getExerciseTime() != null){
+                mainRecord.setExerciseTime(mainRecord.getExerciseTime() + amount);
+            } else {
+                mainRecord.setExerciseTime(amount);
+            }
             if(workOut1 != null){
                 mainRecord.setExerciseTime(mainRecord.getExerciseTime() - workOut1.getAmount());
+            }
+            if(mainRecord.getCalorieConsume() == null){
+                mainRecord.setCalorieConsume(0.0);
             }
             double calorieConsume = mainRecord.getCalorieConsume() + amount * exercise.getCalorie() / 60;
             String formattedCalorieConsume = String.format("%.2f", calorieConsume); // 保留两位小数

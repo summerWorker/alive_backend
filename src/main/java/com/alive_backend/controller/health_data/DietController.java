@@ -101,6 +101,7 @@ public class DietController{
         //更新main_record
         if(diet1 == null || !diet1.getDate().after(date)) {
             MainRecord mainRecord = mainRecordService.getMainRecordByUserId(userId);
+            if(mainRecord.getCalorieIn() == null) mainRecord.setCalorieIn(0.0);
             mainRecord.setCalorieIn(mainRecord.getCalorieIn() + food.getCalorie() * amount);
             if(mainRecord.getUpdateTime() == null || mainRecord.getUpdateTime().before(date)) {
                 mainRecord.setUpdateTime(Timestamp.valueOf(date.toString() + " 00:00:00"));

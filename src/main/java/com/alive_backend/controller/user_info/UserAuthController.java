@@ -229,4 +229,15 @@ public class UserAuthController {
         return MsgUtil.makeMsg(MsgUtil.SUCCESS, "登出成功", null);
     }
 
+    @PostMapping("/get_user_nickname")
+    @UserLoginToken
+    public Msg getUserNickName(HttpServletRequest request) {
+        String token = request.getHeader("token");
+        int id = tokenService.getUserIdFromToken(token);
+        UserAuth userAuth = userAuthService.findUserById(id);
+        UserInfo userInfo = userAuth.getUserInfo();
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("nickname", userInfo.getNickname());
+        return MsgUtil.makeMsg(MsgUtil.SUCCESS, "获取成功", jsonObject);
+    }
 }
