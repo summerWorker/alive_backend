@@ -1,7 +1,9 @@
 package com.alive_backend.controller.health_data;
 import com.alive_backend.annotation.UserLoginToken;
 import com.alive_backend.entity.health_data.HeartRate;
+import com.alive_backend.entity.health_data.MainRecord;
 import com.alive_backend.service.health_data.HeartRateService;
+import com.alive_backend.service.health_data.MainRecordService;
 import com.alive_backend.serviceimpl.TokenService;
 import com.alive_backend.utils.JsonConfig.CustomJsonConfig;
 import com.alive_backend.utils.constant.Constant;
@@ -31,6 +33,8 @@ public class HeartRateController {
     private HeartRateService heartRateService;
     @Autowired
     private TokenService tokenService;
+    @Autowired
+    private MainRecordService mainRecordService;
     @Autowired
     private RedisUtil redisUtil;
 
@@ -110,6 +114,10 @@ public class HeartRateController {
             newHeartRate.setTimeStamp(timeStamp);
             newHeartRate.setDetailValue(heartRate);
             heartRateService.addHeartRate(newHeartRate);
+            MainRecord mainRecord = mainRecordService.getMainRecordByUserId(userId);
+            mainRecord.setHeartRate(Integer.valueOf(heartRate));
+            redisUtil.del("MainRecord_" + String.valueOf(userId));
+            redisUtil.set("MainRecord_" + String.valueOf(userId), mainRecord, 60 * 60 * 24 * 7);
             return MsgUtil.makeMsg(MsgUtil.SUCCESS, "添加成功", JSONObject.fromObject(newHeartRate, new CustomJsonConfig()));
         }
 //        catch (Exception e){

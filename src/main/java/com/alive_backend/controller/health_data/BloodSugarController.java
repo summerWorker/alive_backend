@@ -11,6 +11,7 @@ import com.alive_backend.utils.constant.Constant;
 import com.alive_backend.utils.constant.UserConstant;
 import com.alive_backend.utils.msg.Msg;
 import com.alive_backend.utils.msg.MsgUtil;
+import com.alive_backend.utils.redis.RedisUtil;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,8 @@ public class BloodSugarController {
 
     @Autowired
     private MainRecordService mainRecordService;
+    @Autowired
+    private RedisUtil redisUtil;
 
     @PostMapping("/blood_sugar")
     @UserLoginToken
@@ -104,11 +107,9 @@ public class BloodSugarController {
             if(mainRecord.getUpdateTime() == null || mainRecord.getUpdateTime().before(date)) {
                 mainRecord.setUpdateTime(Timestamp.valueOf(date_ + ":00"));
             }
-//            try {
-                mainRecordService.updateMainRecord(mainRecord);
-//            } catch (Exception e) {
-//                System.out.println(e.getMessage());
-//            }
+            mainRecordService.updateMainRecord(mainRecord);
+            redisUtil.del("MainRecord_" + String.valueOf(id));
+            redisUtil.set("MainRecord_" + String.valueOf(id), mainRecord, 60 * 60 * 24);
         }
 
 
