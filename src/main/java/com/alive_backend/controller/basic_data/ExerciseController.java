@@ -1,7 +1,9 @@
 package com.alive_backend.controller.basic_data;
 
+import com.alive_backend.annotation.UserLoginToken;
 import com.alive_backend.entity.basic_data.Exercise;
 import com.alive_backend.service.basic_data.ExerciseService;
+import com.alive_backend.serviceimpl.TokenService;
 import com.alive_backend.utils.constant.ExerciseConstant;
 import com.alive_backend.utils.msg.Msg;
 import com.alive_backend.utils.msg.MsgUtil;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -22,18 +25,25 @@ public class ExerciseController {
     @Autowired
     private ExerciseService exerciseService;
 
+    @Autowired
+    private TokenService tokenService;
+
     @PostMapping("/add_exercise")
-    public Msg addExercise(@RequestBody Map<String,Object> data){
+    @UserLoginToken
+    public Msg addExercise(@RequestBody Map<String,Object> data, HttpServletRequest httpServletRequest){
+        String token = httpServletRequest.getHeader("token");
+        int userId = tokenService.getUserIdFromToken(token);
+
         Object name_ = data.get(ExerciseConstant.NAME);
         Object picture_ = data.get(ExerciseConstant.PICTURE);
-        Object userId_ = data.get(ExerciseConstant.USER_ID);
+
         Object calorie_ = data.get(ExerciseConstant.CALORIE);
 
         Exercise exercise = new Exercise();
         try{
             exercise.setName((String) name_);
             exercise.setPicture((String) picture_);
-            exercise.setUserId(((Number) userId_).intValue());
+            exercise.setUserId(userId);
             exercise.setCalorie(((Number) calorie_).doubleValue());
         }catch (Exception e){
             return MsgUtil.makeMsg(MsgUtil.ERROR, "传参格式{name:游泳, picture:“”, userId:-1, calorie:254}", null);
@@ -53,9 +63,10 @@ public class ExerciseController {
 
 
     @PostMapping("/get_exercise")
-    public Msg getExercise(@RequestBody Map<String, Object> data){
-        Object userId_ = data.get(ExerciseConstant.USER_ID);
-        int userId = ((Number) userId_).intValue();
+    @UserLoginToken
+    public Msg getExercise(@RequestBody Map<String, Object> data, HttpServletRequest httpServletRequest){
+        String token = httpServletRequest.getHeader("token");
+        int userId = tokenService.getUserIdFromToken(token);
 
         if(userId < 0){
             return MsgUtil.makeMsg(MsgUtil.ERROR, "传参错误,userId > 0", null);
@@ -72,11 +83,14 @@ public class ExerciseController {
     }
 
     @PostMapping("/delete_exercise")
-    public Msg deleteExercise(@RequestBody Map<String, Object> data){
-        Object name_ = data.get(ExerciseConstant.NAME);
-        Object user_id_ = data.get(ExerciseConstant.USER_ID);
+    @UserLoginToken
+    public Msg deleteExercise(@RequestBody Map<String, Object> data, HttpServletRequest httpServletRequest){
+        String token = httpServletRequest.getHeader("token");
+        int userId = tokenService.getUserIdFromToken(token);
 
-        if(name_ == null || user_id_ == null){
+        Object name_ = data.get(ExerciseConstant.NAME);
+
+        if(name_ == null){
             return MsgUtil.makeMsg(MsgUtil.ERROR, "传参错误", null);
         }
 
@@ -85,7 +99,7 @@ public class ExerciseController {
             return MsgUtil.makeMsg(MsgUtil.ERROR, "删除失败，运动不存在", null);
         }
 
-        if(exercise.getUserId() != (int) user_id_){
+        if(exercise.getUserId() != userId){
             if(exercise.getUserId() == -1){
                 return MsgUtil.makeMsg(MsgUtil.ERROR, "删除失败，运动为公共运动", null);
             }else {
