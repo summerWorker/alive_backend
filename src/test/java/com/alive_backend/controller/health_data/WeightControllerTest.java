@@ -1,6 +1,9 @@
+
 package com.alive_backend.controller.health_data;
 
+import com.alive_backend.entity.health_data.MainRecord;
 import com.alive_backend.entity.health_data.Weight;
+import com.alive_backend.service.health_data.MainRecordService;
 import com.alive_backend.service.health_data.WeightService;
 import com.alive_backend.serviceimpl.TokenService;
 import com.alive_backend.utils.JsonConfig.CustomJsonConfig;
@@ -35,6 +38,8 @@ import static org.mockito.Mockito.*;
 public class WeightControllerTest {
     @Mock
     private WeightService weightService;
+    @Mock
+    private MainRecordService mainRecordService;
     @InjectMocks
     private WeightController weightController;
     @Autowired
@@ -149,6 +154,9 @@ public class WeightControllerTest {
         Mockito.when(weightService.addWeight(fakeWeight2)).thenReturn(fakeWeight2);
 //        Mockito.when(weightService.addWeight(Mockito.any(Weight.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
+
+        Mockito.when(mainRecordService.getMainRecordByUserId(userId)).thenReturn(new MainRecord());
+        Mockito.when(mainRecordService.updateMainRecord(Mockito.any(MainRecord.class))).thenAnswer(invocation -> invocation.getArgument(0));
         // 1. 传参错误
         requestData1.put(Constant.WEIGHT, 60.0);
         Msg result1 = weightController.AddWeight(requestData1, request);

@@ -2,105 +2,138 @@ package com.alive_backend.serviceimpl.user_info;
 
 import com.alive_backend.dao.user_info.UserAuthDao;
 import com.alive_backend.entity.user_info.UserAuth;
-import com.alive_backend.service.user_info.UserAuthService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.sql.Timestamp;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.mockito.Mockito.*;
-
+@ExtendWith(MockitoExtension.class)
 class UserAuthServiceImplTest {
-    @Mock
-    private UserAuthDao userAuthDao;
-    @InjectMocks
-    private UserAuthServiceImpl userAuthService;
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
+    @Mock
+    private UserAuthDao mockUserAuthDao;
+
+    @InjectMocks
+    private UserAuthServiceImpl userAuthServiceImplUnderTest;
 
     @Test
     void testGetUserAuthByName() {
-        // 创建一个假的UserAuth对象
-        UserAuth fakeUserAuth = new UserAuth();
-        fakeUserAuth.setUsername("test");
-        fakeUserAuth.setPassword("test");
-        fakeUserAuth.setEmail("test@");
-        fakeUserAuth.setCheckCode("");
-        fakeUserAuth.setCodeUpdateTime(Timestamp.valueOf("2023-06-27 06:12:58")); // 设置合适的值
+        // Setup
+        final UserAuth expectedResult = new UserAuth();
+        expectedResult.setUserId(0);
+        expectedResult.setUsername("username");
+        expectedResult.setPassword("password");
+        expectedResult.setEmail("email");
+        expectedResult.setCheckCode("checkCode");
 
-        // 指定Mock对象的行为
-        when(userAuthDao.getUserAuthByName("test")).thenReturn(fakeUserAuth);
-        when(userAuthDao.getUserAuthByName("test1")).thenReturn(null);
-        // 执行被测试的方法
-        UserAuth userAuth = userAuthService.getUserAuthByName("test");
+        // Configure UserAuthDao.getUserAuthByName(...).
+        final UserAuth userAuth = new UserAuth();
+        userAuth.setUserId(0);
+        userAuth.setUsername("username");
+        userAuth.setPassword("password");
+        userAuth.setEmail("email");
+        userAuth.setCheckCode("checkCode");
+        when(mockUserAuthDao.getUserAuthByName("name")).thenReturn(userAuth);
 
-        // 验证结果是否符合预期
-        assertEquals(userAuth, fakeUserAuth);
+        // Run the test
+        final UserAuth result = userAuthServiceImplUnderTest.getUserAuthByName("name");
 
-        UserAuth userAuth1 = userAuthService.getUserAuthByName("test1");
-        assertNull(userAuth1);
-
-        // 验证Mock对象的方法是否被调用
-        verify(userAuthDao, times(1)).getUserAuthByName("test");
-        verify(userAuthDao, times(1)).getUserAuthByName("test1");
+        // Verify the results
+        assertThat(result).isEqualTo(expectedResult);
     }
 
     @Test
     void testGetUserAuthByEmail() {
-        // 创建一个假的UserAuth对象
-        UserAuth fakeUserAuth = new UserAuth();
-        fakeUserAuth.setUsername("test");
-        fakeUserAuth.setPassword("test");
-        fakeUserAuth.setEmail("test@");
-        fakeUserAuth.setCheckCode("");
-        fakeUserAuth.setCodeUpdateTime(Timestamp.valueOf("2023-06-27 06:12:58")); // 设置合适的值
+        // Setup
+        final UserAuth expectedResult = new UserAuth();
+        expectedResult.setUserId(0);
+        expectedResult.setUsername("username");
+        expectedResult.setPassword("password");
+        expectedResult.setEmail("email");
+        expectedResult.setCheckCode("checkCode");
 
-        // 指定Mock对象的行为
-        when(userAuthDao.getUserAuthByEmail("test@")).thenReturn(fakeUserAuth);
-        when(userAuthDao.getUserAuthByEmail("test1@")).thenReturn(null);
+        // Configure UserAuthDao.getUserAuthByEmail(...).
+        final UserAuth userAuth = new UserAuth();
+        userAuth.setUserId(0);
+        userAuth.setUsername("username");
+        userAuth.setPassword("password");
+        userAuth.setEmail("email");
+        userAuth.setCheckCode("checkCode");
+        when(mockUserAuthDao.getUserAuthByEmail("email")).thenReturn(userAuth);
 
-        // 执行被测试的方法
-        UserAuth userAuth = userAuthService.getUserAuthByEmail("test@");
+        // Run the test
+        final UserAuth result = userAuthServiceImplUnderTest.getUserAuthByEmail("email");
 
-        // 验证结果是否符合预期
-        assertEquals(userAuth, fakeUserAuth);
-        UserAuth userAuth1 = userAuthService.getUserAuthByEmail("test1@");
-        assertNull(userAuth1);
-
-        // 验证Mock对象的方法是否被调用
-        verify(userAuthDao, times(1)).getUserAuthByEmail("test@");
-        verify(userAuthDao, times(1)).getUserAuthByEmail("test1@");
+        // Verify the results
+        assertThat(result).isEqualTo(expectedResult);
     }
 
     @Test
     void testSaveUserAuth() {
-        // 创建一个待保存的UserAuth对象
-        UserAuth userAuth = new UserAuth();
-        userAuth.setUsername("test_save");
-        userAuth.setPassword("test_save");
-        userAuth.setEmail("test_save@");
-        userAuth.setCheckCode("");
-        userAuth.setCodeUpdateTime(Timestamp.valueOf("2023-06-27 06:12:58"));
+        // Setup
+        final UserAuth userAuth = new UserAuth();
+        userAuth.setUserId(0);
+        userAuth.setUsername("username");
+        userAuth.setPassword("password");
+        userAuth.setEmail("email");
+        userAuth.setCheckCode("checkCode");
 
-        // 指定Mock对象的行为
-        when(userAuthDao.saveUserAuth(userAuth)).thenReturn(userAuth);
+        final UserAuth expectedResult = new UserAuth();
+        expectedResult.setUserId(0);
+        expectedResult.setUsername("username");
+        expectedResult.setPassword("password");
+        expectedResult.setEmail("email");
+        expectedResult.setCheckCode("checkCode");
 
-        // 执行被测试的方法
-        UserAuth savedUserAuth = userAuthService.saveUserAuth(userAuth);
+        // Configure UserAuthDao.saveUserAuth(...).
+        final UserAuth userAuth1 = new UserAuth();
+        userAuth1.setUserId(0);
+        userAuth1.setUsername("username");
+        userAuth1.setPassword("password");
+        userAuth1.setEmail("email");
+        userAuth1.setCheckCode("checkCode");
+        final UserAuth userAuth2 = new UserAuth();
+        userAuth2.setUserId(0);
+        userAuth2.setUsername("username");
+        userAuth2.setPassword("password");
+        userAuth2.setEmail("email");
+        userAuth2.setCheckCode("checkCode");
+        when(mockUserAuthDao.saveUserAuth(userAuth2)).thenReturn(userAuth1);
 
-        // 验证结果是否符合预期
-        assertEquals(userAuth, savedUserAuth);
+        // Run the test
+        final UserAuth result = userAuthServiceImplUnderTest.saveUserAuth(userAuth);
 
-        // 验证Mock对象的方法是否被调用
-        verify(userAuthDao, times(1)).saveUserAuth(userAuth);
+        // Verify the results
+        assertThat(result).isEqualTo(expectedResult);
+    }
+
+    @Test
+    void testFindUserById() {
+        // Setup
+        final UserAuth expectedResult = new UserAuth();
+        expectedResult.setUserId(0);
+        expectedResult.setUsername("username");
+        expectedResult.setPassword("password");
+        expectedResult.setEmail("email");
+        expectedResult.setCheckCode("checkCode");
+
+        // Configure UserAuthDao.findUserById(...).
+        final UserAuth userAuth = new UserAuth();
+        userAuth.setUserId(0);
+        userAuth.setUsername("username");
+        userAuth.setPassword("password");
+        userAuth.setEmail("email");
+        userAuth.setCheckCode("checkCode");
+        when(mockUserAuthDao.findUserById(0)).thenReturn(userAuth);
+
+        // Run the test
+        final UserAuth result = userAuthServiceImplUnderTest.findUserById(0);
+
+        // Verify the results
+        assertThat(result).isEqualTo(expectedResult);
     }
 }

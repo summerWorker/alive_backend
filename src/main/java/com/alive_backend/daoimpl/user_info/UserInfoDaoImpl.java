@@ -12,12 +12,11 @@ public class UserInfoDaoImpl implements UserInfoDao {
     private UserInfoRepository userInfoRepository;
     @Override
     public UserInfo saveUserInfo(UserInfo user) {
-        try {
+//        try {
             System.out.println("user: " );
             return userInfoRepository.save(user);
-        } catch (Exception e) {
-            System.out.println(e);
-            return null;
-        }
+//        } catch (Exception e) {
+//            return null;
+//        }
     }
 }

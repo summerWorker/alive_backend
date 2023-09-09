@@ -97,12 +97,12 @@ public class DietController{
             diet.setAmount(diet.getAmount());
             diet.setId(diet1.getId());
         }
-        try{
+//        try{
             System.out.println(diet);
             dietService.updateDiet(diet);
-        } catch (Exception e){
-            return MsgUtil.makeMsg(MsgUtil.ERROR, "添加失败", JSONObject.fromObject(e));
-        }
+//        } catch (Exception e){
+//            return MsgUtil.makeMsg(MsgUtil.ERROR, "添加失败", JSONObject.fromObject(e));
+//        }
             return MsgUtil.makeMsg(MsgUtil.SUCCESS, "添加成功", JSONObject.fromObject(diet,new CustomJsonConfig()));
     }
 

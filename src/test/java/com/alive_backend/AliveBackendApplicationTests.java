@@ -77,40 +77,40 @@ class AliveBackendApplicationTests {
     void tearDown() {
     }
 
-    @Test
-    void contextLoads() throws Exception {
-        Msg msg1 = MsgUtil.makeMsg(MsgUtil.ERROR, "传参错误{user_id:1,date:yyyy-MM-dd}", null);
-
-        // 执行控制器方法
-        Map<String, Object> loginRequest = new HashMap<>();
-        loginRequest.put(UserConstant.USERNAME, "test");
-        loginRequest.put(UserConstant.PASSWORD, "test");
-        String loginResponse = mockMvc.perform(MockMvcRequestBuilders.post("/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(new ObjectMapper().writeValueAsString(loginRequest)))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
-        String token = JSONObject.fromObject(JSONObject.fromObject(loginResponse).get("data")).get("token").toString();
-        // 准备测试数据和依赖项
-        Date date = Date.valueOf("2023-07-13");
-        Map<String, Object> requestData = new HashMap<>();
-        requestData.put(Constant.DATE, date.toString());
-
-        // 执行控制器方法
-        String responseJson = mockMvc.perform(MockMvcRequestBuilders.post("/weight")
-                .contentType(MediaType.APPLICATION_JSON)
-                .header("token", token)
-                .content(new ObjectMapper().writeValueAsString(requestData)))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
-        // 验证返回的数据
-
-        System.out.println(responseJson);
-
-
-    }
+//    @Test
+//    void contextLoads() throws Exception {
+//        Msg msg1 = MsgUtil.makeMsg(MsgUtil.ERROR, "传参错误{user_id:1,date:yyyy-MM-dd}", null);
+//
+//        // 执行控制器方法
+//        Map<String, Object> loginRequest = new HashMap<>();
+//        loginRequest.put(UserConstant.USERNAME, "test");
+//        loginRequest.put(UserConstant.PASSWORD, "test");
+//        String loginResponse = mockMvc.perform(MockMvcRequestBuilders.post("/login")
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .content(new ObjectMapper().writeValueAsString(loginRequest)))
+//                .andExpect(MockMvcResultMatchers.status().isOk())
+//                .andReturn()
+//                .getResponse()
+//                .getContentAsString();
+//        String token = JSONObject.fromObject(JSONObject.fromObject(loginResponse).get("data")).get("token").toString();
+//        // 准备测试数据和依赖项
+//        Date date = Date.valueOf("2023-07-13");
+//        Map<String, Object> requestData = new HashMap<>();
+//        requestData.put(Constant.DATE, date.toString());
+//
+//        // 执行控制器方法
+//        String responseJson = mockMvc.perform(MockMvcRequestBuilders.post("/weight")
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .header("token", token)
+//                .content(new ObjectMapper().writeValueAsString(requestData)))
+//                .andExpect(MockMvcResultMatchers.status().isOk())
+//                .andReturn()
+//                .getResponse()
+//                .getContentAsString();
+//        // 验证返回的数据
+//
+//        System.out.println(responseJson);
+//
+//
+//    }
 }

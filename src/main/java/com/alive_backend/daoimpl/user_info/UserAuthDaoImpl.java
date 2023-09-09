@@ -21,11 +21,11 @@ public class UserAuthDaoImpl implements UserAuthDao {
     }
     @Override
     public UserAuth saveUserAuth(UserAuth userAuth) {
-        try {
+//        try {
             return userAuthRepository.save(userAuth);
-        } catch (Exception e) {
-            return null;
-        }
+//        } catch (Exception e) {
+//            return null;
+//        }
     }
     @Override
     public UserAuth findUserById(int id) {

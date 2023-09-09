@@ -101,6 +101,29 @@ public class WeightServiceImplTest {
         Weight weight3 = weightService.addWeight(fakeWeight3);
         assertEquals(weight3, fakeWeight3);
 
+        // 测试goalkey1 ！= null分支
+        Weight fakeWeight = new Weight();
+        fakeWeight.setUserId(1);
+        fakeWeight.setDate(Date.valueOf("2024-08-10"));
+        fakeWeight.setWeight(60.0);
+
+        Goal goal2 = new Goal();
+        goal2.setUserId(1);
+        goal2.setGoalName(GoalConstant.WEIGHT_GOAL);
+        goal2.setGoalKey1(70.0); // 设置一个非空的 goalKey1
+        goal2.setGoalDdl(Date.valueOf("2025-07-10"));
+
+        // 指定Mock对象的行为
+        when(weightDao.addWeight(eq(fakeWeight))).thenReturn(fakeWeight);
+        when(goalDao.getGoalByGoalName(eq(1), eq(GoalConstant.WEIGHT_GOAL))).thenReturn(goal);
+
+        // 调用服务方法
+        Weight weight0 = weightService.addWeight(fakeWeight);
+
+        // 验证返回的Weight对象是否符合预期
+        assertEquals(weight0, fakeWeight);
+
+
 
         // 验证Mock对象的方法是否被调用
         verify(weightDao, times(1)).addWeight(eq(fakeWeight1));

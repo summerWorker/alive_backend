@@ -1,6 +1,8 @@
 package com.alive_backend.controller.health_data;
+import com.alive_backend.annotation.UserLoginToken;
 import com.alive_backend.entity.health_data.HeartRate;
 import com.alive_backend.service.health_data.HeartRateService;
+import com.alive_backend.serviceimpl.TokenService;
 import com.alive_backend.utils.JsonConfig.CustomJsonConfig;
 import com.alive_backend.utils.constant.Constant;
 import com.alive_backend.utils.constant.UserConstant;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.cache.annotation.Cacheable;
 
+import javax.servlet.http.HttpServletRequest;
 import java.sql.Date;
 import java.util.List;
 import java.util.Map;
@@ -25,19 +28,21 @@ import java.util.Map;
 public class HeartRateController {
     @Autowired
     private HeartRateService heartRateService;
+    @Autowired
+    private TokenService tokenService;
     @PostMapping("/heartRate")
+    @UserLoginToken
 //    @Cacheable(value = "heartRate", key = "#data.get('user_id') + '_' + #data.get('start_date') + '_' + #data.get('end_date')")
-    public Msg getHeartRate(@RequestBody Map<String, Object> data){
-        Object userId_ = data.get(UserConstant.USER_ID);
+    public Msg getHeartRate(@RequestBody Map<String, Object> data, HttpServletRequest httpServletRequest){
+        String token = httpServletRequest.getHeader("token");
+        int userId = tokenService.getUserIdFromToken(token);
         Object date1_ = data.get(Constant.START_DATE);
         Object date2_ = data.get(Constant.END_DATE);
-        if(userId_ == null || date1_ == null)
+        if( date1_ == null)
             return MsgUtil.makeMsg(MsgUtil.ARG_ERROR, "传参错误", null);
-        int userId;
         Date date1, date2;
         if(date2_ != null){
             try{
-                userId = (int) userId_;
                 date1 = Date.valueOf((String) date1_);
                 date2 = Date.valueOf((String) date2_);
             }catch (Exception e){
@@ -52,7 +57,6 @@ public class HeartRateController {
         }
         else {
             try{
-                userId = (int) userId_;
                 date1 = Date.valueOf((String)date1_);
             }catch (Exception e){
                 return MsgUtil.makeMsg(MsgUtil.ARG_ERROR, e.toString(), null);
@@ -66,23 +70,24 @@ public class HeartRateController {
         }
     }
     @PostMapping("/add_heartRate")
-    public Msg addHeartRate(@RequestBody Map<String, Object> data){
-        Object userId_ = data.get(UserConstant.USER_ID);
+    @UserLoginToken
+    public Msg addHeartRate(@RequestBody Map<String, Object> data,HttpServletRequest httpServletRequest){
+        String token = httpServletRequest.getHeader("token");
+        int userId = tokenService.getUserIdFromToken(token);
         Object timeStamp_ = data.get(Constant.TIMESTAMP);
         Object heartRate_ = data.get(Constant.HEART_RATE);
-        if(userId_ == null || timeStamp_ == null || heartRate_ == null)
+        if( timeStamp_ == null || heartRate_ == null)
             return MsgUtil.makeMsg(MsgUtil.ARG_ERROR, "传参错误", null);
-        int userId;
+
         Long timeStamp;
         String heartRate;
         try{
-            userId = (int) userId_;
             timeStamp = Long.parseLong(String.valueOf(timeStamp_));
             heartRate = (String) heartRate_;
         }catch (Exception e){
             return MsgUtil.makeMsg(MsgUtil.ARG_ERROR, e.toString(), null);
         }
-        try{
+//        try{
             HeartRate newHeartRate = new HeartRate();
             newHeartRate.setUserId(userId);
             newHeartRate.setTimeStamp(timeStamp);
@@ -90,8 +95,8 @@ public class HeartRateController {
             heartRateService.addHeartRate(newHeartRate);
             return MsgUtil.makeMsg(MsgUtil.SUCCESS, "添加成功", JSONObject.fromObject(newHeartRate, new CustomJsonConfig()));
         }
-        catch (Exception e){
-            return MsgUtil.makeMsg(MsgUtil.ERROR, "添加失败", null);
-        }
-    }
+//        catch (Exception e){
+//            return MsgUtil.makeMsg(MsgUtil.ERROR, "添加失败", null);
+//        }
+//    }
 }

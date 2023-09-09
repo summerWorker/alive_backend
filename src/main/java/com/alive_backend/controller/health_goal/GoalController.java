@@ -107,7 +107,7 @@ public class GoalController {
             }
 
             case GoalConstant.SLEEP_LENGTH_GOAL: {
-                if (goalKey1_ == null) {
+                  if (goalKey1_ == null) {
                     return MsgUtil.makeMsg(MsgUtil.ERROR, "睡眠长度目标需要一个具体的值{goalNum: 8.5}", null);
                 }
                 double goalKey1 = ((Number) goalKey1_).doubleValue();

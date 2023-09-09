@@ -1,0 +1,144 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > SleepConstant</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.alive_backend.utils.constant</a>
+</div>
+
+<h1>Coverage Summary for Class: SleepConstant (com.alive_backend.utils.constant)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">SleepConstant</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/3)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.alive_backend.utils.constant;
+&nbsp;/*
+&nbsp;       *  &quot;awake_count&quot;: 0,
+&nbsp;                   &quot;sleep_awake_duration&quot;: 0,
+&nbsp;                   &quot;bedtime&quot;: 1687365360,
+&nbsp;                   &quot;sleep_deep_duration&quot;: 88,
+&nbsp;                   &quot;sleep_light_duration&quot;: 335,
+&nbsp;                   &quot;sleep_rem_duration&quot;: 88,
+&nbsp;                   &quot;duration&quot;: 511,
+&nbsp;       * */
+<b class="nc">&nbsp;public class SleepConstant {</b>
+&nbsp;    public static final String AWAKE_COUNT = &quot;awake_count&quot;;
+&nbsp;    public static final String AWAKE_TIME = &quot;sleep_awake_duration&quot;;
+&nbsp;    public static final String DEEP_SLEEP_TIME = &quot;sleep_deep_duration&quot;;
+&nbsp;    public static final String LIGHT_SLEEP_TIME = &quot;sleep_light_duration&quot;;
+&nbsp;    public static final String REM_SLEEP_TIME = &quot;sleep_rem_duration&quot;;
+&nbsp;    public static final String BEDTIME = &quot;bedtime&quot;;
+&nbsp;    public static final String LENGTH = &quot;duration&quot;;
+&nbsp;    /* 分析相关 */
+&nbsp;    public static final String NORMAL_BEDTIME = &quot;入睡时间合理&quot;;
+&nbsp;    public static final String LATE_BEDTIME = &quot;入睡时间过晚&quot;;
+&nbsp;    public static final String STAY_UP_LATE = &quot;熬夜&quot;;
+&nbsp;    public static final String EARLY_BEDTIME = &quot;入睡时间过早&quot;;
+&nbsp;
+&nbsp;    //String 数组
+<b class="nc">&nbsp;    public static final String[] ADVICE_FOR_LATE = {</b>
+&nbsp;            &quot;睡前尽量避免刺激性活动和使用电子设备，例如手机、电脑和电视。创建一个安静、舒适、有利于睡眠的环境。&quot;,
+&nbsp;            &quot;避免在睡前饮用含咖啡因的饮料，如咖啡、茶和碳酸饮料。咖啡因会影响入睡时间和睡眠质量。&quot;,
+&nbsp;            &quot;23点至次日3点，是肝脏最佳排毒时段，推荐在23点之前入睡，以保证肝脏排毒功能正常运作。&quot;,
+&nbsp;            &quot;保持规律的作息时间，每天都在相同的时间段睡觉和起床，有助于培养身体的生物钟，提高睡眠质量。&quot;,
+&nbsp;            &quot;建立放松的睡前习惯，如喝一杯温牛奶、泡个热水澡或进行冥想和呼吸练习，有助于放松身心，促进入眠。&quot;,
+&nbsp;    };
+<b class="nc">&nbsp;    public static final String[] ADVICE_FOR_STAY_UP = {</b>
+&nbsp;            &quot;在1点后入睡的人，可能会面临熬夜的挑战。确保睡眠环境安静、舒适、黑暗和凉爽。可以使用眼罩、耳塞或调节室温来帮助改善睡眠质量。&quot;,
+&nbsp;            &quot;晚睡会导致睡眠时相延迟，会导致肠道菌群失调、皮质醇分泌增加、胰岛素抵抗，从而增加罹患肥胖和2型糖尿病的风险。&quot;,
+&nbsp;            &quot;长期熬夜会导致免疫力下降，容易感冒，还会导致肝脏排毒功能受损，从而引发肝炎、肝硬化等疾病。&quot;,
+&nbsp;            &quot;控制晚间的兴奋剂摄入，如咖啡因和糖分。避免饮用含咖啡因的饮料和食用过多的甜食，以避免影响睡眠。&quot;,
+&nbsp;    };
+&nbsp;
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-07-13 22:35</div>
+</div>
+</body>
+</html>
