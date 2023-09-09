@@ -12,6 +12,7 @@ import com.alive_backend.utils.constant.Constant;
 import com.alive_backend.utils.constant.UserConstant;
 import com.alive_backend.utils.msg.Msg;
 import com.alive_backend.utils.msg.MsgUtil;
+import com.alive_backend.utils.redis.RedisUtil;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import net.bytebuddy.implementation.auxiliary.AuxiliaryType;
@@ -82,7 +83,7 @@ public class WeightController {
     }
     @PostMapping("/add_weight")
     @UserLoginToken
-    @CacheEvict(value = "weightCache", allEntries = true)
+//    @CacheEvict(value = "weightCache", allEntries = true)
     public Msg AddWeight(@RequestBody Map<String,Object> data, HttpServletRequest httpServletRequest) {
         String token = httpServletRequest.getHeader("token");
         int id = tokenService.getUserIdFromToken(token);
