@@ -47,6 +47,9 @@ public class WeightController {
     @Autowired
     private MainRecordService mainRecordService;
 
+    @Autowired
+    private RedisUtil redisUtil;
+
     @PostMapping("/weight")
     @UserLoginToken
 //    @Cacheable(value = "weightCache", key = "#data.get('user_id')+ '_' + #data.get('date')")
@@ -104,8 +107,10 @@ public class WeightController {
         // update mainRecord
         Weight lastWeight = weightService.getLatestWeight(id);
         if(lastWeight == null || !lastWeight.getDate().after(date)) {
+            redisUtil.del("MainRecord_" + String.valueOf(id));
             MainRecord mainRecord = mainRecordService.getMainRecordByUserId(id);
             mainRecord.setWeight(weight);
+            redisUtil.set("MainRecord_" + String.valueOf(id), mainRecord, 60 * 60 * 24);
             if(mainRecord.getUpdateTime() == null || mainRecord.getUpdateTime().before(date))
                 mainRecord.setUpdateTime(Timestamp.valueOf(date + " 00:00:00"));
             mainRecordService.updateMainRecord(mainRecord);
@@ -134,7 +139,7 @@ public class WeightController {
     }
     @PostMapping("/period_weight")
     @UserLoginToken
-    @Cacheable(value = "periodWeightCache", key = "#data.get('user_id')+ '_' + #data.get('start_date') + '_' + #data.get('end_date')")
+//    @Cacheable(value = "periodWeightCache", key = "#data.get('user_id')+ '_' + #data.get('start_date') + '_' + #data.get('end_date')")
     public Msg getPeriodWeight(@RequestBody Map<String,Object> data, HttpServletRequest httpServletRequest) {
         // 检验参数合法性
         String token = httpServletRequest.getHeader("token");
