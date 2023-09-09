@@ -1,9 +1,13 @@
 package com.alive_backend.controller.health_data;
 
+import com.alive_backend.annotation.UserLoginToken;
 import com.alive_backend.entity.basic_data.Food;
 import com.alive_backend.entity.health_data.Diet;
+import com.alive_backend.entity.user_info.UserAuth;
 import com.alive_backend.service.basic_data.FoodService;
 import com.alive_backend.service.health_data.DietService;
+import com.alive_backend.service.user_info.UserAuthService;
+import com.alive_backend.serviceimpl.TokenService;
 import com.alive_backend.utils.JsonConfig.CustomJsonConfig;
 import com.alive_backend.utils.constant.Constant;
 import com.alive_backend.utils.constant.DietConstant;
@@ -19,6 +23,7 @@ import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.sql.Date;
 import java.util.List;
 import java.util.Map;
@@ -33,16 +38,25 @@ public class DietController{
     @Autowired
     private FoodService foodService;
 
+    @Autowired
+    private UserAuthService userAuthService;
+
+    @Autowired
+    private TokenService tokenService;
+
     @PostMapping("/add_diet")
-    public Msg addDiet(@RequestBody Map<String,Object> data){
+    @UserLoginToken
+    public Msg addDiet(@RequestBody Map<String,Object> data, HttpServletRequest httpServletRequest){
         // 检验参数合法性
-        Object userId_ = data.get(UserConstant.USER_ID);
+        String token = httpServletRequest.getHeader("token");
+        int userId = tokenService.getUserIdFromToken(token);
+
         Object foodName_ = data.get(FoodConstant.NAME);
         Object date_ = data.get(Constant.DATE);
         Object type_ = data.get(DietConstant.TYPE);
         Object amount_ = data.get(DietConstant.AMOUNT);
-        if (userId_ == null || foodName_ == null || date_ == null || type_ == null || amount_ == null) {
-            return MsgUtil.makeMsg(MsgUtil.ERROR, "传参格式{user_id:1, name:“面包”, date:2020-01-01, type:BREAKFAST, amount:1}", null);
+        if (token == null || foodName_ == null || date_ == null || type_ == null || amount_ == null) {
+            return MsgUtil.makeMsg(MsgUtil.ERROR, "传参格式{name:“面包”, date:2020-01-01, type:BREAKFAST, amount:1}", null);
         }
 
         Diet diet = new Diet();
@@ -53,7 +67,7 @@ public class DietController{
             return MsgUtil.makeMsg(MsgUtil.ERROR, "日期格式错误", null);
         }
 
-        diet.setUserId(((Number) userId_).intValue());
+        diet.setUserId(userId);
         diet.setDate(date);
         diet.setType(FoodTypeEnum.valueOf(((String) type_)).ordinal());
         double amount = ((Number) amount_).doubleValue();
@@ -70,7 +84,11 @@ public class DietController{
         diet.setFoodId(food.getId());
         System.out.println(food.getId());
         System.out.println(diet);
-        //TODO: check if user exists
+
+        UserAuth userAuth = userAuthService.findUserById(userId);
+        if(userAuth == null){
+            return MsgUtil.makeMsg(MsgUtil.ERROR, "添加失败，用户不存在", null);
+        }
 
         //查看用户是否已经添加过该食物
         Diet diet1 = dietService.findDietByUserIdAndFoodIdAndDateAndType(diet.getUserId(), diet.getFoodId(), diet.getDate(), diet.getType());
@@ -89,14 +107,16 @@ public class DietController{
     }
 
     @PostMapping("/get_diet")
-    public Msg getDiet(@RequestBody Map<String,Object> data){
-        Object userId_ = data.get(UserConstant.USER_ID);
+    @UserLoginToken
+    public Msg getDiet(@RequestBody Map<String,Object> data, HttpServletRequest httpServletRequest){
+        String token = httpServletRequest.getHeader("token");
+        int userId = tokenService.getUserIdFromToken(token);
+
         Object startDate_ = data.get(Constant.START_DATE);
         Object endDate_ = data.get(Constant.END_DATE);
-        if (userId_ == null || startDate_ == null || endDate_ == null) {
-            return MsgUtil.makeMsg(MsgUtil.ERROR, "传参格式{user_id:1, start_date:2020-01-01, end_date:2020-01-02}", null);
+        if (token == null || startDate_ == null || endDate_ == null) {
+            return MsgUtil.makeMsg(MsgUtil.ERROR, "传参格式{start_date:2020-01-01, end_date:2020-01-02}", null);
         }
-        int userId = ((Number) userId_).intValue();
         Date startDate = Date.valueOf((String) startDate_);
         Date endDate = Date.valueOf((String) endDate_);
 
