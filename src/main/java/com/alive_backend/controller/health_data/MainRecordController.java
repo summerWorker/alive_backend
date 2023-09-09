@@ -13,6 +13,7 @@ import com.alive_backend.serviceimpl.TokenService;
 import com.alive_backend.utils.constant.UserConstant;
 import com.alive_backend.utils.msg.Msg;
 import com.alive_backend.utils.msg.MsgUtil;
+import com.alive_backend.utils.redis.RedisUtil;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +43,9 @@ public class MainRecordController {
     @Autowired
     private TokenService tokenService;
 
+    @Autowired
+    private RedisUtil redisUtil;
+
     @PostMapping("/main_record")
     @UserLoginToken
 //    @Cacheable(value = "mainRecordCache", key = "#data.get('user_id')")
@@ -55,8 +59,18 @@ public class MainRecordController {
 //        }
 //        int id = (int)id_;
 
+        //先去redis缓存中查找
+        Object record = redisUtil.get("MainRecord_" + String.valueOf(id));
+        if(record != null){
+            MainRecord mainRecord = (MainRecord)record;
+            System.out.println("从redis中获取");
+            return MsgUtil.makeMsg(MsgUtil.SUCCESS, MsgUtil.SUCCESS_MSG, JSONObject.fromObject(mainRecord, new CustomJsonConfig()));
+        }
+
         /*  获取main_record */
         MainRecord mainRecord = mainRecordService.getMainRecordByUserId(id);
+        redisUtil.set("MainRecord_" + String.valueOf(id), mainRecord, 60*60*24);
+        System.out.println("从数据库中获取");
         return MsgUtil.makeMsg(MsgUtil.SUCCESS, MsgUtil.SUCCESS_MSG, JSONObject.fromObject(mainRecord, new CustomJsonConfig()));
     }
 
