@@ -13,6 +13,7 @@ import com.alive_backend.utils.AESUtil;
 import com.alive_backend.utils.constant.UserConstant;
 import com.alive_backend.utils.msg.Msg;
 import com.alive_backend.utils.msg.MsgUtil;
+import com.alive_backend.utils.redis.RedisUtil;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Timestamp;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -38,7 +40,7 @@ public class UserAuthController {
     private MainRecordService mainRecordService;
 
     @Autowired
-    private RedisTemplate redisTemplate;
+    private RedisUtil redisUtil;
 
     @Autowired
     private MailService mailService;
@@ -63,7 +65,7 @@ public class UserAuthController {
         }catch (Exception e){
             return MsgUtil.makeMsg(MsgUtil.ERROR,"发送失败");
         }
-        redisTemplate.opsForValue().set(email, checkCode, 1, TimeUnit.MINUTES);
+        redisUtil.set(email, checkCode, 60 * 60);
 
         return MsgUtil.makeMsg(MsgUtil.SUCCESS,"发送成功");
     }
@@ -100,12 +102,12 @@ public class UserAuthController {
 
         /*check checkCode*/
         String checkCode = checkCode_obj.toString();
-        String checkCodeInRedis = (String) redisTemplate.opsForValue().get(email);
-        redisTemplate.delete(email);
-        if(!checkCode.equals(checkCodeInRedis)){
+        String checkCodeInRedis = (String) redisUtil.get(email);
+        if(!Objects.equals(checkCode, checkCodeInRedis)){
+            redisUtil.del(email);
             return MsgUtil.makeMsg(MsgUtil.ERROR, "验证码错误", null);
         }
-
+        redisUtil.del(email);
         /*add userAuth*/
         String password = password_obj.toString();
         user = new UserAuth();
@@ -222,7 +224,8 @@ public class UserAuthController {
         UserAuth userAuth = userAuthService.findUserById(id);
         //add token to blacklist and store in redis
         long leftTime = tokenService.getExpireTime(token) - System.currentTimeMillis();
-        redisTemplate.opsForValue().set("jwt_" + token, id, leftTime, TimeUnit.SECONDS);
+//        redisTemplate.opsForValue().set("jwt_" + token, id, leftTime, TimeUnit.SECONDS);
+        redisUtil.set("jwt_" + token, id, leftTime);
         System.out.println("success");
 
 
