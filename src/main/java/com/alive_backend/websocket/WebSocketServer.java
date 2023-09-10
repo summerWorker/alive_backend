@@ -1,7 +1,9 @@
 package com.alive_backend.websocket;
 
 import com.alive_backend.entity.goal.Goal;
+import com.alive_backend.entity.health_data.Weight;
 import com.alive_backend.service.goal.GoalService;
+import com.alive_backend.service.health_data.WeightService;
 import com.alive_backend.serviceimpl.TokenService;
 import com.alive_backend.serviceimpl.goal.GoalServiceImpl;
 import com.alive_backend.utils.constant.GoalConstant;
@@ -33,9 +35,15 @@ public class WebSocketServer {
     private TokenService tokenService;
     private static GoalService goalService;
     private static WebSocketServer webSocketServer;
+    private static WeightService weightService;
     @Autowired
     public void setGoalService(GoalService goalService) {
         WebSocketServer.goalService = goalService;
+    }
+
+    @Autowired
+    public void setWeightService(WeightService weightService) {
+        WebSocketServer.weightService = weightService;
     }
     //静态变量，用来记录当前在线连接数。应该把它设计成线程安全的。
     private static int onlineCount = 0;
@@ -71,18 +79,57 @@ public class WebSocketServer {
 //            System.out.println(weight_goal);
         if(weight_goal != null) {
             Date weight_goal_date = weight_goal.getGoalDdl();
-            long weight_goal_time = weight_goal_date.getTime();
-            long now_time = System.currentTimeMillis();
-            long time = weight_goal_time - now_time;
-            if(time > 0) {
-
-                try {
-                    int left_days = (int) (time / (1000 * 60 * 60 * 24));
-                    sendMessage("设置了体重目标:"+ weight_goal.getGoalKey1() +" kg，还有"+left_days+"天截止");
-                } catch (IOException e) {
-                    e.printStackTrace();
+            Double target = weight_goal.getGoalKey1();
+            Weight current = weightService.getLatestWeight(uid);
+            if(current != null) {
+                Double current_weight = current.getWeight();
+                if(current_weight <= target) {
+                    try {
+                        sendMessage("已完成减重目标:"+ weight_goal.getGoalKey1() +" kg，当前体重为"+current_weight+" kg");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
+            }
+            if(weight_goal_date != null) {
+                long weight_goal_time = weight_goal_date.getTime();
+                long now_time = System.currentTimeMillis();
+                long time = weight_goal_time - now_time;
+                if(time > 0) {
+                    try {
+                        int left_days = (int) (time / (1000 * 60 * 60 * 24));
+                        sendMessage("设置了体重目标:"+ weight_goal.getGoalKey1() +" kg，还有"+left_days+"天截止");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
 
+                }
+            } else {
+                if(current != null) {
+                    Double current_weight = current.getWeight();
+                    if(current_weight > target) {
+                        try {
+                            sendMessage("设置了体重目标:"+ weight_goal.getGoalKey1() +" kg，当前体重为"+current_weight+" kg");
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    else {
+                        try {
+                            sendMessage("设置了体重目标:"+ weight_goal.getGoalKey1() +" kg");
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+
+        }
+        else {
+            try {
+                sendMessage("欢迎回来！设置健康目标来帮助你更好地管理健康吧！");
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
 
